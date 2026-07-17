@@ -1,0 +1,79 @@
+## ── Build output ──────────────────────────────
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+build/
+bld/
+[Ll]og/
+[Ll]ogs/
+
+## ── Visual Studio ─────────────────────────────
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+*.rsuser
+*.vsp
+*.vspx
+*.psess
+*.vspscc
+*.vssscc
+
+## ── Rider / VS Code ───────────────────────────
+.idea/
+*.sln.iml
+.vscode/
+
+## ── NuGet ─────────────────────────────────────
+*.nupkg
+*.snupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+*.nuget.props
+*.nuget.targets
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## ── Test / coverage ───────────────────────────
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+*.coverage
+*.coveragexml
+coverage*.json
+coverage*.xml
+coverage*.info
+TestResults/
+
+## ── EF Core ───────────────────────────────────
+# Миграции НЕ игнорируем — они часть проекта и создают БД у проверяющего.
+# Игнорируем только локальные дампы/бэкапы, если появятся:
+*.mdf
+*.ldf
+*.bak
+
+## ── Секреты / локальные настройки ─────────────
+# Строка подключения с паролем не должна попасть в репозиторий.
+appsettings.*.local.json
+secrets.json
+*.env
+
+## ── Uno / mobile (пригодится позже) ───────────
+*.binlog
+*.apk
+*.aab
+*.ipa
+bin-*/
+
+## ── OS ────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
