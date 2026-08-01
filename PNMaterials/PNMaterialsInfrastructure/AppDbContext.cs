@@ -19,5 +19,13 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+
+        modelBuilder.HasSequence<long>("MaterialCodeSequence")
+            .StartsAt(10_000_000)
+            .IncrementsBy(1);
+
+        modelBuilder.HasSequence<long>("RequestNumberSequence")
+            .StartsAt(5_000_000_000)
+            .IncrementsBy(1);
     }
 }

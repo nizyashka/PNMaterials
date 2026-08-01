@@ -3,4 +3,5 @@
   <Project Path="PNMaterialsContracts/PNMaterialsContracts.csproj" />
   <Project Path="PNMaterialsDomain/PNMaterialsDomain.csproj" />
   <Project Path="PNMaterialsInfrastructure/PNMaterialsInfrastructure.csproj" />
+  <Project Path="PNMaterialsTests/PNMaterialsTests.csproj" Id="e34ba423-2752-41d2-9c83-9d64cb64eda6" />
 </Solution>

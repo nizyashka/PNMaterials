@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PNMaterialsInfrastructure;
 
@@ -11,9 +12,11 @@ using PNMaterialsInfrastructure;
 namespace PNMaterialsInfrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260724151532_AddMaterialCodeSequence")]
+    partial class AddMaterialCodeSequence
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,9 +27,6 @@ namespace PNMaterialsInfrastructure.Migrations
 
             modelBuilder.HasSequence("MaterialCodeSequence")
                 .StartsAt(10000000L);
-
-            modelBuilder.HasSequence("RequestNumberSequence")
-                .StartsAt(5000000000L);
 
             modelBuilder.Entity("PNMaterialsDomain.Entities.Material", b =>
                 {
