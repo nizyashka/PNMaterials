@@ -1,5 +1,6 @@
 <Solution>
   <Project Path="PNMaterialsAPI/PNMaterialsAPI.csproj" />
+  <Project Path="PNMaterialsClient/PNMaterialsClient/PNMaterialsClient.csproj" />
   <Project Path="PNMaterialsContracts/PNMaterialsContracts.csproj" />
   <Project Path="PNMaterialsDomain/PNMaterialsDomain.csproj" />
   <Project Path="PNMaterialsInfrastructure/PNMaterialsInfrastructure.csproj" />

@@ -1,0 +1,53 @@
+﻿<Project Sdk="Uno.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>net10.0-desktop</TargetFrameworks>
+
+    <OutputType>Exe</OutputType>
+    <UnoSingleProject>true</UnoSingleProject>
+
+    <!-- Display name -->
+    <ApplicationTitle>PNMaterialsClient</ApplicationTitle>
+    <!-- App Identifier -->
+    <ApplicationId>com.companyname.pnmaterialsclient</ApplicationId>
+    <!-- Versions -->
+    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+    <ApplicationVersion>1</ApplicationVersion>
+    <!-- Package Publisher -->
+    <ApplicationPublisher>PNMaterialsClient</ApplicationPublisher>
+    <!-- Package Description -->
+    <Description>PNMaterialsClient powered by Uno Platform.</Description>
+
+    <!--
+      UnoFeatures are used to quickly add and manage features enabled for your app.
+      https://aka.platform.uno/singleproject-features
+    -->
+    <UnoFeatures>
+      Mvvm;
+      SkiaRenderer;
+    </UnoFeatures>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\PNMaterialsContracts\PNMaterialsContracts.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\MaterialGroupsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\MaterialsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\PurchaseRequestsPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Page Update="Views\ReportPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+
+</Project>
