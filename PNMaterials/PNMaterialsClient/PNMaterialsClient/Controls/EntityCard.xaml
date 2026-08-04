@@ -1,0 +1,28 @@
+﻿<UserControl x:Class="PNMaterialsClient.Controls.EntityCard"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <Grid Padding="24" RowSpacing="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0"
+                   Text="{x:Bind Header, Mode=OneWay}"
+                   FontSize="22" FontWeight="SemiBold" TextWrapping="Wrap" />
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="8">
+            <Button x:Name="EditButton" Click="OnToggleEdit" />
+            <Button Content="Сохранить"
+                    Command="{x:Bind SaveCommand, Mode=OneWay}"
+                    IsEnabled="{x:Bind IsEditMode, Mode=OneWay}" />
+            <Button Content="Обновить" Command="{x:Bind RefreshCommand, Mode=OneWay}" />
+            <Button Content="Выйти" Command="{x:Bind ExitCommand, Mode=OneWay}" />
+            <ContentPresenter Content="{x:Bind ExtraButtons, Mode=OneWay}" VerticalAlignment="Center" />
+        </StackPanel>
+
+        <ContentPresenter Grid.Row="2" Content="{x:Bind Body, Mode=OneWay}" />
+    </Grid>
+</UserControl>

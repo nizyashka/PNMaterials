@@ -1,0 +1,30 @@
+﻿<Page x:Class="PNMaterialsClient.Views.MaterialGroupCardPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:controls="using:PNMaterialsClient.Controls">
+
+    <controls:EntityCard Header="{x:Bind ViewModel.Header, Mode=OneWay}"
+                         IsEditMode="{x:Bind ViewModel.IsEditMode, Mode=TwoWay}"
+                         SaveCommand="{x:Bind ViewModel.SaveCommand}"
+                         RefreshCommand="{x:Bind ViewModel.RefreshCommand}"
+                         ExitCommand="{x:Bind ExitCommand}">
+
+        <StackPanel Spacing="12" MaxWidth="600" HorizontalAlignment="Left">
+            <TextBox Header="Наименование группы *"
+                     Text="{x:Bind ViewModel.Name, Mode=TwoWay}"
+                     IsEnabled="{x:Bind ViewModel.IsEditMode, Mode=OneWay}"
+                     MaxLength="40" />
+
+            <TextBox Header="Описание"
+                     Text="{x:Bind ViewModel.Description, Mode=TwoWay}"
+                     IsEnabled="{x:Bind ViewModel.IsEditMode, Mode=OneWay}"
+                     MaxLength="200"
+                     AcceptsReturn="True"
+                     TextWrapping="Wrap"
+                     Height="120" />
+
+            <TextBlock Text="{x:Bind ViewModel.Status, Mode=OneWay}"
+                       Opacity="0.7" TextWrapping="Wrap" />
+        </StackPanel>
+    </controls:EntityCard>
+</Page>

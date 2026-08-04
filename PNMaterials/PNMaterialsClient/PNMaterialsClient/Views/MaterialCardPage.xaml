@@ -1,0 +1,46 @@
+﻿<Page x:Class="PNMaterialsClient.Views.MaterialCardPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:controls="using:PNMaterialsClient.Controls">
+
+    <controls:EntityCard Header="{x:Bind ViewModel.Header, Mode=OneWay}"
+                         IsEditMode="{x:Bind ViewModel.IsEditMode, Mode=TwoWay}"
+                         SaveCommand="{x:Bind ViewModel.SaveCommand}"
+                         RefreshCommand="{x:Bind ViewModel.RefreshCommand}"
+                         ExitCommand="{x:Bind ExitCommand}">
+
+        <StackPanel Spacing="12" MaxWidth="600" HorizontalAlignment="Left">
+            <TextBox Header="Код материала"
+                     Text="{x:Bind ViewModel.Code, Mode=OneWay}"
+                     IsEnabled="False" />
+
+            <TextBox Header="Наименование материала *"
+                     Text="{x:Bind ViewModel.Name, Mode=TwoWay}"
+                     IsEnabled="{x:Bind ViewModel.IsEditMode, Mode=OneWay}"
+                     MaxLength="40" />
+
+            <TextBox Header="Описание материала"
+                     Text="{x:Bind ViewModel.Description, Mode=TwoWay}"
+                     IsEnabled="{x:Bind ViewModel.IsEditMode, Mode=OneWay}"
+                     MaxLength="200"
+                     AcceptsReturn="True" TextWrapping="Wrap" Height="120" />
+
+            <ComboBox Header="Единица измерения *"
+                      ItemsSource="{x:Bind ViewModel.Units}"
+                      SelectedItem="{x:Bind ViewModel.SelectedUnit, Mode=TwoWay}"
+                      DisplayMemberPath="Name"
+                      IsEnabled="{x:Bind ViewModel.IsEditMode, Mode=OneWay}"
+                      HorizontalAlignment="Stretch" />
+
+            <ComboBox Header="Группа материалов *"
+                      ItemsSource="{x:Bind ViewModel.Groups}"
+                      SelectedItem="{x:Bind ViewModel.SelectedGroup, Mode=TwoWay}"
+                      DisplayMemberPath="Name"
+                      IsEnabled="{x:Bind ViewModel.IsEditMode, Mode=OneWay}"
+                      HorizontalAlignment="Stretch" />
+
+            <TextBlock Text="{x:Bind ViewModel.Status, Mode=OneWay}"
+                       Opacity="0.7" TextWrapping="Wrap" />
+        </StackPanel>
+    </controls:EntityCard>
+</Page>
