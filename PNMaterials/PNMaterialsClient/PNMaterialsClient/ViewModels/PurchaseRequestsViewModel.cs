@@ -1,7 +1,6 @@
 using System.Collections.ObjectModel;
 using PNMaterialsClient.Services;
 using PNMaterialsContracts;
-using static Uno.UI.RemoteControl.HotReload.ClientHotReloadProcessor;
 
 namespace PNMaterialsClient.ViewModels;
 

@@ -69,5 +69,7 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
-
+    <ItemGroup>
+        <None Update="appsettings.json" CopyToOutputDirectory="PreserveNewest" />
+    </ItemGroup>
 </Project>

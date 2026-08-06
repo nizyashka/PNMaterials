@@ -26,4 +26,7 @@ public sealed partial class MaterialCardPage : Page
         var id = e.Parameter is int value ? value : 0;
         await ViewModel.LoadAsync(id);
     }
+
+    private void OnCreateRequestClick(object sender, RoutedEventArgs e)
+    => Frame.Navigate(typeof(PurchaseRequestCardPage), new NewRequestForMaterial(ViewModel.Id));
 }

@@ -2,7 +2,6 @@ using System.Collections.ObjectModel;
 using PNMaterialsClient.Services;
 using PNMaterialsContracts;
 using static System.Runtime.InteropServices.JavaScript.JSType;
-using static Uno.UI.RemoteControl.HotReload.ClientHotReloadProcessor;
 
 namespace PNMaterialsClient.ViewModels;
 
@@ -125,6 +124,19 @@ public partial class PurchaseRequestCardViewModel : ObservableObject
 
         item.RemoveCommand = new RelayCommand(() => Items.Remove(item));
         return item;
+    }
+
+    public void PrefillMaterial(int materialId)
+    {
+        var material = Materials.FirstOrDefault(m => m.Id == materialId);
+
+        if (material is null)
+            return;
+
+        if (Items.Count == 0)
+            Items.Add(CreateItem());
+
+        Items[0].Material = material;
     }
 
     private void BuildStatusActions(PurchaseRequestDto request)

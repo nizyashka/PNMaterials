@@ -137,6 +137,10 @@ public class PurchaseRequestsController : ControllerBase
         return Ok(ToDto(updated));
     }
 
+    [HttpGet("statuses")]
+    public ActionResult<IEnumerable<RequestStatusDto>> GetStatuses()
+    => Ok(Enum.GetValues<RequestStatus>().Select(ToStatusDto).ToList());
+
     // Вспомогательные методы
 
     private IQueryable<PurchaseRequest> QueryWithIncludes()

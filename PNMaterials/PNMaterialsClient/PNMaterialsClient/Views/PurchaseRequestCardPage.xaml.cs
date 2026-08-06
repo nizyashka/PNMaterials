@@ -25,7 +25,20 @@ public sealed partial class PurchaseRequestCardPage : Page
     {
         base.OnNavigatedTo(e);
 
-        var id = e.Parameter is int value ? value : 0;
-        await ViewModel.LoadAsync(id);
+        switch (e.Parameter)
+        {
+            case NewRequestForMaterial forMaterial:
+                await ViewModel.LoadAsync(0);
+                ViewModel.PrefillMaterial(forMaterial.MaterialId);
+                break;
+
+            case int id:
+                await ViewModel.LoadAsync(id);
+                break;
+
+            default:
+                await ViewModel.LoadAsync(0);
+                break;
+        }
     }
 }

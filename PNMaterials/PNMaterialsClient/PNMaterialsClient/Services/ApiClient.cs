@@ -152,4 +152,16 @@ public class ApiClient
         return await response.Content.ReadFromJsonAsync<PurchaseRequestDto>()
                ?? throw new ApiException("Сервер не вернул обновлённую заявку.");
     }
+
+    public async Task<List<RequestStatusDto>> GetRequestStatusesAsync()
+    => await _http.GetFromJsonAsync<List<RequestStatusDto>>("api/purchaserequests/statuses") ?? new();
+
+    public async Task<List<PurchaseRequestReportRowDto>> GetPurchaseRequestReportAsync(
+        PurchaseRequestReportFilterDto filter)
+    {
+        var response = await _http.PostAsJsonAsync("api/reports/purchase-requests", filter);
+        await EnsureSuccessAsync(response);
+
+        return await response.Content.ReadFromJsonAsync<List<PurchaseRequestReportRowDto>>() ?? new();
+    }
 }

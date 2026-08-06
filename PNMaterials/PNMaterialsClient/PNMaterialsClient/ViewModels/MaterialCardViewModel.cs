@@ -15,7 +15,10 @@ public partial class MaterialCardViewModel : ObservableObject
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Header))]
+    [NotifyPropertyChangedFor(nameof(CanCreateRequest))]
     private int _id;
+
+    public bool CanCreateRequest => Id != 0;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Header))]

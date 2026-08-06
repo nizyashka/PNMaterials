@@ -9,6 +9,12 @@
                          RefreshCommand="{x:Bind ViewModel.RefreshCommand}"
                          ExitCommand="{x:Bind ExitCommand}">
 
+        <controls:EntityCard.ExtraButtons>
+            <Button Content="Создать заявку"
+                    Click="OnCreateRequestClick"
+                    IsEnabled="{x:Bind ViewModel.CanCreateRequest, Mode=OneWay}" />
+        </controls:EntityCard.ExtraButtons>
+        
         <StackPanel Spacing="12" MaxWidth="600" HorizontalAlignment="Left">
             <TextBox Header="Код материала"
                      Text="{x:Bind ViewModel.Code, Mode=OneWay}"
