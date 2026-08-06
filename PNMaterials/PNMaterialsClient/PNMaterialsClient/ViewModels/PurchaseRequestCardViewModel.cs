@@ -117,7 +117,12 @@ public partial class PurchaseRequestCardViewModel : ObservableObject
 
     private RequestItemViewModel CreateItem()
     {
-        var item = new RequestItemViewModel();
+        var item = new RequestItemViewModel
+        {
+            IsEditMode = IsEditMode,
+            Materials = Materials
+        };
+
         item.RemoveCommand = new RelayCommand(() => Items.Remove(item));
         return item;
     }
@@ -223,5 +228,11 @@ public partial class PurchaseRequestCardViewModel : ObservableObject
 
         await LoadAsync(Id);
         Status = "Данные перечитаны из базы.";
+    }
+
+    partial void OnIsEditModeChanged(bool value)
+    {
+        foreach (var item in Items)
+            item.IsEditMode = value;
     }
 }
