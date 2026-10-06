@@ -72,4 +72,12 @@
     <ItemGroup>
         <None Update="appsettings.json" CopyToOutputDirectory="PreserveNewest" />
     </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Styles\" />
+    </ItemGroup>
+    <ItemGroup>
+      <Page Update="Styles\Palette.xaml">
+        <Generator>MSBuild:Compile</Generator>
+      </Page>
+    </ItemGroup>
 </Project>
