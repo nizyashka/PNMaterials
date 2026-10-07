@@ -3,14 +3,16 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:contracts="using:PNMaterialsContracts">
 
-    <Grid Padding="24" RowSpacing="12">
+    <Grid Padding="16" RowSpacing="16">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="12">
+        <StackPanel Grid.Row="0"
+                    Orientation="Horizontal"
+                    Spacing="12">
             <TextBlock Text="Материалы" FontSize="24" FontWeight="SemiBold"
                        VerticalAlignment="Center" />
             <Button Content="Создать" Click="OnCreateClick" />
@@ -18,30 +20,64 @@
 
         <TextBlock Grid.Row="1" Text="{x:Bind ViewModel.Status, Mode=OneWay}" Opacity="0.7" />
 
-        <ListView Grid.Row="2" ItemsSource="{x:Bind ViewModel.Materials}"
-          IsItemClickEnabled="True" ItemClick="OnMaterialClick">
-            <ListView.ItemTemplate>
-                <DataTemplate x:DataType="contracts:MaterialDto">
-                    <Grid Padding="0,8" ColumnSpacing="12">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
+        <Grid Grid.Row="2" RowSpacing="16">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Column="0" Text="{x:Bind Code}"
-                                   MinWidth="80" Opacity="0.7" VerticalAlignment="Top" />
+            <Grid Grid.Row="0" Padding="16, 0, 16, 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100" />
+                    <ColumnDefinition Width="2*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="140" />
+                </Grid.ColumnDefinitions>
 
-                        <StackPanel Grid.Column="1">
-                            <TextBlock Text="{x:Bind Name}" FontWeight="SemiBold" />
-                            <StackPanel Orientation="Horizontal" Spacing="6" Opacity="0.7">
-                                <TextBlock Text="{x:Bind GroupName}" />
-                                <TextBlock Text="·" />
-                                <TextBlock Text="{x:Bind UnitName}" />
-                            </StackPanel>
-                        </StackPanel>
-                    </Grid>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+                <TextBlock Grid.Column="0" Text="Код" Opacity="0.7" />
+                <TextBlock Grid.Column="1" Text="Наименование" Opacity="0.7" />
+                <TextBlock Grid.Column="2" Text="Группа" Opacity="0.7" />
+                <TextBlock Grid.Column="3" Text="Единица измерения" Opacity="0.7" />
+            </Grid>
+
+            <ListView Grid.Row="1"
+                      ItemsSource="{x:Bind ViewModel.Materials}"
+                      IsItemClickEnabled="True"
+                      ItemClick="OnMaterialClick">
+
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                        <Setter Property="VerticalContentAlignment" Value="Stretch" />
+                        <Setter Property="Padding" Value="0" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+
+                <ListView.ItemTemplate>
+                    <DataTemplate x:DataType="contracts:MaterialDto">
+                        <Border BorderBrush="{StaticResource PanelBorderBrush}"
+                                BorderThickness="0,1,0,0">
+                            <Grid Padding="16, 0, 16, 0" VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="100" />
+                                    <ColumnDefinition Width="2*" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="140" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0" Text="{x:Bind Code}" Opacity="0.7"
+                               TextTrimming="CharacterEllipsis" />
+                                <TextBlock Grid.Column="1" Text="{x:Bind Name}" FontWeight="SemiBold"
+                               TextTrimming="CharacterEllipsis" />
+                                <TextBlock Grid.Column="2" Text="{x:Bind GroupName}"
+                               TextTrimming="CharacterEllipsis" />
+                                <TextBlock Grid.Column="3" Text="{x:Bind UnitName}"
+                               TextTrimming="CharacterEllipsis" />
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
     </Grid>
 </Page>

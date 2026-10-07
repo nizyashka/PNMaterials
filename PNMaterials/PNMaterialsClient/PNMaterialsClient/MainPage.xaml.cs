@@ -37,6 +37,7 @@ public sealed partial class MainPage : Page
     public MainPage()
     {
         this.InitializeComponent();
+        ContentFrame.Navigated += OnContentFrameNavigated;
         ContentFrame.Navigate(typeof(MaterialsPage));
     }
 
@@ -53,5 +54,23 @@ public sealed partial class MainPage : Page
                     container.IsExpanded = !container.IsExpanded;
                 break;
         }
+    }
+
+    private void OnBackClick(object sender, RoutedEventArgs e)
+    {
+        if (ContentFrame.CanGoBack)
+            ContentFrame.GoBack();
+    }
+
+    private void OnForwardClick(object sender, RoutedEventArgs e)
+    {
+        if (ContentFrame.CanGoForward)
+            ContentFrame.GoForward();
+    }
+
+    private void OnContentFrameNavigated(object sender, NavigationEventArgs e)
+    {
+        BackButton.IsEnabled = ContentFrame.CanGoBack;
+        ForwardButton.IsEnabled = ContentFrame.CanGoForward;
     }
 }

@@ -7,7 +7,7 @@
     <Page.Resources>
         <DataTemplate x:Key="FolderTemplate" x:DataType="nav:NavFolder">
             <TreeViewItem ItemsSource="{x:Bind Children}"
-                      IsExpanded="{x:Bind IsExpanded}">
+                          IsExpanded="{x:Bind IsExpanded}">
                 <Grid ColumnSpacing="8">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
@@ -18,7 +18,11 @@
                               FontFamily="{ThemeResource SymbolThemeFontFamily}"
                               FontSize="14"
                               Foreground="{StaticResource TextSecondaryBrush}" />
-                    <TextBlock Grid.Column="1" Text="{x:Bind Title}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                    
+                    <TextBlock Grid.Column="1"
+                               Text="{x:Bind Title}"
+                               FontWeight="SemiBold"
+                               TextTrimming="CharacterEllipsis" />
                 </Grid>
             </TreeViewItem>
         </DataTemplate>
@@ -35,7 +39,10 @@
                               FontFamily="{ThemeResource SymbolThemeFontFamily}"
                               FontSize="14"
                               Foreground="{StaticResource TextSecondaryBrush}" />
-                    <TextBlock Grid.Column="1" Text="{x:Bind Title}" TextTrimming="CharacterEllipsis" />
+                    
+                    <TextBlock Grid.Column="1"
+                               Text="{x:Bind Title}"
+                               TextTrimming="CharacterEllipsis" />
                 </Grid>
             </TreeViewItem>
         </DataTemplate>
@@ -52,25 +59,69 @@
                 <ColumnDefinition Width="*" />
             </Grid.ColumnDefinitions>
 
-            <Border Background="{StaticResource PanelBrush}"
+            <Grid Grid.Column="0" RowSpacing="8">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <StackPanel Grid.Row="0"
+                            Orientation="Horizontal"
+                            Spacing="8">
+
+                    <Button x:Name="BackButton"
+                            Background="{StaticResource PanelBrush}"
+                            BorderBrush="{StaticResource PanelBorderBrush}"
+                            BorderThickness="1"
+                            Foreground="{StaticResource TextSecondaryBrush}"
+                            Width="32"
+                            Height="32"
+                            Padding="0"
+                            Click="OnBackClick"
+                            IsEnabled="False"
+                            ToolTipService.ToolTip="Назад">
+                        <FontIcon Glyph="&#xE72B;"
+                                  FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                  FontSize="14" />
+                    </Button>
+
+                    <Button x:Name="ForwardButton"
+                            Background="{StaticResource PanelBrush}"
+                            BorderBrush="{StaticResource PanelBorderBrush}"
+                            BorderThickness="1"
+                            Foreground="{StaticResource TextSecondaryBrush}"
+                            Width="32"
+                            Height="32"
+                            Padding="0"
+                            Click="OnForwardClick"
+                            IsEnabled="False"
+                            ToolTipService.ToolTip="Вперёд">
+                        <FontIcon Glyph="&#xE72A;"
+                                  FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                  FontSize="14" />
+                    </Button>
+                </StackPanel>
+
+                <Border Grid.Row="1"
+                    Background="{StaticResource PanelBrush}"
                     CornerRadius="8"
                     BorderThickness="1"
                     BorderBrush="{StaticResource PanelBorderBrush}">
-                <TreeView x:Name="NavTree"
+                    <TreeView x:Name="NavTree"
                           ItemsSource="{x:Bind NavItems}"
                           ItemTemplateSelector="{StaticResource NavItemTemplateSelector}"
                           SelectionMode="Single"
                           ItemInvoked="OnNavItemInvoked"
-                          Margin="-8, 0, 8, 0">
-                    <TreeView.Resources>
-                        <SolidColorBrush x:Key="TreeViewItemForeground" Color="{StaticResource TextSecondaryBrush}" />
-                        <SolidColorBrush x:Key="TreeViewItemBackgroundSelected" Color="{StaticResource SelectedColor}" />
-                        <SolidColorBrush x:Key="TreeViewItemBackgroundPointerOver" Color="{StaticResource HoverColor}" />
-                        <SolidColorBrush x:Key="TreeViewItemForegroundSelected" Color="{StaticResource TextPrimaryBrush}" />
-                    </TreeView.Resources>
-                </TreeView>
-            </Border>
-            
+                          HorizontalAlignment="Left">
+                        <TreeView.Resources>
+                            <SolidColorBrush x:Key="TreeViewItemForeground" Color="{StaticResource TextSecondaryBrush}" />
+                            <SolidColorBrush x:Key="TreeViewItemBackgroundSelected" Color="{StaticResource SelectedColor}" />
+                            <SolidColorBrush x:Key="TreeViewItemBackgroundPointerOver" Color="{StaticResource HoverColor}" />
+                            <SolidColorBrush x:Key="TreeViewItemForegroundSelected" Color="{StaticResource TextPrimaryBrush}" />
+                        </TreeView.Resources>
+                    </TreeView>
+                </Border>
+            </Grid>
+
             <Frame x:Name="ContentFrame" Grid.Column="1"/>
         </Grid>
     </Grid>
