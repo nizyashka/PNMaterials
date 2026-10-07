@@ -1,78 +1,45 @@
 ﻿<Page x:Class="PNMaterialsClient.MainPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:nav="using:PNMaterialsClient.Navigation"
       Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Page.Resources>
-        <DataTemplate x:Key="FolderTemplate" x:DataType="nav:NavFolder">
-            <TreeViewItem ItemsSource="{x:Bind Children}"
-                          IsExpanded="{x:Bind IsExpanded}">
-                <Grid ColumnSpacing="8">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-
-                    <FontIcon Glyph="&#xE8B7;"
-                              FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                              FontSize="14"
-                              Foreground="{StaticResource TextSecondaryBrush}" />
-                    
-                    <TextBlock Grid.Column="1"
-                               Text="{x:Bind Title}"
-                               FontWeight="SemiBold"
-                               TextTrimming="CharacterEllipsis" />
-                </Grid>
-            </TreeViewItem>
-        </DataTemplate>
-
-        <DataTemplate x:Key="PageTemplate" x:DataType="nav:NavPage">
-            <TreeViewItem>
-                <Grid ColumnSpacing="8">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-
-                    <FontIcon Glyph="&#xE8A5;"
-                              FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                              FontSize="14"
-                              Foreground="{StaticResource TextSecondaryBrush}" />
-                    
-                    <TextBlock Grid.Column="1"
-                               Text="{x:Bind Title}"
-                               TextTrimming="CharacterEllipsis" />
-                </Grid>
-            </TreeViewItem>
-        </DataTemplate>
-
-        <nav:NavItemTemplateSelector x:Key="NavItemTemplateSelector"
-                                     FolderTemplate="{StaticResource FolderTemplate}"
-                                     PageTemplate="{StaticResource PageTemplate}" />
-    </Page.Resources>
-
     <Grid Background="{StaticResource AppBackgroundBrush}">
-        <Grid Margin="8" ColumnSpacing="8">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="260" />
-                <ColumnDefinition Width="*" />
-            </Grid.ColumnDefinitions>
+        <Grid Margin="8" RowSpacing="8">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-            <Grid Grid.Column="0" RowSpacing="8">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <StackPanel Grid.Row="0"
+            <Grid Grid.Row="0" ColumnSpacing="8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0"
                             Orientation="Horizontal"
-                            Spacing="8">
+                            Spacing="8"
+                            VerticalAlignment="Center">
+
+                    <StackPanel.Resources>
+                        <SolidColorBrush x:Key="ButtonBackground" Color="{StaticResource PanelColor}" />
+                        <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="{StaticResource HoverColor}" />
+                        <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="{StaticResource SelectedColor}" />
+                        <SolidColorBrush x:Key="ButtonBackgroundDisabled" Color="{StaticResource PanelColor}" />
+
+                        <SolidColorBrush x:Key="ButtonBorderBrush" Color="{StaticResource PanelBorderColor}" />
+                        <SolidColorBrush x:Key="ButtonBorderBrushPointerOver" Color="{StaticResource PanelBorderColor}" />
+                        <SolidColorBrush x:Key="ButtonBorderBrushPressed" Color="{StaticResource AccentColor}" />
+                        <SolidColorBrush x:Key="ButtonBorderBrushDisabled" Color="{StaticResource PanelBorderColor}" />
+
+                        <SolidColorBrush x:Key="ButtonForeground" Color="{StaticResource TextSecondaryColor}" />
+                        <SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="{StaticResource TextPrimaryColor}" />
+                        <SolidColorBrush x:Key="ButtonForegroundPressed" Color="{StaticResource TextPrimaryColor}" />
+                        <SolidColorBrush x:Key="ButtonForegroundDisabled" Color="{StaticResource TextDisabledColor}" />
+                    </StackPanel.Resources>
 
                     <Button x:Name="BackButton"
-                            Background="{StaticResource PanelBrush}"
-                            BorderBrush="{StaticResource PanelBorderBrush}"
                             BorderThickness="1"
-                            Foreground="{StaticResource TextSecondaryBrush}"
                             Width="32"
                             Height="32"
                             Padding="0"
@@ -85,10 +52,7 @@
                     </Button>
 
                     <Button x:Name="ForwardButton"
-                            Background="{StaticResource PanelBrush}"
-                            BorderBrush="{StaticResource PanelBorderBrush}"
                             BorderThickness="1"
-                            Foreground="{StaticResource TextSecondaryBrush}"
                             Width="32"
                             Height="32"
                             Padding="0"
@@ -101,28 +65,20 @@
                     </Button>
                 </StackPanel>
 
-                <Border Grid.Row="1"
-                    Background="{StaticResource PanelBrush}"
-                    CornerRadius="8"
-                    BorderThickness="1"
-                    BorderBrush="{StaticResource PanelBorderBrush}">
-                    <TreeView x:Name="NavTree"
-                          ItemsSource="{x:Bind NavItems}"
-                          ItemTemplateSelector="{StaticResource NavItemTemplateSelector}"
-                          SelectionMode="Single"
-                          ItemInvoked="OnNavItemInvoked"
-                          HorizontalAlignment="Left">
-                        <TreeView.Resources>
-                            <SolidColorBrush x:Key="TreeViewItemForeground" Color="{StaticResource TextSecondaryBrush}" />
-                            <SolidColorBrush x:Key="TreeViewItemBackgroundSelected" Color="{StaticResource SelectedColor}" />
-                            <SolidColorBrush x:Key="TreeViewItemBackgroundPointerOver" Color="{StaticResource HoverColor}" />
-                            <SolidColorBrush x:Key="TreeViewItemForegroundSelected" Color="{StaticResource TextPrimaryBrush}" />
-                        </TreeView.Resources>
-                    </TreeView>
-                </Border>
+                <MenuBar x:Name="MainMenu"
+                         Grid.Column="1"
+                         VerticalAlignment="Center">
+                    <MenuBar.Resources>
+                        <SolidColorBrush x:Key="ButtonForeground" Color="{StaticResource TextPrimaryColor}" />
+                        <SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="White" />
+                        <SolidColorBrush x:Key="ButtonForegroundPressed" Color="{StaticResource TextPrimaryColor}" />
+                        <SolidColorBrush x:Key="MenuBarItemBackgroundPressed" Color="{StaticResource HoverColor}" />
+                        <SolidColorBrush x:Key="MenuBarItemBackgroundSelected" Color="{StaticResource HoverColor}" />
+                    </MenuBar.Resources>
+                </MenuBar>
             </Grid>
 
-            <Frame x:Name="ContentFrame" Grid.Column="1"/>
+            <Frame x:Name="ContentFrame" Grid.Row="1" />
         </Grid>
     </Grid>
 </Page>

@@ -1,3 +1,4 @@
+using Microsoft.UI;
 using PNMaterialsClient.Navigation;
 using PNMaterialsClient.Views;
 
@@ -34,25 +35,50 @@ public sealed partial class MainPage : Page
         },
     ];
 
+    private readonly Dictionary<Type, MenuBarItem> _sectionByPage = [];
+
     public MainPage()
     {
         this.InitializeComponent();
+        BuildMenu();
         ContentFrame.Navigated += OnContentFrameNavigated;
         ContentFrame.Navigate(typeof(MaterialsPage));
     }
 
-    private void OnNavItemInvoked(TreeView sender, TreeViewItemInvokedEventArgs args)
+    private void BuildMenu()
     {
-        switch (args.InvokedItem)
+        foreach (var folder in NavItems.OfType<NavFolder>())
         {
-            case NavPage page when ContentFrame.CurrentSourcePageType != page.PageType:
-                ContentFrame.Navigate(page.PageType);
-                break;
+            var menuItem = new MenuBarItem
+            {
+                Title = folder.Title,
+                BorderThickness = new Thickness(0, 0, 0, 2),
+                BorderBrush = new SolidColorBrush(Colors.Transparent)
+            };
 
-            case NavFolder folder:
-                if (sender.ContainerFromItem(folder) is TreeViewItem container)
-                    container.IsExpanded = !container.IsExpanded;
-                break;
+            foreach (var page in folder.Children.OfType<NavPage>())
+            {
+                var flyoutItem = new MenuFlyoutItem
+                {
+                    Text = page.Title,
+                    Tag = page
+                };
+                flyoutItem.Click += OnMenuItemClick;
+
+                menuItem.Items.Add(flyoutItem);
+                _sectionByPage[page.PageType] = menuItem;
+            }
+
+            MainMenu.Items.Add(menuItem);
+        }
+    }
+
+    private void OnMenuItemClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is MenuFlyoutItem { Tag: NavPage page }
+            && ContentFrame.CurrentSourcePageType != page.PageType)
+        {
+            ContentFrame.Navigate(page.PageType);
         }
     }
 
@@ -72,5 +98,19 @@ public sealed partial class MainPage : Page
     {
         BackButton.IsEnabled = ContentFrame.CanGoBack;
         ForwardButton.IsEnabled = ContentFrame.CanGoForward;
+
+        if (_sectionByPage.TryGetValue(e.SourcePageType, out var section))
+            HighlightSection(section);
+    }
+
+    private void HighlightSection(MenuBarItem active)
+    {
+        var accent = (Brush)Application.Current.Resources["AccentBrush"];
+
+        foreach (var item in MainMenu.Items)
+        {
+            var isActive = item == active;
+            item.BorderBrush = isActive ? accent : new SolidColorBrush(Colors.Transparent);
+        }
     }
 }

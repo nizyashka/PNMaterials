@@ -10,6 +10,7 @@
     <Color x:Key="AccentColor">#5AB0E8</Color>
     <Color x:Key="TextPrimaryColor">#E6EDF3</Color>
     <Color x:Key="TextSecondaryColor">#9FB1C2</Color>
+    <Color x:Key="TextDisabledColor">#55708A</Color>
 
     <SolidColorBrush x:Key="AppBackgroundBrush" Color="{StaticResource AppBackgroundColor}" />
     <SolidColorBrush x:Key="PanelBrush" Color="{StaticResource PanelColor}" />
@@ -19,4 +20,5 @@
     <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource AccentColor}" />
     <SolidColorBrush x:Key="TextPrimaryBrush" Color="{StaticResource TextPrimaryColor}" />
     <SolidColorBrush x:Key="TextSecondaryBrush" Color="{StaticResource TextSecondaryColor}" />
+    <SolidColorBrush x:Key="TextDisabledBrush" Color="{StaticResource TextDisabledColor}" />
 </ResourceDictionary>
