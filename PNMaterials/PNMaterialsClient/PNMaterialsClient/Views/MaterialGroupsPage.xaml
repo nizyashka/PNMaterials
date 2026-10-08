@@ -1,33 +1,42 @@
 ﻿<Page x:Class="PNMaterialsClient.Views.MaterialGroupsPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:controls="using:PNMaterialsClient.Controls"
       xmlns:contracts="using:PNMaterialsContracts">
 
-    <Grid Padding="24" RowSpacing="12">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
+    <controls:EntityListView Title="Группы материалов"
+                          Status="{x:Bind ViewModel.Status, Mode=OneWay}"
+                          ItemsSource="{x:Bind ViewModel.Groups}"
+                          IsFilterVisible="True"
+                          CreateClicked="OnCreateClick"
+                          ItemClicked="OnGroupClick">
 
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="12">
-            <TextBlock Text="Группы материалов" FontSize="24" FontWeight="SemiBold"
-                       VerticalAlignment="Center" />
-            <Button Content="Создать" Click="OnCreateClick" />
-        </StackPanel>
+        <controls:EntityListView.ColumnsHeader>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="4*" />
+                </Grid.ColumnDefinitions>
 
-        <TextBlock Grid.Row="1" Text="{x:Bind ViewModel.Status, Mode=OneWay}" Opacity="0.7" />
+                <TextBlock Grid.Column="0" Text="Наименование" Opacity="0.7" />
+                <TextBlock Grid.Column="1" Text="Описание" Opacity="0.7" />
+            </Grid>
+        </controls:EntityListView.ColumnsHeader>
 
-        <ListView Grid.Row="2" ItemsSource="{x:Bind ViewModel.Groups}"
-                  IsItemClickEnabled="True" ItemClick="OnGroupClick">
-            <ListView.ItemTemplate>
-                <DataTemplate x:DataType="contracts:MaterialGroupDto">
-                    <StackPanel Padding="0,8">
-                        <TextBlock Text="{x:Bind Name}" FontWeight="SemiBold" />
-                        <TextBlock Text="{x:Bind Description}" Opacity="0.7" TextWrapping="Wrap" />
-                    </StackPanel>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-    </Grid>
+        <controls:EntityListView.ItemTemplate>
+            <DataTemplate x:DataType="contracts:MaterialGroupDto">
+                <Border Style="{StaticResource TopDividerBorderStyle}">
+                    <Grid Padding="{StaticResource TableCellPadding}" VerticalAlignment="Center">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="4*" />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Text="{x:Bind Name}" TextTrimming="CharacterEllipsis" />
+                        <TextBlock Grid.Column="1" Text="{x:Bind Description}" TextTrimming="CharacterEllipsis" />
+                    </Grid>
+                </Border>
+            </DataTemplate>
+        </controls:EntityListView.ItemTemplate>
+    </controls:EntityListView>
 </Page>
