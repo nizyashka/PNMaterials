@@ -22,10 +22,7 @@
                             VerticalAlignment="Center">
 
                     <Button x:Name="BackButton"
-                            BorderThickness="1"
-                            Width="32"
-                            Height="32"
-                            Padding="0"
+                            Style="{StaticResource IconButtonStyle}"
                             Click="OnBackClick"
                             IsEnabled="False"
                             ToolTipService.ToolTip="Назад">
@@ -35,10 +32,7 @@
                     </Button>
 
                     <Button x:Name="ForwardButton"
-                            BorderThickness="1"
-                            Width="32"
-                            Height="32"
-                            Padding="0"
+                            Style="{StaticResource IconButtonStyle}"
                             Click="OnForwardClick"
                             IsEnabled="False"
                             ToolTipService.ToolTip="Вперёд">
