@@ -1,4 +1,5 @@
 using PNMaterialsClient.ViewModels;
+using PNMaterialsClient.Views.Dialogs;
 using PNMaterialsContracts;
 
 namespace PNMaterialsClient.Views;
@@ -19,12 +20,26 @@ public sealed partial class MaterialGroupsPage : Page
         await ViewModel.LoadAsync();
     }
 
-    private void OnCreateClick(object sender, RoutedEventArgs e)
-        => Frame.Navigate(typeof(MaterialGroupCardPage), 0);
+    private async void OnCreateClick(object sender, RoutedEventArgs e)
+    {
+        MaterialGroupCardContentDialog groupCardDialog = new MaterialGroupCardContentDialog(0)
+        {
+            XamlRoot = this.XamlRoot
+        };
+        await groupCardDialog.ShowAsync();
+        await ViewModel.LoadAsync();
+    }
 
-    private void OnGroupClick(object sender, ItemClickEventArgs e)
+    private async void OnGroupClick(object sender, ItemClickEventArgs e)
     {
         if (e.ClickedItem is MaterialGroupDto group)
-            Frame.Navigate(typeof(MaterialGroupCardPage), group.Id);
+        {
+            MaterialGroupCardContentDialog groupCardDialog = new MaterialGroupCardContentDialog(group.Id)
+            {
+                XamlRoot = this.XamlRoot
+            };
+            await groupCardDialog.ShowAsync();
+            await ViewModel.LoadAsync();
+        }
     }
 }

@@ -1,83 +1,99 @@
 ﻿<Project Sdk="Uno.Sdk">
-  <PropertyGroup>
-    <TargetFrameworks>net10.0-desktop</TargetFrameworks>
+    <PropertyGroup>
+        <TargetFrameworks>net10.0-desktop</TargetFrameworks>
 
-    <OutputType>Exe</OutputType>
-    <UnoSingleProject>true</UnoSingleProject>
+        <OutputType>Exe</OutputType>
+        <UnoSingleProject>true</UnoSingleProject>
 
-    <!-- Display name -->
-    <ApplicationTitle>PNMaterialsClient</ApplicationTitle>
-    <!-- App Identifier -->
-    <ApplicationId>com.companyname.pnmaterialsclient</ApplicationId>
-    <!-- Versions -->
-    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
-    <ApplicationVersion>1</ApplicationVersion>
-    <!-- Package Publisher -->
-    <ApplicationPublisher>PNMaterialsClient</ApplicationPublisher>
-    <!-- Package Description -->
-    <Description>PNMaterialsClient powered by Uno Platform.</Description>
+        <!-- Display name -->
+        <ApplicationTitle>PNMaterialsClient</ApplicationTitle>
+        <!-- App Identifier -->
+        <ApplicationId>com.companyname.pnmaterialsclient</ApplicationId>
+        <!-- Versions -->
+        <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+        <ApplicationVersion>1</ApplicationVersion>
+        <!-- Package Publisher -->
+        <ApplicationPublisher>PNMaterialsClient</ApplicationPublisher>
+        <!-- Package Description -->
+        <Description>PNMaterialsClient powered by Uno Platform.</Description>
 
-    <!--
+        <!--
       UnoFeatures are used to quickly add and manage features enabled for your app.
       https://aka.platform.uno/singleproject-features
     -->
-    <UnoFeatures>
-      Mvvm;
-      SkiaRenderer;
-    </UnoFeatures>
-  </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\PNMaterialsContracts\PNMaterialsContracts.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Views\MaterialGroupsPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Views\MaterialsPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Views\PurchaseRequestsPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Views\ReportPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Controls\EntityCard.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Views\MaterialGroupCardPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Views\MaterialCardPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Update="Views\PurchaseRequestCardPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
+        <UnoFeatures>
+            Mvvm;
+            SkiaRenderer;
+        </UnoFeatures>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\PNMaterialsContracts\PNMaterialsContracts.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <Page Update="Views\MaterialGroupsPage.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+    </ItemGroup>
+    <ItemGroup>
+        <Page Update="Views\MaterialsPage.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+    </ItemGroup>
+    <ItemGroup>
+        <Page Update="Views\PurchaseRequestsPage.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+    </ItemGroup>
+    <ItemGroup>
+        <Page Update="Views\ReportPage.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+    </ItemGroup>
+    <ItemGroup>
+        <Page Update="Controls\EntityCard.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+    </ItemGroup>
     <ItemGroup>
         <None Update="appsettings.json" CopyToOutputDirectory="PreserveNewest" />
+        <None Update="Views\Dialogs\MaterialGroupCardContentDialog.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </None>
     </ItemGroup>
     <ItemGroup>
-      <Folder Include="Styles\" />
+        <Folder Include="Styles\" />
     </ItemGroup>
     <ItemGroup>
-      <Page Update="Styles\Palette.xaml">
-        <Generator>MSBuild:Compile</Generator>
-      </Page>
+        <Compile Update="Controls\EntityListView.xaml.cs">
+            <DependentUpon>EntityListView.xaml</DependentUpon>
+        </Compile>
+        <Compile Update="Views\Dialogs\MaterialCardContentDialog.xaml.cs">
+            <DependentUpon>MaterialCardContentDialog.xaml</DependentUpon>
+        </Compile>
+    </ItemGroup>
+    <ItemGroup>
+        <Page Update="Styles\Palette.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+    </ItemGroup>
+    <ItemGroup>
+        <Page Update="Views\Dialogs\MaterialCardContentDialog.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+    </ItemGroup>
+    <ItemGroup>
+        <Page Update="Views\Dialogs\PurchaseRequestCardContentDialog.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+    </ItemGroup>
+    <ItemGroup>
+        <Page Update="Styles\Controls.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
+    </ItemGroup>
+    <ItemGroup>
+        <Page Update="Controls\EntityListView.xaml">
+            <Generator>MSBuild:Compile</Generator>
+        </Page>
     </ItemGroup>
 </Project>
