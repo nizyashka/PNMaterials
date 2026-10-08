@@ -21,23 +21,6 @@
                             Spacing="8"
                             VerticalAlignment="Center">
 
-                    <StackPanel.Resources>
-                        <SolidColorBrush x:Key="ButtonBackground" Color="{StaticResource PanelColor}" />
-                        <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="{StaticResource HoverColor}" />
-                        <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="{StaticResource SelectedColor}" />
-                        <SolidColorBrush x:Key="ButtonBackgroundDisabled" Color="{StaticResource PanelColor}" />
-
-                        <SolidColorBrush x:Key="ButtonBorderBrush" Color="{StaticResource PanelBorderColor}" />
-                        <SolidColorBrush x:Key="ButtonBorderBrushPointerOver" Color="{StaticResource PanelBorderColor}" />
-                        <SolidColorBrush x:Key="ButtonBorderBrushPressed" Color="{StaticResource AccentColor}" />
-                        <SolidColorBrush x:Key="ButtonBorderBrushDisabled" Color="{StaticResource PanelBorderColor}" />
-
-                        <SolidColorBrush x:Key="ButtonForeground" Color="{StaticResource TextSecondaryColor}" />
-                        <SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="{StaticResource TextPrimaryColor}" />
-                        <SolidColorBrush x:Key="ButtonForegroundPressed" Color="{StaticResource TextPrimaryColor}" />
-                        <SolidColorBrush x:Key="ButtonForegroundDisabled" Color="{StaticResource TextDisabledColor}" />
-                    </StackPanel.Resources>
-
                     <Button x:Name="BackButton"
                             BorderThickness="1"
                             Width="32"
