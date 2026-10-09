@@ -37,4 +37,72 @@
     <SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="{StaticResource TextPrimaryColor}" />
     <SolidColorBrush x:Key="ButtonForegroundPressed" Color="{StaticResource TextPrimaryColor}" />
     <SolidColorBrush x:Key="ButtonForegroundDisabled" Color="{StaticResource TextDisabledColor}" />
+
+    <!--Цвета диалоговых окон-->
+    <SolidColorBrush x:Key="ContentDialogBackground" Color="{StaticResource AppBackgroundColor}" />
+    <SolidColorBrush x:Key="ContentDialogTopOverlay" Color="{StaticResource AppBackgroundColor}" />
+    <SolidColorBrush x:Key="ContentDialogBorderBrush" Color="{StaticResource PanelBorderColor}" />
+    <SolidColorBrush x:Key="ContentDialogForeground" Color="{StaticResource TextPrimaryColor}" />
+
+    <!--Цвета текстовых полей-->
+    <SolidColorBrush x:Key="TextControlBackground" Color="{StaticResource PanelColor}" />
+    <SolidColorBrush x:Key="TextControlBackgroundPointerOver" Color="{StaticResource HoverColor}" />
+    <SolidColorBrush x:Key="TextControlBackgroundFocused" Color="{StaticResource HoverColor}" />
+    <SolidColorBrush x:Key="TextControlBackgroundDisabled" Color="{StaticResource AppBackgroundColor}" />
+
+    <SolidColorBrush x:Key="TextControlBorderBrush" Color="{StaticResource PanelBorderColor}" />
+    <SolidColorBrush x:Key="TextControlBorderBrushPointerOver" Color="{StaticResource TextDisabledColor}" />
+    <SolidColorBrush x:Key="TextControlBorderBrushFocused" Color="{StaticResource AccentColor}" />
+    <SolidColorBrush x:Key="TextControlBorderBrushDisabled" Color="{StaticResource PanelBorderColor}" />
+
+    <SolidColorBrush x:Key="TextControlForeground" Color="{StaticResource TextPrimaryColor}" />
+    <SolidColorBrush x:Key="TextControlForegroundPointerOver" Color="{StaticResource TextPrimaryColor}" />
+    <SolidColorBrush x:Key="TextControlForegroundFocused" Color="{StaticResource TextPrimaryColor}" />
+    <SolidColorBrush x:Key="TextControlForegroundDisabled" Color="{StaticResource TextSecondaryColor}" />
+
+    <SolidColorBrush x:Key="TextControlPlaceholderForeground" Color="{StaticResource TextDisabledColor}" />
+
+    <!--Цвета комбобокса-->
+    <SolidColorBrush x:Key="ComboBoxBackground" Color="{StaticResource PanelColor}" />
+    <SolidColorBrush x:Key="ComboBoxBackgroundPointerOver" Color="{StaticResource HoverColor}" />
+    <SolidColorBrush x:Key="ComboBoxBackgroundPressed" Color="{StaticResource HoverColor}" />
+    <SolidColorBrush x:Key="ComboBoxBackgroundFocused" Color="{StaticResource HoverColor}" />
+    <SolidColorBrush x:Key="ComboBoxBackgroundDisabled" Color="{StaticResource AppBackgroundColor}" />
+
+    <SolidColorBrush x:Key="ComboBoxBorderBrush" Color="{StaticResource PanelBorderColor}" />
+    <SolidColorBrush x:Key="ComboBoxBorderBrushPointerOver" Color="{StaticResource TextDisabledColor}" />
+    <SolidColorBrush x:Key="ComboBoxBorderBrushPressed" Color="{StaticResource AccentColor}" />
+    <SolidColorBrush x:Key="ComboBoxBorderBrushDisabled" Color="{StaticResource PanelBorderColor}" />
+    <SolidColorBrush x:Key="ComboBoxBackgroundBorderBrushFocused" Color="{StaticResource AccentColor}" />
+
+    <SolidColorBrush x:Key="ComboBoxForeground" Color="{StaticResource TextPrimaryColor}" />
+    <SolidColorBrush x:Key="ComboBoxForegroundPointerOver" Color="{StaticResource TextPrimaryColor}" />
+    <SolidColorBrush x:Key="ComboBoxForegroundPressed" Color="{StaticResource TextPrimaryColor}" />
+    <SolidColorBrush x:Key="ComboBoxForegroundFocused" Color="{StaticResource TextPrimaryColor}" />
+    <SolidColorBrush x:Key="ComboBoxForegroundFocusedPressed" Color="{StaticResource TextPrimaryColor}" />
+    <SolidColorBrush x:Key="ComboBoxForegroundDisabled" Color="{StaticResource TextSecondaryColor}" />
+
+    <SolidColorBrush x:Key="ComboBoxPlaceHolderForeground" Color="{StaticResource TextDisabledColor}" />
+
+    <SolidColorBrush x:Key="ComboBoxDropDownGlyphForeground" Color="{StaticResource TextSecondaryColor}" />
+    <SolidColorBrush x:Key="ComboBoxDropDownGlyphForegroundFocused" Color="{StaticResource TextPrimaryColor}" />
+    <SolidColorBrush x:Key="ComboBoxDropDownGlyphForegroundFocusedPressed" Color="{StaticResource TextPrimaryColor}" />
+    <SolidColorBrush x:Key="ComboBoxDropDownGlyphForegroundDisabled" Color="{StaticResource TextDisabledColor}" />
+
+    <!--Цвета выпадающего списка комбобокса-->
+    <SolidColorBrush x:Key="ComboBoxDropDownBackground" Color="{StaticResource PanelColor}" />
+    <SolidColorBrush x:Key="ComboBoxDropDownBorderBrush" Color="{StaticResource PanelBorderColor}" />
+    <SolidColorBrush x:Key="ComboBoxDropDownForeground" Color="{StaticResource TextPrimaryColor}" />
+
+    <SolidColorBrush x:Key="ComboBoxItemForeground" Color="{StaticResource TextPrimaryColor}" />
+    <SolidColorBrush x:Key="ComboBoxItemForegroundPointerOver" Color="{StaticResource TextPrimaryColor}" />
+    <SolidColorBrush x:Key="ComboBoxItemForegroundSelected" Color="{StaticResource TextPrimaryColor}" />
+    <SolidColorBrush x:Key="ComboBoxItemForegroundSelectedPointerOver" Color="{StaticResource TextPrimaryColor}" />
+
+    <SolidColorBrush x:Key="ComboBoxItemBackgroundPointerOver" Color="{StaticResource HoverColor}" />
+    <SolidColorBrush x:Key="ComboBoxItemBackgroundPressed" Color="{StaticResource SelectedColor}" />
+    <SolidColorBrush x:Key="ComboBoxItemBackgroundSelected" Color="{StaticResource SelectedColor}" />
+    <SolidColorBrush x:Key="ComboBoxItemBackgroundSelectedPointerOver" Color="{StaticResource SelectedColor}" />
+
+    <SolidColorBrush x:Key="ComboBoxItemPillFillBrush" Color="{StaticResource AccentColor}" />
 </ResourceDictionary>
