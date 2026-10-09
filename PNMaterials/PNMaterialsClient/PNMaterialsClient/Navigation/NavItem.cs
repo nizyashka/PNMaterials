@@ -12,7 +12,6 @@ public abstract class NavItem
 public sealed class NavFolder : NavItem
 {
     public List<NavItem> Children { get; init; } = [];
-    public bool IsExpanded { get; init; } = true;
 }
 
 public sealed class NavPage : NavItem
