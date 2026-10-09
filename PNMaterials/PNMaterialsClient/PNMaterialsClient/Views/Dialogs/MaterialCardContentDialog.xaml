@@ -3,6 +3,11 @@
                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                xmlns:controls="using:PNMaterialsClient.Controls">
 
+    <ContentDialog.Resources>
+        <x:Double x:Key="ContentDialogMinWidth">400</x:Double>
+        <x:Double x:Key="ContentDialogMaxWidth">500</x:Double>
+    </ContentDialog.Resources>
+
     <controls:EntityCard Header="{x:Bind ViewModel.Header, Mode=OneWay}"
                          IsEditMode="{x:Bind ViewModel.IsEditMode, Mode=TwoWay}"
                          SaveCommand="{x:Bind ViewModel.SaveCommand}"
@@ -14,7 +19,7 @@
                     IsEnabled="{x:Bind ViewModel.CanCreateRequest, Mode=OneWay}" />
         </controls:EntityCard.ExtraButtons>
 
-        <StackPanel Spacing="12" MaxWidth="600" HorizontalAlignment="Left">
+        <StackPanel Spacing="16">
             <TextBox Header="Код материала"
                      Text="{x:Bind ViewModel.Code, Mode=OneWay}"
                      IsEnabled="False" />
@@ -43,9 +48,10 @@
                       DisplayMemberPath="Name"
                       IsEnabled="{x:Bind ViewModel.IsEditMode, Mode=OneWay}"
                       HorizontalAlignment="Stretch" />
-
+<!--
             <TextBlock Text="{x:Bind ViewModel.Status, Mode=OneWay}"
                        Opacity="0.7" TextWrapping="Wrap" />
+            -->
         </StackPanel>
     </controls:EntityCard>
 </ContentDialog>
