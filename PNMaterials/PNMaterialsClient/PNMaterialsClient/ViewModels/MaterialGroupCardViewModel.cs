@@ -14,6 +14,7 @@ public partial class MaterialGroupCardViewModel : ObservableObject
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Header))]
+    [NotifyCanExecuteChangedFor(nameof(RefreshCommand))]
     private int _id;
 
     [ObservableProperty]
@@ -59,7 +60,7 @@ public partial class MaterialGroupCardViewModel : ObservableObject
             Name = group.Name;
             Description = group.Description ?? string.Empty;
             IsEditMode = false;
-            Status = null;
+            Status = "Данные перечитаны из базы.";
         }
         catch (Exception ex)
         {
@@ -98,13 +99,11 @@ public partial class MaterialGroupCardViewModel : ObservableObject
         }
     }
 
-    [RelayCommand]
+    private bool CanRefresh() => Id != 0;
+
+    [RelayCommand(CanExecute = nameof(CanRefresh))]
     private async Task RefreshAsync()
     {
-        if (Id == 0)
-            return;
-
         await LoadAsync(Id);
-        Status = "Данные перечитаны из базы.";
     }
 }

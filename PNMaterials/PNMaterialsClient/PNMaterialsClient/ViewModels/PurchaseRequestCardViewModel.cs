@@ -78,7 +78,7 @@ public partial class PurchaseRequestCardViewModel : ObservableObject
 
             Apply(request);
             IsEditMode = false;
-            Status = null;
+            Status = "Данные перечитаны из базы.";
         }
         catch (Exception ex)
         {
@@ -235,11 +235,29 @@ public partial class PurchaseRequestCardViewModel : ObservableObject
     [RelayCommand]
     private async Task RefreshAsync()
     {
-        if (Id == 0)
+        if (Id != 0 && !IsEditMode)
+        {
+            await LoadAsync(Id);
             return;
+        }
 
-        await LoadAsync(Id);
-        Status = "Данные перечитаны из базы.";
+        var selected = Items
+            .Select(item => (Item: item, MaterialId: item.Material?.Id))
+            .ToList();
+
+        try
+        {
+            await LoadMaterialsAsync();
+
+            foreach (var (item, materialId) in selected)
+                item.Material = Materials.FirstOrDefault(m => m.Id == materialId);
+
+            Status = "Список материалов обновлён.";
+        }
+        catch (Exception ex)
+        {
+            Status = ex.Message;
+        }
     }
 
     partial void OnIsEditModeChanged(bool value)

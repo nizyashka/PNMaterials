@@ -84,7 +84,7 @@ public partial class MaterialCardViewModel : ObservableObject
             SelectedUnit = Units.FirstOrDefault(u => u.Id == material.UnitId);
             SelectedGroup = Groups.FirstOrDefault(g => g.Id == material.GroupId);
             IsEditMode = false;
-            Status = null;
+            Status = "Данные перечитаны из базы.";
         }
         catch (Exception ex)
         {
@@ -94,11 +94,9 @@ public partial class MaterialCardViewModel : ObservableObject
 
     private async Task LoadReferencesAsync()
     {
-        if (Units.Count == 0)
-        {
-            foreach (var u in await _api.GetUnitsAsync())
-                Units.Add(u);
-        }
+        Units.Clear();
+        foreach (var u in await _api.GetUnitsAsync())
+            Units.Add(u);
 
         Groups.Clear();
         foreach (var g in await _api.GetMaterialGroupsAsync())
@@ -154,10 +152,25 @@ public partial class MaterialCardViewModel : ObservableObject
     [RelayCommand]
     private async Task RefreshAsync()
     {
-        if (Id == 0)
+        if (Id != 0)
+        {
+            await LoadAsync(Id);
             return;
+        }
 
-        await LoadAsync(Id);
-        Status = "Данные перечитаны из базы.";
+        var unitId = SelectedUnit?.Id;
+        var groupId = SelectedGroup?.Id;
+
+        try
+        {
+            await LoadReferencesAsync();
+            SelectedUnit = Units.FirstOrDefault(u => u.Id == unitId);
+            SelectedGroup = Groups.FirstOrDefault(g => g.Id == groupId);
+            Status = "Справочники обновлены.";
+        }
+        catch (Exception ex)
+        {
+            Status = ex.Message;
+        }
     }
 }
