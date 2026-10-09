@@ -8,7 +8,7 @@ public sealed partial class EntityCard : UserControl
     public EntityCard()
     {
         this.InitializeComponent();
-        UpdateEditButton();
+        UpdateEditButtons();
     }
 
     public static readonly DependencyProperty HeaderProperty =
@@ -82,11 +82,14 @@ public sealed partial class EntityCard : UserControl
     }
 
     private static void OnIsEditModeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        => ((EntityCard)d).UpdateEditButton();
+        => ((EntityCard)d).UpdateEditButtons();
 
-    private void UpdateEditButton()
-        => EditButton.Content = IsEditMode ? "Режим просмотра" : "Редактировать";
+    private void UpdateEditButtons()
+    {
+        EditButton.Visibility = IsEditMode ? Visibility.Collapsed : Visibility.Visible;
+        SaveButton.Visibility = IsEditMode ? Visibility.Visible : Visibility.Collapsed;
+    }
 
     private void OnToggleEdit(object sender, RoutedEventArgs e)
-        => IsEditMode = !IsEditMode;
+        => IsEditMode = true;
 }
