@@ -1,69 +1,30 @@
 ﻿<Page x:Class="PNMaterialsClient.Views.PurchaseRequestsPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:contracts="using:PNMaterialsContracts"
       xmlns:controls="using:PNMaterialsClient.Controls"
-      xmlns:converters="using:PNMaterialsClient.Converters">
+      xmlns:converters="using:PNMaterialsClient.Converters"
+      xmlns:tv="using:WinUI.TableView">
 
     <Page.Resources>
         <converters:DateFormatConverter x:Key="DateFormat" />
     </Page.Resources>
 
     <controls:EntityListView Title="Заявки на закупку"
-                         Status="{x:Bind ViewModel.Status, Mode=OneWay}"
-                         ItemsSource="{x:Bind ViewModel.Requests}"
-                         IsFilterVisible="True"
-                         CreateClicked="OnCreateClick"
-                         ItemClicked="OnRequestClick">
+                             Status="{x:Bind ViewModel.Status, Mode=OneWay}"
+                             CreateClicked="OnCreateClick">
 
-        <controls:EntityListView.ColumnsHeader>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="2*" />
-                    <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-
-                <TextBlock Grid.Column="0" Text="Номер" Opacity="0.7" />
-                <TextBlock Grid.Column="1" Text="Дата создания" Opacity="0.7" />
-                <TextBlock Grid.Column="2" Text="Дата поставки" Opacity="0.7" />
-                <TextBlock Grid.Column="3" Text="Статус" Opacity="0.7" />
-                <TextBlock Grid.Column="4" Text="Позиций" Opacity="0.7" />
-            </Grid>
-        </controls:EntityListView.ColumnsHeader>
-
-        <controls:EntityListView.ItemTemplate>
-            <DataTemplate x:DataType="contracts:PurchaseRequestDto">
-                <Border Style="{StaticResource TopDividerBorderStyle}">
-                    <Grid Padding="{StaticResource TableCellPadding}" VerticalAlignment="Center">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="2*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-
-                        <TextBlock Grid.Column="0"
-                                   Text="{x:Bind Number}"
-                                   TextTrimming="CharacterEllipsis" />
-                        <TextBlock Grid.Column="1"
-                                   Text="{x:Bind CreatedAt, Converter={StaticResource DateFormat}}"
-                                   TextTrimming="CharacterEllipsis" />
-                        <TextBlock Grid.Column="2"
-                                   Text="{x:Bind DeliveryDate, Converter={StaticResource DateFormat}}"
-                                   TextTrimming="CharacterEllipsis" />
-                        <TextBlock Grid.Column="3"
-                                   Text="{x:Bind Status.Name}"
-                                   TextTrimming="CharacterEllipsis"/>
-                        <TextBlock Grid.Column="4"
-                                   Text="{x:Bind Items.Count}"
-                                   TextTrimming="CharacterEllipsis"/>
-                    </Grid>
-                </Border>
-            </DataTemplate>
-        </controls:EntityListView.ItemTemplate>
+        <controls:EntityListView.Table>
+            <tv:TableView Style="{StaticResource EntityTableStyle}"
+                          ItemsSource="{x:Bind ViewModel.Requests}"
+                          ItemClick="OnRequestClick">
+                <tv:TableView.Columns>
+                    <tv:TableViewTextColumn Header="Номер" Binding="{Binding Number}" Width="*" />
+                    <tv:TableViewTextColumn Header="Дата создания" Binding="{Binding CreatedAt, Converter={StaticResource DateFormat}}" Width="*" />
+                    <tv:TableViewTextColumn Header="Дата поставки" Binding="{Binding DeliveryDate, Converter={StaticResource DateFormat}}" Width="*" />
+                    <tv:TableViewTextColumn Header="Статус" Binding="{Binding Status.Name}" Width="*" />
+                    <tv:TableViewNumberColumn Header="Позиций" Binding="{Binding Items.Count}" Width="*" />
+                </tv:TableView.Columns>
+            </tv:TableView>
+        </controls:EntityListView.Table>
     </controls:EntityListView>
 </Page>

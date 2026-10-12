@@ -2,53 +2,24 @@
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:controls="using:PNMaterialsClient.Controls"
-      xmlns:contracts="using:PNMaterialsContracts">
+      xmlns:tv="using:WinUI.TableView">
 
     <controls:EntityListView Title="Материалы"
                              Status="{x:Bind ViewModel.Status, Mode=OneWay}"
-                             ItemsSource="{x:Bind ViewModel.Materials}"
-                             IsFilterVisible="True"
-                             CreateClicked="OnCreateClick"
-                             ItemClicked="OnMaterialClick">
+                             CreateClicked="OnCreateClick">
 
-        <controls:EntityListView.ColumnsHeader>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="140" />
-                </Grid.ColumnDefinitions>
-
-                <TextBlock Grid.Column="0" Text="Код" Opacity="0.7" />
-                <TextBlock Grid.Column="1" Text="Наименование" Opacity="0.7" />
-                <TextBlock Grid.Column="2" Text="Группа" Opacity="0.7" />
-                <TextBlock Grid.Column="3" Text="Единица измерения" Opacity="0.7" />
-            </Grid>
-        </controls:EntityListView.ColumnsHeader>
-
-        <controls:EntityListView.ItemTemplate>
-            <DataTemplate x:DataType="contracts:MaterialDto">
-                <Border Style="{StaticResource TopDividerBorderStyle}">
-                    <Grid Padding="{StaticResource TableCellPadding}" VerticalAlignment="Center">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="100" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="140" />
-                        </Grid.ColumnDefinitions>
-
-                        <TextBlock Grid.Column="0" Text="{x:Bind Code}"
-                                   TextTrimming="CharacterEllipsis" />
-                        <TextBlock Grid.Column="1" Text="{x:Bind Name}"
-                                   TextTrimming="CharacterEllipsis" />
-                        <TextBlock Grid.Column="2" Text="{x:Bind GroupName}"
-                                   TextTrimming="CharacterEllipsis" />
-                        <TextBlock Grid.Column="3" Text="{x:Bind UnitName}"
-                                   TextTrimming="CharacterEllipsis" />
-                    </Grid>
-                </Border>
-            </DataTemplate>
-        </controls:EntityListView.ItemTemplate>
+        <controls:EntityListView.Table>
+            <tv:TableView Style="{StaticResource EntityTableStyle}"
+                          ItemsSource="{x:Bind ViewModel.Materials}"
+                          ItemClick="OnMaterialClick">
+                <tv:TableView.Columns>
+                    <tv:TableViewTextColumn Header="Код" Binding="{Binding Code}" Width="Auto" />
+                    <tv:TableViewTextColumn Header="Наименование" Binding="{Binding Name}" Width="Auto" />
+                    <tv:TableViewTextColumn Header="Группа" Binding="{Binding GroupName}" Width="Auto" />
+                    <tv:TableViewTextColumn Header="Ед. изм." Binding="{Binding UnitName}" Width="Auto" />
+                    <tv:TableViewTextColumn Header="Описание" Binding="{Binding Description}" Width="*" />
+                </tv:TableView.Columns>
+            </tv:TableView>
+        </controls:EntityListView.Table>
     </controls:EntityListView>
 </Page>

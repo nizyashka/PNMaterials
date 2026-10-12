@@ -6,7 +6,6 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -22,27 +21,15 @@
                        FontWeight="SemiBold"
                        VerticalAlignment="Center" />
 
-            <StackPanel Grid.Column="1"
-                        Orientation="Horizontal"
-                        Spacing="8"
-                        VerticalAlignment="Center">
-                <Button Style="{StaticResource IconButtonStyle}"
-                        Visibility="{x:Bind IsFilterVisible, Mode=OneWay}"
-                        Click="OnFilterButtonClick"
-                        ToolTipService.ToolTip="Фильтры">
-                    <FontIcon Glyph="&#xE71C;"
-                              FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                              FontSize="14" />
-                </Button>
-
-                <Button Style="{StaticResource IconButtonStyle}"
-                        Click="OnCreateButtonClick"
-                        ToolTipService.ToolTip="Создать">
-                    <FontIcon Glyph="&#xE710;"
-                              FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                              FontSize="14" />
-                </Button>
-            </StackPanel>
+            <Button Grid.Column="1"
+                    Style="{StaticResource IconButtonStyle}"
+                    Click="OnCreateButtonClick"
+                    VerticalAlignment="Center"
+                    ToolTipService.ToolTip="Создать">
+                <FontIcon Glyph="&#xE710;"
+                          FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                          FontSize="14" />
+            </Button>
         </Grid>
 
         <TextBlock Grid.Row="1"
@@ -50,13 +37,6 @@
                    Opacity="0.7" />
 
         <ContentPresenter Grid.Row="2"
-                          Content="{x:Bind ColumnsHeader, Mode=OneWay}"
-                          Padding="{StaticResource TableCellPadding}" />
-
-        <ListView Grid.Row="3"
-                  Style="{StaticResource TableListViewStyle}"
-                  ItemsSource="{x:Bind ItemsSource, Mode=OneWay}"
-                  ItemTemplate="{x:Bind ItemTemplate, Mode=OneWay}"
-                  ItemClick="OnItemClick" />
+                          Content="{x:Bind Table, Mode=OneWay}" />
     </Grid>
 </UserControl>
