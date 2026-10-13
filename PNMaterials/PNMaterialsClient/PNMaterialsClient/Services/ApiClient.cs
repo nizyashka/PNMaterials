@@ -34,7 +34,7 @@ public class ApiClient
         await EnsureSuccessAsync(response);
 
         return await response.Content.ReadFromJsonAsync<MaterialGroupDto>()
-               ?? throw new ApiException("Сервер не вернул созданную группу.");
+               ?? throw new ApiException(ApiErrorKind.InvalidResponse, "Сервер не вернул созданную группу.");
     }
 
     public async Task UpdateMaterialGroupAsync(int id, MaterialGroupEditDto dto)
@@ -48,9 +48,28 @@ public class ApiClient
         if (response.IsSuccessStatusCode)
             return;
 
-        var body = await response.Content.ReadAsStringAsync();
-        throw new ApiException(ExtractMessage(body, response.StatusCode));
+        var kind = GetErrorKind(response.StatusCode);
+
+        var message = kind switch
+        {
+            ApiErrorKind.Validation or ApiErrorKind.Conflict =>
+                ExtractMessage(await response.Content.ReadAsStringAsync(), response.StatusCode),
+            ApiErrorKind.NotFound => "Запись не найдена. Возможно, она была удалена.",
+            ApiErrorKind.Server => "Ошибка на сервере. Попробуйте повторить позже.",
+            _ => $"Неожиданный ответ сервера ({(int)response.StatusCode})."
+        };
+
+        throw new ApiException(kind, message, response.StatusCode);
     }
+
+    private static ApiErrorKind GetErrorKind(HttpStatusCode status) => status switch
+    {
+        HttpStatusCode.BadRequest or HttpStatusCode.UnprocessableEntity => ApiErrorKind.Validation,
+        HttpStatusCode.NotFound => ApiErrorKind.NotFound,
+        HttpStatusCode.Conflict => ApiErrorKind.Conflict,
+        _ when (int)status >= 500 => ApiErrorKind.Server,
+        _ => ApiErrorKind.Unexpected
+    };
 
     private static string ExtractMessage(string body, HttpStatusCode status)
     {
@@ -69,6 +88,9 @@ public class ApiClient
 
                 return string.Join(Environment.NewLine, messages);
             }
+
+            if (doc.RootElement.TryGetProperty("detail", out var detail) && detail.GetString() is { Length: > 0 } detailText)
+                return detailText;
 
             if (doc.RootElement.TryGetProperty("title", out var title))
                 return title.GetString() ?? body;
@@ -103,7 +125,7 @@ public class ApiClient
         await EnsureSuccessAsync(response);
 
         return await response.Content.ReadFromJsonAsync<MaterialDto>()
-               ?? throw new ApiException("Сервер не вернул созданный материал.");
+               ?? throw new ApiException(ApiErrorKind.InvalidResponse, "Сервер не вернул созданный материал.");
     }
 
     public async Task UpdateMaterialAsync(int id, MaterialEditDto dto)
@@ -132,7 +154,7 @@ public class ApiClient
         await EnsureSuccessAsync(response);
 
         return await response.Content.ReadFromJsonAsync<PurchaseRequestDto>()
-               ?? throw new ApiException("Сервер не вернул созданную заявку.");
+               ?? throw new ApiException(ApiErrorKind.InvalidResponse, "Сервер не вернул созданную заявку.");
     }
 
     public async Task UpdatePurchaseRequestAsync(int id, PurchaseRequestEditDto dto)
@@ -150,7 +172,7 @@ public class ApiClient
         await EnsureSuccessAsync(response);
 
         return await response.Content.ReadFromJsonAsync<PurchaseRequestDto>()
-               ?? throw new ApiException("Сервер не вернул обновлённую заявку.");
+               ?? throw new ApiException(ApiErrorKind.InvalidResponse, "Сервер не вернул обновленную заявку.");
     }
 
     public async Task<List<RequestStatusDto>> GetRequestStatusesAsync()
