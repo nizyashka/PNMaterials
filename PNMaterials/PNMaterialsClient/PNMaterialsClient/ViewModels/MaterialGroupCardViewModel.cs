@@ -6,10 +6,12 @@ namespace PNMaterialsClient.ViewModels;
 public partial class MaterialGroupCardViewModel : ObservableObject
 {
     private readonly ApiClient _api;
+    private readonly ILogger<MaterialGroupCardViewModel> _logger;
 
-    public MaterialGroupCardViewModel(ApiClient api)
+    public MaterialGroupCardViewModel(ApiClient api, ILogger<MaterialGroupCardViewModel> logger)
     {
         _api = api;
+        _logger = logger;
     }
 
     [ObservableProperty]

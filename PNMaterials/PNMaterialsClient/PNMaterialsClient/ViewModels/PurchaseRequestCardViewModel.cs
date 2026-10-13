@@ -1,17 +1,18 @@
 using System.Collections.ObjectModel;
 using PNMaterialsClient.Services;
 using PNMaterialsContracts;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace PNMaterialsClient.ViewModels;
 
 public partial class PurchaseRequestCardViewModel : ObservableObject
 {
     private readonly ApiClient _api;
+    private readonly ILogger<PurchaseRequestCardViewModel> _logger;
 
-    public PurchaseRequestCardViewModel(ApiClient api)
+    public PurchaseRequestCardViewModel(ApiClient api, ILogger<PurchaseRequestCardViewModel> logger)
     {
         _api = api;
+        _logger = logger;
     }
 
     [ObservableProperty]

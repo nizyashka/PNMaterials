@@ -7,10 +7,12 @@ namespace PNMaterialsClient.ViewModels;
 public partial class ReportViewModel : ObservableObject
 {
     private readonly ApiClient _api;
+    private readonly ILogger<ReportViewModel> _logger;
 
-    public ReportViewModel(ApiClient api)
+    public ReportViewModel(ApiClient api, ILogger<ReportViewModel> logger)
     {
         _api = api;
+        _logger = logger;
     }
 
     [ObservableProperty]

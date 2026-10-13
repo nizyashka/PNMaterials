@@ -9,15 +9,17 @@ namespace PNMaterialsClient.ViewModels;
 public partial class MaterialGroupsViewModel : ObservableObject
 {
     private readonly ApiClient _api;
+    private readonly ILogger<MaterialGroupsViewModel> _logger;
 
     [ObservableProperty]
     private string? _status;
 
     public ObservableCollection<MaterialGroupDto> Groups { get; } = new();
 
-    public MaterialGroupsViewModel(ApiClient api)
+    public MaterialGroupsViewModel(ApiClient api, ILogger<MaterialGroupsViewModel> logger)
     {
         _api = api;
+        _logger = logger;
     }
 
     public async Task LoadAsync()

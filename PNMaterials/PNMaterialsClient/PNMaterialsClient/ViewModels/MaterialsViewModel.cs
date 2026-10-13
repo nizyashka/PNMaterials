@@ -7,15 +7,17 @@ namespace PNMaterialsClient.ViewModels;
 public partial class MaterialsViewModel : ObservableObject
 {
     private readonly ApiClient _api;
+    private readonly ILogger<MaterialsViewModel> _logger;
 
     [ObservableProperty]
     private string? _status;
 
     public ObservableCollection<MaterialDto> Materials { get; } = new();
 
-    public MaterialsViewModel(ApiClient api)
+    public MaterialsViewModel(ApiClient api, ILogger<MaterialsViewModel> logger)
     {
         _api = api;
+        _logger = logger;
     }
 
     public async Task LoadAsync()
