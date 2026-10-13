@@ -183,31 +183,30 @@ public partial class PurchaseRequestCardViewModel : ObservableObject
     [RelayCommand]
     private async Task SaveAsync()
     {
-        if (Items.Count == 0)
+        var dto = new PurchaseRequestEditDto
         {
-            Status = "Заявка должна содержать хотя бы одну позицию.";
-            return;
-        }
+            DeliveryDate = DeliveryDate.Date,
+            Items = Items.Select(i => new PurchaseRequestItemEditDto
+            {
+                MaterialId = i.Material?.Id ?? 0,
+                Quantity = double.IsNaN(i.Quantity) ? 0 : (decimal)i.Quantity,
+                PositionText = string.IsNullOrWhiteSpace(i.PositionText) ? null : i.PositionText
+            }).ToList()
+        };
 
-        if (Items.Any(i => i.Material is null))
+        var errors = DtoValidator.Validate(dto)
+            .Concat(dto.Items.SelectMany(DtoValidator.Validate))
+            .Distinct()
+            .ToList();
+
+        if (errors.Count > 0)
         {
-            Status = "В каждой позиции нужно выбрать материал.";
+            Status = string.Join(Environment.NewLine, errors);
             return;
         }
 
         try
         {
-            var dto = new PurchaseRequestEditDto
-            {
-                DeliveryDate = DeliveryDate.Date,
-                Items = Items.Select(i => new PurchaseRequestItemEditDto
-                {
-                    MaterialId = i.Material!.Id,
-                    Quantity = (decimal)i.Quantity,
-                    PositionText = string.IsNullOrWhiteSpace(i.PositionText) ? null : i.PositionText
-                }).ToList()
-            };
-
             if (Id == 0)
             {
                 var created = await _api.CreatePurchaseRequestAsync(dto);

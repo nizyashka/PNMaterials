@@ -108,28 +108,23 @@ public partial class MaterialCardViewModel : ObservableObject
     [RelayCommand]
     private async Task SaveAsync()
     {
-        if (SelectedUnit is null)
+        var dto = new MaterialEditDto
         {
-            Status = "Не выбрана единица измерения.";
-            return;
-        }
+            Name = Name,
+            Description = string.IsNullOrWhiteSpace(Description) ? null : Description,
+            UnitId = SelectedUnit?.Id ?? 0,
+            GroupId = SelectedGroup?.Id ?? 0
+        };
 
-        if (SelectedGroup is null)
+        var errors = DtoValidator.Validate(dto);
+        if (errors.Count > 0)
         {
-            Status = "Не выбрана группа материалов.";
+            Status = string.Join(Environment.NewLine, errors);
             return;
         }
 
         try
         {
-            var dto = new MaterialEditDto
-            {
-                Name = Name,
-                Description = string.IsNullOrWhiteSpace(Description) ? null : Description,
-                UnitId = SelectedUnit.Id,
-                GroupId = SelectedGroup.Id
-            };
-
             if (Id == 0)
             {
                 var created = await _api.CreateMaterialAsync(dto);

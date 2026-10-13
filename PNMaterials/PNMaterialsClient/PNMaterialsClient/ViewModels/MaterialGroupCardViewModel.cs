@@ -73,14 +73,21 @@ public partial class MaterialGroupCardViewModel : ObservableObject
     [RelayCommand]
     private async Task SaveAsync()
     {
+        var dto = new MaterialGroupEditDto
+        {
+            Name = Name,
+            Description = string.IsNullOrWhiteSpace(Description) ? null : Description
+        };
+
+        var errors = DtoValidator.Validate(dto);
+        if (errors.Count > 0)
+        {
+            Status = string.Join(Environment.NewLine, errors);
+            return;
+        }
+
         try
         {
-            var dto = new MaterialGroupEditDto
-            {
-                Name = Name,
-                Description = string.IsNullOrWhiteSpace(Description) ? null : Description
-            };
-
             if (Id == 0)
             {
                 var created = await _api.CreateMaterialGroupAsync(dto);
