@@ -9,7 +9,7 @@ public sealed partial class ReportPage : Page
     public ReportPage()
     {
         this.InitializeComponent();
-        ViewModel = new ReportViewModel(App.Api);
+        ViewModel = App.Services.GetRequiredService<ReportViewModel>();
     }
 
     protected override async void OnNavigatedTo(NavigationEventArgs e)

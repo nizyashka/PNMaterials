@@ -9,9 +9,9 @@ public class ApiClient
 {
     private readonly HttpClient _http;
 
-    public ApiClient(string baseAddress)
+    public ApiClient(HttpClient http)
     {
-        _http = new HttpClient { BaseAddress = new Uri(baseAddress) };
+        _http = http;
     }
 
     public async Task<List<MaterialGroupDto>> GetMaterialGroupsAsync()

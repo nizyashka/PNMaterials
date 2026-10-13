@@ -3,12 +3,13 @@ using Microsoft.Extensions.Logging;
 using Uno.Resizetizer;
 using PNMaterialsClient.Services;
 using System.Text.Json;
+using PNMaterialsClient.ViewModels;
 
 namespace PNMaterialsClient;
 
 public partial class App : Application
 {
-    public static ApiClient Api { get; } = new(ResolveApiBaseAddress());
+    public static IServiceProvider Services { get; private set; } = null!;
 
     private static string ResolveApiBaseAddress()
     {
@@ -98,70 +99,46 @@ public partial class App : Application
     /// <summary>
     /// Configures global Uno Platform logging
     /// </summary>
-    public static void InitializeLogging()
+    public static void InitializeServices()
     {
-#if DEBUG
-        // Logging is disabled by default for release builds, as it incurs a significant
-        // initialization cost from Microsoft.Extensions.Logging setup. If startup performance
-        // is a concern for your application, keep this disabled. If you're running on the web or
-        // desktop targets, you can use URL or command line parameters to enable it.
-        //
-        // For more performance documentation: https://platform.uno/docs/articles/Uno-UI-Performance.html
+        var services = new ServiceCollection();
 
-        var factory = LoggerFactory.Create(builder =>
+        services.AddLogging(builder =>
         {
-#if __WASM__
-            builder.AddProvider(new global::Uno.Extensions.Logging.WebAssembly.WebAssemblyConsoleLoggerProvider());
-#elif __IOS__
-            builder.AddProvider(new global::Uno.Extensions.Logging.OSLogLoggerProvider());
-
-            // Log to the Visual Studio Debug console
+            builder.AddDebug();
             builder.AddConsole();
+#if DEBUG
+            builder.SetMinimumLevel(LogLevel.Debug);
 #else
-            builder.AddConsole();
+        builder.SetMinimumLevel(LogLevel.Information);
 #endif
-
-            // Exclude logs below this level
-            builder.SetMinimumLevel(LogLevel.Information);
-
-            // Default filters for Uno Platform namespaces
             builder.AddFilter("Uno", LogLevel.Warning);
             builder.AddFilter("Windows", LogLevel.Warning);
             builder.AddFilter("Microsoft", LogLevel.Warning);
-
-            // Generic Xaml events
-            // builder.AddFilter("Microsoft.UI.Xaml", LogLevel.Debug );
-            // builder.AddFilter("Microsoft.UI.Xaml.VisualStateGroup", LogLevel.Debug );
-            // builder.AddFilter("Microsoft.UI.Xaml.StateTriggerBase", LogLevel.Debug );
-            // builder.AddFilter("Microsoft.UI.Xaml.UIElement", LogLevel.Debug );
-            // builder.AddFilter("Microsoft.UI.Xaml.FrameworkElement", LogLevel.Trace );
-
-            // Layouter specific messages
-            // builder.AddFilter("Microsoft.UI.Xaml.Controls", LogLevel.Debug );
-            // builder.AddFilter("Microsoft.UI.Xaml.Controls.Layouter", LogLevel.Debug );
-            // builder.AddFilter("Microsoft.UI.Xaml.Controls.Panel", LogLevel.Debug );
-
-            // builder.AddFilter("Windows.Storage", LogLevel.Debug );
-
-            // Binding related messages
-            // builder.AddFilter("Microsoft.UI.Xaml.Data", LogLevel.Debug );
-            // builder.AddFilter("Microsoft.UI.Xaml.Data", LogLevel.Debug );
-
-            // Binder memory references tracking
-            // builder.AddFilter("Uno.UI.DataBinding.BinderReferenceHolder", LogLevel.Debug );
-
-            // DevServer and HotReload related
-            // builder.AddFilter("Uno.UI.RemoteControl", LogLevel.Information);
-
-            // Debug JS interop
-            // builder.AddFilter("Uno.Foundation.WebAssemblyRuntime", LogLevel.Debug );
         });
 
-        global::Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory = factory;
+        var apiBaseAddress = new Uri(ResolveApiBaseAddress());
+
+        services.AddHttpClient<ApiClient>(client => client.BaseAddress = apiBaseAddress);
+
+        services.AddTransient<MaterialsViewModel>();
+        services.AddTransient<MaterialGroupsViewModel>();
+        services.AddTransient<PurchaseRequestsViewModel>();
+        services.AddTransient<MaterialCardViewModel>();
+        services.AddTransient<MaterialGroupCardViewModel>();
+        services.AddTransient<PurchaseRequestCardViewModel>();
+        services.AddTransient<ReportViewModel>();
+
+        Services = services.BuildServiceProvider(new ServiceProviderOptions
+        {
+            ValidateOnBuild = true
+        });
+
+        global::Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory =
+            Services.GetRequiredService<ILoggerFactory>();
 
 #if HAS_UNO
         global::Uno.UI.Adapter.Microsoft.Extensions.Logging.LoggingAdapter.Initialize();
-#endif
 #endif
     }
 }

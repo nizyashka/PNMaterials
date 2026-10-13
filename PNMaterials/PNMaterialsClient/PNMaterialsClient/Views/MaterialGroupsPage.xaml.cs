@@ -11,7 +11,7 @@ public sealed partial class MaterialGroupsPage : Page
     public MaterialGroupsPage()
     {
         this.InitializeComponent();
-        ViewModel = new MaterialGroupsViewModel(App.Api);
+        ViewModel = App.Services.GetRequiredService<MaterialGroupsViewModel>();
     }
 
     protected override async void OnNavigatedTo(NavigationEventArgs e)

@@ -7,7 +7,7 @@ internal class Program
     [STAThread]
     public static void Main(string[] args)
     {
-        App.InitializeLogging();
+        App.InitializeServices();
 
         var host = UnoPlatformHostBuilder.Create()
             .App(() => new App())

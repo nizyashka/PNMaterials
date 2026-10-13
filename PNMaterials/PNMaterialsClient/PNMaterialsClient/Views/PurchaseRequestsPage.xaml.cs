@@ -11,7 +11,7 @@ public sealed partial class PurchaseRequestsPage : Page
     public PurchaseRequestsPage()
     {
         this.InitializeComponent();
-        ViewModel = new PurchaseRequestsViewModel(App.Api);
+        ViewModel = App.Services.GetRequiredService<PurchaseRequestsViewModel>();
     }
 
     protected override async void OnNavigatedTo(NavigationEventArgs e)

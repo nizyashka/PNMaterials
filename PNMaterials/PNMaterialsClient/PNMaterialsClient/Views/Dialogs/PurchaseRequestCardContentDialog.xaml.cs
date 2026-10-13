@@ -13,7 +13,7 @@ public sealed partial class PurchaseRequestCardContentDialog : ContentDialog
     {
         this.InitializeComponent();
         _id = id;
-        ViewModel = new PurchaseRequestCardViewModel(App.Api);
+        ViewModel = App.Services.GetRequiredService<PurchaseRequestCardViewModel>();
         ExitCommand = new RelayCommand(Hide);
         Opened += OnOpened;
     }

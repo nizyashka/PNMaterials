@@ -13,7 +13,7 @@ public sealed partial class MaterialCardContentDialog : ContentDialog
     {
         this.InitializeComponent();
         _id = id;
-        ViewModel = new MaterialCardViewModel(App.Api);
+        ViewModel = App.Services.GetRequiredService<MaterialCardViewModel>();
         ExitCommand = new RelayCommand(Hide);
         Opened += OnOpened;
     }
