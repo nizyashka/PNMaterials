@@ -4,12 +4,14 @@ using Uno.Resizetizer;
 using PNMaterialsClient.Services;
 using System.Text.Json;
 using PNMaterialsClient.ViewModels;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace PNMaterialsClient;
 
 public partial class App : Application
 {
     public static IServiceProvider Services { get; private set; } = null!;
+    private static ILogger<App> _logger = NullLogger<App>.Instance;
 
     private static string ResolveApiBaseAddress()
     {
@@ -86,19 +88,12 @@ public partial class App : Application
         MainWindow.Activate();
     }
 
-    /// <summary>
-    /// Invoked when Navigation to a certain page fails
-    /// </summary>
-    /// <param name="sender">The Frame which failed navigation</param>
-    /// <param name="e">Details about the navigation failure</param>
-    void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
+    private void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
     {
-        throw new InvalidOperationException($"Failed to load {e.SourcePageType.FullName}: {e.Exception}");
+        _logger.LogError(e.Exception, "Не удалось открыть страницу {PageType}", e.SourcePageType.FullName);
+        e.Handled = true;
     }
 
-    /// <summary>
-    /// Configures global Uno Platform logging
-    /// </summary>
     public static void InitializeServices()
     {
         var services = new ServiceCollection();
@@ -110,7 +105,7 @@ public partial class App : Application
 #if DEBUG
             builder.SetMinimumLevel(LogLevel.Debug);
 #else
-        builder.SetMinimumLevel(LogLevel.Information);
+            builder.SetMinimumLevel(LogLevel.Information);
 #endif
             builder.AddFilter("Uno", LogLevel.Warning);
             builder.AddFilter("Windows", LogLevel.Warning);
@@ -140,5 +135,24 @@ public partial class App : Application
 #if HAS_UNO
         global::Uno.UI.Adapter.Microsoft.Extensions.Logging.LoggingAdapter.Initialize();
 #endif
+
+        _logger = Services.GetRequiredService<ILogger<App>>();
+    }
+
+    public static void InitializeExceptionHandling()
+    {
+        AppDomain.CurrentDomain.UnhandledException += OnDomainUnhandledException;
+        TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
+    }
+
+    private static void OnDomainUnhandledException(object sender, System.UnhandledExceptionEventArgs e)
+    {
+        _logger.LogCritical(e.ExceptionObject as Exception, "Необработанное исключение, приложение будет закрыто");
+    }
+
+    private static void OnUnobservedTaskException(object? sender, UnobservedTaskExceptionEventArgs e)
+    {
+        _logger.LogError(e.Exception, "Необработанное исключение в задаче без await");
+        e.SetObserved();
     }
 }

@@ -8,6 +8,7 @@ internal class Program
     public static void Main(string[] args)
     {
         App.InitializeServices();
+        App.InitializeExceptionHandling();
 
         var host = UnoPlatformHostBuilder.Create()
             .App(() => new App())
