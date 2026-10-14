@@ -133,6 +133,7 @@ public partial class App : Application
             builder.AddFilter("Uno", LogLevel.Warning);
             builder.AddFilter("Windows", LogLevel.Warning);
             builder.AddFilter("Microsoft", LogLevel.Warning);
+            builder.AddFilter("System.Net.Http.HttpClient", LogLevel.Warning);
         });
 
         var apiBaseAddress = new Uri(ResolveApiBaseAddress());

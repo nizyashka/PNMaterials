@@ -28,12 +28,12 @@ public abstract partial class ViewModelBase : ObservableObject
         }
         catch (ApiException ex) when (ex.Kind is ApiErrorKind.Validation or ApiErrorKind.NotFound or ApiErrorKind.Conflict)
         {
-            Logger.LogWarning(ex, "{Operation}: {Kind} {StatusCode}", operation, ex.Kind, (int?)ex.StatusCode);
+            Logger.LogWarning(ex, "{Operation}: {Kind}, ответ сервера: {StatusCode}", operation, ex.Kind.ToString(), FormatStatusCode(ex));
             ShowWarning(ex.Message);
         }
         catch (ApiException ex)
         {
-            Logger.LogError(ex, "{Operation}: {Kind} {StatusCode}", operation, ex.Kind, (int?)ex.StatusCode);
+            Logger.LogError(ex, "{Operation}: {Kind}, ответ сервера: {StatusCode}", operation, ex.Kind.ToString(), FormatStatusCode(ex));
             ShowError(ex.Message);
         }
         catch (Exception ex)
@@ -41,6 +41,9 @@ public abstract partial class ViewModelBase : ObservableObject
             ReportError(operation, ex);
         }
     }
+
+    private static string FormatStatusCode(ApiException ex)
+        => ex.StatusCode is { } code ? ((int)code).ToString() : "нет";
 
     public void ReportError(string operation, Exception exception)
     {
