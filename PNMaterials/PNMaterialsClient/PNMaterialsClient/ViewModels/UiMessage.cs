@@ -1,3 +1,7 @@
 namespace PNMaterialsClient.ViewModels;
 
-public sealed record UiMessage(MessageSeverity Severity, string Text);
+public sealed class UiMessage(MessageSeverity severity, string text)
+{
+    public MessageSeverity Severity { get; } = severity;
+    public string Text { get; } = text;
+}
