@@ -38,8 +38,13 @@ public abstract partial class ViewModelBase : ObservableObject
         }
         catch (Exception ex)
         {
-            Logger.LogError(ex, "{Operation}: непредвиденная ошибка", operation);
-            ShowError("Непредвиденная ошибка. Подробности записаны в журнал.");
+            ReportError(operation, ex);
         }
+    }
+
+    public void ReportError(string operation, Exception exception)
+    {
+        Logger.LogError(exception, "{Operation}: непредвиденная ошибка", operation);
+        ShowError("Непредвиденная ошибка. Подробности записаны в журнал.");
     }
 }
