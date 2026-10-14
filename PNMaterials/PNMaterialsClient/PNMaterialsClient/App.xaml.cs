@@ -161,6 +161,9 @@ public partial class App : Application
 #endif
 
         _logger = Services.GetRequiredService<ILogger<App>>();
+
+        _logger.LogInformation("Приложение запущено. Версия {Version}, адрес API {ApiAddress}",
+            typeof(App).Assembly.GetName().Version?.ToString(), apiBaseAddress.ToString());
     }
 
     public static void InitializeExceptionHandling()
