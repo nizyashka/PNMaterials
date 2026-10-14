@@ -15,34 +15,33 @@ public partial class App : Application
     public static IServiceProvider Services { get; private set; } = null!;
     private static ILogger<App> _logger = NullLogger<App>.Instance;
 
-    private static string ResolveApiBaseAddress()
+    private const string DefaultApiAddress = "https://localhost:7073/";
+
+    private static (Uri Address, string? Problem, Exception? Error) ResolveApiBaseAddress()
     {
-        const string fallback = "https://localhost:7073/";
+        var path = Path.Combine(AppContext.BaseDirectory, "appsettings.json");
+
+        if (!File.Exists(path))
+            return (new Uri(DefaultApiAddress), "Файл appsettings.json не найден", null);
 
         try
         {
-            var path = Path.Combine(AppContext.BaseDirectory, "appsettings.json");
-
-            if (!File.Exists(path))
-                return fallback;
-
             using var stream = File.OpenRead(path);
             using var document = JsonDocument.Parse(stream);
 
-            if (document.RootElement.TryGetProperty("ApiBaseAddress", out var value))
-            {
-                var address = value.GetString();
+            if (!document.RootElement.TryGetProperty("ApiBaseAddress", out var value)
+                || value.GetString() is not { Length: > 0 } text)
+                return (new Uri(DefaultApiAddress), "В appsettings.json не задан ApiBaseAddress", null);
 
-                if (!string.IsNullOrWhiteSpace(address))
-                    return address;
-            }
+            if (!Uri.TryCreate(text, UriKind.Absolute, out var address))
+                return (new Uri(DefaultApiAddress), $"В appsettings.json некорректный ApiBaseAddress «{text}»", null);
+
+            return (address, null, null);
         }
-        catch
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException or InvalidOperationException)
         {
-            // повреждённый или недоступный файл не должен мешать запуску
+            return (new Uri(DefaultApiAddress), "Не удалось прочитать appsettings.json", ex);
         }
-
-        return fallback;
     }
 
     /// <summary>
@@ -136,7 +135,7 @@ public partial class App : Application
             builder.AddFilter("System.Net.Http.HttpClient", LogLevel.Warning);
         });
 
-        var apiBaseAddress = new Uri(ResolveApiBaseAddress());
+        var (apiBaseAddress, addressProblem, addressError) = ResolveApiBaseAddress();
 
         services.AddHttpClient<ApiClient>(client => client.BaseAddress = apiBaseAddress);
 
@@ -164,6 +163,10 @@ public partial class App : Application
 
         _logger.LogInformation("Приложение запущено. Версия {Version}, адрес API {ApiAddress}",
             typeof(App).Assembly.GetName().Version?.ToString(), apiBaseAddress.ToString());
+
+        if (addressProblem is not null)
+            _logger.LogWarning(addressError, "{Problem}. Используется адрес по умолчанию {ApiAddress}",
+                addressProblem, apiBaseAddress.ToString());
     }
 
     public static void InitializeExceptionHandling()
