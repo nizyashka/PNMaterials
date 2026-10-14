@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using PNMaterialsAPI.ErrorHandling;
 using PNMaterialsInfrastructure;
 using PNMaterialsInfrastructure.Services;
 
@@ -11,6 +12,8 @@ builder.Services.AddScoped<IMaterialCodeGenerator, MaterialCodeGenerator>();
 builder.Services.AddScoped<IRequestNumberGenerator, RequestNumberGenerator>();
 
 builder.Services.AddControllers();
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
@@ -21,6 +24,8 @@ using (var scope = app.Services.CreateScope())
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     await db.Database.MigrateAsync();
 }
+
+app.UseExceptionHandler();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
