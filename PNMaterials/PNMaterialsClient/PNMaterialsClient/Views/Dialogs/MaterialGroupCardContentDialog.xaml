@@ -12,7 +12,8 @@
                          IsEditMode="{x:Bind ViewModel.IsEditMode, Mode=TwoWay}"
                          SaveCommand="{x:Bind ViewModel.SaveCommand}"
                          RefreshCommand="{x:Bind ViewModel.RefreshCommand}"
-                         ExitCommand="{x:Bind ExitCommand}">
+                         ExitCommand="{x:Bind ExitCommand}"
+                         Message="{x:Bind ViewModel.Message, Mode=OneWay}">
 
         <StackPanel Spacing="16">
             <TextBox Header="Наименование группы *"
@@ -27,9 +28,6 @@
                      AcceptsReturn="True"
                      TextWrapping="Wrap"
                      Height="120" />
-
-            <TextBlock Text="{x:Bind ViewModel.Status, Mode=OneWay}"
-                       Opacity="0.7" TextWrapping="Wrap" />
         </StackPanel>
     </controls:EntityCard>
 </ContentDialog>

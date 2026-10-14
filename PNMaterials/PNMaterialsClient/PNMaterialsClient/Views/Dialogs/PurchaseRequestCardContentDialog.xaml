@@ -13,7 +13,8 @@
                          IsEditMode="{x:Bind ViewModel.IsEditMode, Mode=TwoWay}"
                          SaveCommand="{x:Bind ViewModel.SaveCommand}"
                          RefreshCommand="{x:Bind ViewModel.RefreshCommand}"
-                         ExitCommand="{x:Bind ExitCommand}">
+                         ExitCommand="{x:Bind ExitCommand}"
+                         Message="{x:Bind ViewModel.Message, Mode=OneWay}">
 
         <controls:EntityCard.ExtraButtons>
             <ItemsControl ItemsSource="{x:Bind ViewModel.StatusActions, Mode=OneWay}">
@@ -36,7 +37,6 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
-                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
             <StackPanel Grid.Row="0" Spacing="16">
@@ -150,11 +150,6 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </ScrollViewer>
-
-            <TextBlock Grid.Row="4"
-                       Margin="0,12,0,0"
-                       Text="{x:Bind ViewModel.Status, Mode=OneWay}"
-                       Opacity="0.7" TextWrapping="Wrap" />
         </Grid>
     </controls:EntityCard>
 </ContentDialog>

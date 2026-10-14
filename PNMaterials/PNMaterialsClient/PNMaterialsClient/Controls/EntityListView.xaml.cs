@@ -1,3 +1,5 @@
+using PNMaterialsClient.ViewModels;
+
 namespace PNMaterialsClient.Controls;
 
 public sealed partial class EntityListView : UserControl
@@ -10,12 +12,12 @@ public sealed partial class EntityListView : UserControl
         set => SetValue(TitleProperty, value);
     }
 
-    public static readonly DependencyProperty StatusProperty =
-        DependencyProperty.Register(nameof(Status), typeof(string), typeof(EntityListView), new PropertyMetadata(null));
-    public string? Status
+    public static readonly DependencyProperty MessageProperty =
+        DependencyProperty.Register(nameof(Message), typeof(UiMessage), typeof(EntityListView), new PropertyMetadata(null));
+    public UiMessage? Message
     {
-        get => (string?)GetValue(StatusProperty);
-        set => SetValue(StatusProperty, value);
+        get => (UiMessage?)GetValue(MessageProperty);
+        set => SetValue(MessageProperty, value);
     }
 
     public static readonly DependencyProperty TableProperty =

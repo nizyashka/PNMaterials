@@ -5,7 +5,7 @@
       xmlns:tv="using:WinUI.TableView">
 
     <controls:EntityListView Title="Группы материалов"
-                             Status="{x:Bind ViewModel.Status, Mode=OneWay}"
+                             Message="{x:Bind ViewModel.Message, Mode=OneWay}"
                              CreateClicked="OnCreateClick">
 
         <controls:EntityListView.Table>

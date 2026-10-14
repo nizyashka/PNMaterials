@@ -1,4 +1,5 @@
 using Microsoft.UI.Xaml.Markup;
+using PNMaterialsClient.ViewModels;
 
 namespace PNMaterialsClient.Controls;
 
@@ -29,6 +30,16 @@ public sealed partial class EntityCard : UserControl
     {
         get => (bool)GetValue(IsEditModeProperty);
         set => SetValue(IsEditModeProperty, value);
+    }
+
+    public static readonly DependencyProperty MessageProperty =
+        DependencyProperty.Register(nameof(Message), typeof(UiMessage), typeof(EntityCard),
+            new PropertyMetadata(null));
+
+    public UiMessage? Message
+    {
+        get => (UiMessage?)GetValue(MessageProperty);
+        set => SetValue(MessageProperty, value);
     }
 
     public static readonly DependencyProperty BodyProperty =

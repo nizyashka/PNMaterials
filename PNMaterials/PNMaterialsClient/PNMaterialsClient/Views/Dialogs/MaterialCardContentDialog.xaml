@@ -12,7 +12,8 @@
                          IsEditMode="{x:Bind ViewModel.IsEditMode, Mode=TwoWay}"
                          SaveCommand="{x:Bind ViewModel.SaveCommand}"
                          RefreshCommand="{x:Bind ViewModel.RefreshCommand}"
-                         ExitCommand="{x:Bind ExitCommand}">
+                         ExitCommand="{x:Bind ExitCommand}"
+                         Message="{x:Bind ViewModel.Message, Mode=OneWay}">
 
         <controls:EntityCard.ExtraButtons>
             <Button Content="Создать заявку"
@@ -48,10 +49,6 @@
                       DisplayMemberPath="Name"
                       IsEnabled="{x:Bind ViewModel.IsEditMode, Mode=OneWay}"
                       HorizontalAlignment="Stretch" />
-<!--
-            <TextBlock Text="{x:Bind ViewModel.Status, Mode=OneWay}"
-                       Opacity="0.7" TextWrapping="Wrap" />
-            -->
         </StackPanel>
     </controls:EntityCard>
 </ContentDialog>

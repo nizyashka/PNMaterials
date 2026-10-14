@@ -3,7 +3,8 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:contracts="using:PNMaterialsContracts"
       xmlns:vm="using:PNMaterialsClient.ViewModels"
-      xmlns:converters="using:PNMaterialsClient.Converters">
+      xmlns:converters="using:PNMaterialsClient.Converters"
+      xmlns:controls="using:PNMaterialsClient.Controls">
 
     <Page.Resources>
         <converters:DateFormatConverter x:Key="DateFormat" />
@@ -87,7 +88,7 @@
         </StackPanel>
 
         <StackPanel Grid.Row="2">
-            <TextBlock Text="{x:Bind ViewModel.Status, Mode=OneWay}" Opacity="0.7" />
+            <controls:MessageBar Message="{x:Bind ViewModel.Message, Mode=OneWay}" />
             <TextBlock Text="Заявок по заданным критериям выборки не найдено"
                        FontWeight="SemiBold"
                        Visibility="{x:Bind ViewModel.IsEmptyResult, Mode=OneWay, Converter={StaticResource BoolToVisibility}}" />

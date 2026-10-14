@@ -10,7 +10,7 @@
     </Page.Resources>
 
     <controls:EntityListView Title="Заявки на закупку"
-                             Status="{x:Bind ViewModel.Status, Mode=OneWay}"
+                             Message="{x:Bind ViewModel.Message, Mode=OneWay}"
                              CreateClicked="OnCreateClick">
 
         <controls:EntityListView.Table>

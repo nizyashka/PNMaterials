@@ -12,10 +12,7 @@ public abstract partial class ViewModelBase : ObservableObject
     }
 
     [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(Status))]
     private UiMessage? _message;
-
-    public string? Status => Message?.Text;
 
     protected void ShowInfo(string text) => Message = new UiMessage(MessageSeverity.Info, text);
     protected void ShowSuccess(string text) => Message = new UiMessage(MessageSeverity.Success, text);
