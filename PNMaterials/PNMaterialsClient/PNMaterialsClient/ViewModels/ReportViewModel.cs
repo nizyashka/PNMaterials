@@ -4,15 +4,14 @@ using PNMaterialsContracts;
 
 namespace PNMaterialsClient.ViewModels;
 
-public partial class ReportViewModel : ObservableObject
+public partial class ReportViewModel : ViewModelBase
 {
     private readonly ApiClient _api;
-    private readonly ILogger<ReportViewModel> _logger;
 
     public ReportViewModel(ApiClient api, ILogger<ReportViewModel> logger)
+        : base(logger)
     {
         _api = api;
-        _logger = logger;
     }
 
     [ObservableProperty]
@@ -36,9 +35,6 @@ public partial class ReportViewModel : ObservableObject
     [ObservableProperty]
     private bool _isEmptyResult;
 
-    [ObservableProperty]
-    private string? _status;
-
     public ObservableCollection<StatusFilterViewModel> Statuses { get; } = new();
     public ObservableCollection<PurchaseRequestReportRowDto> Rows { get; } = new();
 
@@ -47,24 +43,20 @@ public partial class ReportViewModel : ObservableObject
         if (Statuses.Count > 0)
             return;
 
-        try
+        await RunAsync("Загрузка статусов", async () =>
         {
             foreach (var status in await _api.GetRequestStatusesAsync())
                 Statuses.Add(new StatusFilterViewModel(status));
-        }
-        catch (Exception ex)
-        {
-            Status = ex.Message;
-        }
+        });
     }
 
     [RelayCommand]
     private async Task SearchAsync()
     {
-        Status = "Поиск…";
+        ShowInfo("Поиск…");
         IsEmptyResult = false;
 
-        try
+        await RunAsync("Построение отчёта", async () =>
         {
             var filter = new PurchaseRequestReportFilterDto
             {
@@ -84,13 +76,12 @@ public partial class ReportViewModel : ObservableObject
                 Rows.Add(row);
 
             IsEmptyResult = Rows.Count == 0;
-            Status = Rows.Count == 0 ? null : $"Найдено заявок: {Rows.Count}";
-        }
-        catch (Exception ex)
-        {
-            IsEmptyResult = false;
-            Status = ex.Message;
-        }
+
+            if (Rows.Count == 0)
+                ClearMessage();
+            else
+                ShowInfo($"Найдено заявок: {Rows.Count}");
+        });
     }
 
     [RelayCommand]
@@ -108,7 +99,7 @@ public partial class ReportViewModel : ObservableObject
 
         Rows.Clear();
         IsEmptyResult = false;
-        Status = null;
+        ClearMessage();
     }
 
     private static List<string> ParseValues(string text)

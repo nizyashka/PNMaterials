@@ -4,26 +4,23 @@ using PNMaterialsContracts;
 
 namespace PNMaterialsClient.ViewModels;
 
-public partial class PurchaseRequestsViewModel : ObservableObject
+public partial class PurchaseRequestsViewModel : ViewModelBase
 {
     private readonly ApiClient _api;
-    private readonly ILogger<PurchaseRequestsViewModel> _logger;
-
-    [ObservableProperty]
-    private string? _status;
 
     public ObservableCollection<PurchaseRequestDto> Requests { get; } = new();
 
     public PurchaseRequestsViewModel(ApiClient api, ILogger<PurchaseRequestsViewModel> logger)
+        : base(logger)
     {
         _api = api;
-        _logger = logger;
     }
 
     public async Task LoadAsync()
     {
-        Status = "Загрузка…";
-        try
+        ShowInfo("Загрузка…");
+
+        await RunAsync("Загрузка списка заявок", async () =>
         {
             var requests = await _api.GetPurchaseRequestsAsync();
 
@@ -31,11 +28,7 @@ public partial class PurchaseRequestsViewModel : ObservableObject
             foreach (var r in requests)
                 Requests.Add(r);
 
-            Status = $"Загружено заявок: {Requests.Count}";
-        }
-        catch (Exception ex)
-        {
-            Status = $"Ошибка: {ex.Message}";
-        }
+            ShowInfo($"Загружено заявок: {Requests.Count}");
+        });
     }
 }

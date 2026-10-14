@@ -4,15 +4,14 @@ using PNMaterialsContracts;
 
 namespace PNMaterialsClient.ViewModels;
 
-public partial class PurchaseRequestCardViewModel : ObservableObject
+public partial class PurchaseRequestCardViewModel : ViewModelBase
 {
     private readonly ApiClient _api;
-    private readonly ILogger<PurchaseRequestCardViewModel> _logger;
 
     public PurchaseRequestCardViewModel(ApiClient api, ILogger<PurchaseRequestCardViewModel> logger)
+        : base(logger)
     {
         _api = api;
-        _logger = logger;
     }
 
     [ObservableProperty]
@@ -35,9 +34,6 @@ public partial class PurchaseRequestCardViewModel : ObservableObject
     [ObservableProperty]
     private bool _isEditMode;
 
-    [ObservableProperty]
-    private string? _status;
-
     public ObservableCollection<MaterialDto> Materials { get; } = new();
     public ObservableCollection<RequestItemViewModel> Items { get; } = new();
     public ObservableCollection<StatusActionViewModel> StatusActions { get; } = new();
@@ -48,7 +44,7 @@ public partial class PurchaseRequestCardViewModel : ObservableObject
 
     public async Task LoadAsync(int id)
     {
-        try
+        await RunAsync($"Загрузка заявки {id}", async () =>
         {
             await LoadMaterialsAsync();
 
@@ -65,7 +61,7 @@ public partial class PurchaseRequestCardViewModel : ObservableObject
                 StatusActions.Clear();
 
                 IsEditMode = true;
-                Status = "Номер будет присвоен системой после сохранения.";
+                ShowInfo("Номер будет присвоен системой после сохранения.");
                 return;
             }
 
@@ -73,18 +69,14 @@ public partial class PurchaseRequestCardViewModel : ObservableObject
 
             if (request is null)
             {
-                Status = "Заявка не найдена.";
+                ShowWarning("Заявка не найдена.");
                 return;
             }
 
             Apply(request);
             IsEditMode = false;
-            Status = "Данные перечитаны из базы.";
-        }
-        catch (Exception ex)
-        {
-            Status = ex.Message;
-        }
+            ShowInfo("Данные перечитаны из базы.");
+        });
     }
 
     private async Task LoadMaterialsAsync()
@@ -165,16 +157,12 @@ public partial class PurchaseRequestCardViewModel : ObservableObject
 
     private async Task ChangeStatusAsync(int statusId)
     {
-        try
+        await RunAsync($"Смена статуса заявки {Id}", async () =>
         {
             var updated = await _api.ChangeRequestStatusAsync(Id, statusId);
             Apply(updated);
-            Status = $"Статус изменён на {updated.Status.Code}.";
-        }
-        catch (Exception ex)
-        {
-            Status = ex.Message;
-        }
+            ShowSuccess($"Статус изменён на {updated.Status.Code}.");
+        });
     }
 
     [RelayCommand]
@@ -201,17 +189,17 @@ public partial class PurchaseRequestCardViewModel : ObservableObject
 
         if (errors.Count > 0)
         {
-            Status = string.Join(Environment.NewLine, errors);
+            ShowWarning(string.Join(Environment.NewLine, errors));
             return;
         }
 
-        try
+        await RunAsync("Сохранение заявки", async () =>
         {
             if (Id == 0)
             {
                 var created = await _api.CreatePurchaseRequestAsync(dto);
                 Apply(created);
-                Status = $"Заявка создана, номер {created.Number}.";
+                ShowSuccess($"Заявка создана, номер {created.Number}.");
             }
             else
             {
@@ -221,15 +209,11 @@ public partial class PurchaseRequestCardViewModel : ObservableObject
                 if (reloaded is not null)
                     Apply(reloaded);
 
-                Status = "Изменения сохранены.";
+                ShowSuccess("Изменения сохранены.");
             }
 
             IsEditMode = false;
-        }
-        catch (Exception ex)
-        {
-            Status = ex.Message;
-        }
+        });
     }
 
     [RelayCommand]
@@ -245,19 +229,15 @@ public partial class PurchaseRequestCardViewModel : ObservableObject
             .Select(item => (Item: item, MaterialId: item.Material?.Id))
             .ToList();
 
-        try
+        await RunAsync("Обновление списка материалов", async () =>
         {
             await LoadMaterialsAsync();
 
             foreach (var (item, materialId) in selected)
                 item.Material = Materials.FirstOrDefault(m => m.Id == materialId);
 
-            Status = "Список материалов обновлён.";
-        }
-        catch (Exception ex)
-        {
-            Status = ex.Message;
-        }
+            ShowSuccess("Список материалов обновлён.");
+        });
     }
 
     partial void OnIsEditModeChanged(bool value)

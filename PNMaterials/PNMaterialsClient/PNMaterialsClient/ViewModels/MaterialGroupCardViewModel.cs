@@ -3,15 +3,14 @@ using PNMaterialsContracts;
 
 namespace PNMaterialsClient.ViewModels;
 
-public partial class MaterialGroupCardViewModel : ObservableObject
+public partial class MaterialGroupCardViewModel : ViewModelBase
 {
     private readonly ApiClient _api;
-    private readonly ILogger<MaterialGroupCardViewModel> _logger;
 
     public MaterialGroupCardViewModel(ApiClient api, ILogger<MaterialGroupCardViewModel> logger)
+        : base(logger)
     {
         _api = api;
-        _logger = logger;
     }
 
     [ObservableProperty]
@@ -29,9 +28,6 @@ public partial class MaterialGroupCardViewModel : ObservableObject
     [ObservableProperty]
     private bool _isEditMode;
 
-    [ObservableProperty]
-    private string? _status;
-
     public string Header => Id == 0
         ? "Новая группа материалов"
         : $"{Id} — {Name}";
@@ -44,17 +40,17 @@ public partial class MaterialGroupCardViewModel : ObservableObject
             Name = string.Empty;
             Description = string.Empty;
             IsEditMode = true;
-            Status = "Заполните поля и нажмите «Сохранить».";
+            ShowInfo("Заполните поля и нажмите «Сохранить».");
             return;
         }
 
-        try
+        await RunAsync($"Загрузка группы {id}", async () =>
         {
             var group = await _api.GetMaterialGroupAsync(id);
 
             if (group is null)
             {
-                Status = "Группа не найдена.";
+                ShowWarning("Группа не найдена.");
                 return;
             }
 
@@ -62,12 +58,8 @@ public partial class MaterialGroupCardViewModel : ObservableObject
             Name = group.Name;
             Description = group.Description ?? string.Empty;
             IsEditMode = false;
-            Status = "Данные перечитаны из базы.";
-        }
-        catch (Exception ex)
-        {
-            Status = ex.Message;
-        }
+            ShowInfo("Данные перечитаны из базы.");
+        });
     }
 
     [RelayCommand]
@@ -82,30 +74,26 @@ public partial class MaterialGroupCardViewModel : ObservableObject
         var errors = DtoValidator.Validate(dto);
         if (errors.Count > 0)
         {
-            Status = string.Join(Environment.NewLine, errors);
+            ShowWarning(string.Join(Environment.NewLine, errors));
             return;
         }
 
-        try
+        await RunAsync("Сохранение группы", async () =>
         {
             if (Id == 0)
             {
                 var created = await _api.CreateMaterialGroupAsync(dto);
                 Id = created.Id;
-                Status = "Группа создана.";
+                ShowSuccess("Группа создана.");
             }
             else
             {
                 await _api.UpdateMaterialGroupAsync(Id, dto);
-                Status = "Изменения сохранены.";
+                ShowSuccess("Изменения сохранены.");
             }
 
             IsEditMode = false;
-        }
-        catch (Exception ex)
-        {
-            Status = ex.Message;
-        }
+        });
     }
 
     private bool CanRefresh() => Id != 0;

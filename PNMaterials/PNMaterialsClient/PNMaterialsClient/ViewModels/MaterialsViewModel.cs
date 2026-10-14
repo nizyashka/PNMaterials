@@ -4,26 +4,23 @@ using PNMaterialsContracts;
 
 namespace PNMaterialsClient.ViewModels;
 
-public partial class MaterialsViewModel : ObservableObject
+public partial class MaterialsViewModel : ViewModelBase
 {
     private readonly ApiClient _api;
-    private readonly ILogger<MaterialsViewModel> _logger;
-
-    [ObservableProperty]
-    private string? _status;
 
     public ObservableCollection<MaterialDto> Materials { get; } = new();
 
     public MaterialsViewModel(ApiClient api, ILogger<MaterialsViewModel> logger)
+        : base(logger)
     {
         _api = api;
-        _logger = logger;
     }
 
     public async Task LoadAsync()
     {
-        Status = "Загрузка…";
-        try
+        ShowInfo("Загрузка…");
+
+        await RunAsync("Загрузка списка материалов", async () =>
         {
             var materials = await _api.GetMaterialsAsync();
 
@@ -31,11 +28,7 @@ public partial class MaterialsViewModel : ObservableObject
             foreach (var m in materials)
                 Materials.Add(m);
 
-            Status = $"Загружено материалов: {Materials.Count}";
-        }
-        catch (Exception ex)
-        {
-            Status = $"Ошибка: {ex.Message}";
-        }
+            ShowInfo($"Загружено материалов: {Materials.Count}");
+        });
     }
 }

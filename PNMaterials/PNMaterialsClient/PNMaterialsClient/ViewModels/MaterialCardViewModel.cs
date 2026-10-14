@@ -4,15 +4,14 @@ using PNMaterialsContracts;
 
 namespace PNMaterialsClient.ViewModels;
 
-public partial class MaterialCardViewModel : ObservableObject
+public partial class MaterialCardViewModel : ViewModelBase
 {
     private readonly ApiClient _api;
-    private readonly ILogger<MaterialCardViewModel> _logger;
 
     public MaterialCardViewModel(ApiClient api, ILogger<MaterialCardViewModel> logger)
+        : base(logger)
     {
         _api = api;
-        _logger = logger;
     }
 
     [ObservableProperty]
@@ -42,9 +41,6 @@ public partial class MaterialCardViewModel : ObservableObject
     [ObservableProperty]
     private bool _isEditMode;
 
-    [ObservableProperty]
-    private string? _status;
-
     public ObservableCollection<UnitDto> Units { get; } = new();
     public ObservableCollection<MaterialGroupDto> Groups { get; } = new();
 
@@ -54,7 +50,7 @@ public partial class MaterialCardViewModel : ObservableObject
 
     public async Task LoadAsync(int id)
     {
-        try
+        await RunAsync($"Загрузка материала {id}", async () =>
         {
             await LoadReferencesAsync();
 
@@ -67,7 +63,7 @@ public partial class MaterialCardViewModel : ObservableObject
                 SelectedUnit = null;
                 SelectedGroup = null;
                 IsEditMode = true;
-                Status = "Код будет присвоен системой после сохранения.";
+                ShowInfo("Код будет присвоен системой после сохранения.");
                 return;
             }
 
@@ -75,7 +71,7 @@ public partial class MaterialCardViewModel : ObservableObject
 
             if (material is null)
             {
-                Status = "Материал не найден.";
+                ShowWarning("Материал не найден.");
                 return;
             }
 
@@ -86,12 +82,8 @@ public partial class MaterialCardViewModel : ObservableObject
             SelectedUnit = Units.FirstOrDefault(u => u.Id == material.UnitId);
             SelectedGroup = Groups.FirstOrDefault(g => g.Id == material.GroupId);
             IsEditMode = false;
-            Status = "Данные перечитаны из базы.";
-        }
-        catch (Exception ex)
-        {
-            Status = ex.Message;
-        }
+            ShowInfo("Данные перечитаны из базы.");
+        });
     }
 
     private async Task LoadReferencesAsync()
@@ -119,31 +111,27 @@ public partial class MaterialCardViewModel : ObservableObject
         var errors = DtoValidator.Validate(dto);
         if (errors.Count > 0)
         {
-            Status = string.Join(Environment.NewLine, errors);
+            ShowWarning(string.Join(Environment.NewLine, errors));
             return;
         }
 
-        try
+        await RunAsync("Сохранение материала", async () =>
         {
             if (Id == 0)
             {
                 var created = await _api.CreateMaterialAsync(dto);
                 Id = created.Id;
                 Code = created.Code;
-                Status = $"Материал создан, код {created.Code}.";
+                ShowSuccess($"Материал создан, код {created.Code}.");
             }
             else
             {
                 await _api.UpdateMaterialAsync(Id, dto);
-                Status = "Изменения сохранены.";
+                ShowSuccess("Изменения сохранены.");
             }
 
             IsEditMode = false;
-        }
-        catch (Exception ex)
-        {
-            Status = ex.Message;
-        }
+        });
     }
 
     [RelayCommand]
@@ -158,16 +146,12 @@ public partial class MaterialCardViewModel : ObservableObject
         var unitId = SelectedUnit?.Id;
         var groupId = SelectedGroup?.Id;
 
-        try
+        await RunAsync("Обновление справочников", async () =>
         {
             await LoadReferencesAsync();
             SelectedUnit = Units.FirstOrDefault(u => u.Id == unitId);
             SelectedGroup = Groups.FirstOrDefault(g => g.Id == groupId);
-            Status = "Справочники обновлены.";
-        }
-        catch (Exception ex)
-        {
-            Status = ex.Message;
-        }
+            ShowSuccess("Справочники обновлены.");
+        });
     }
 }
