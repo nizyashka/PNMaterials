@@ -14,35 +14,6 @@ public class ApiClient
         _http = http;
     }
 
-    public async Task<List<MaterialGroupDto>> GetMaterialGroupsAsync()
-        => await _http.GetFromJsonAsync<List<MaterialGroupDto>>("api/materialgroups") ?? new();
-
-    public async Task<MaterialGroupDto?> GetMaterialGroupAsync(int id)
-    {
-        var response = await _http.GetAsync($"api/materialgroups/{id}");
-
-        if (response.StatusCode == HttpStatusCode.NotFound)
-            return null;
-
-        await EnsureSuccessAsync(response);
-        return await response.Content.ReadFromJsonAsync<MaterialGroupDto>();
-    }
-
-    public async Task<MaterialGroupDto> CreateMaterialGroupAsync(MaterialGroupEditDto dto)
-    {
-        var response = await _http.PostAsJsonAsync("api/materialgroups", dto);
-        await EnsureSuccessAsync(response);
-
-        return await response.Content.ReadFromJsonAsync<MaterialGroupDto>()
-               ?? throw new ApiException(ApiErrorKind.InvalidResponse, "Сервер не вернул созданную группу.");
-    }
-
-    public async Task UpdateMaterialGroupAsync(int id, MaterialGroupEditDto dto)
-    {
-        var response = await _http.PutAsJsonAsync($"api/materialgroups/{id}", dto);
-        await EnsureSuccessAsync(response);
-    }
-
     private static async Task EnsureSuccessAsync(HttpResponseMessage response)
     {
         if (response.IsSuccessStatusCode)
@@ -102,88 +73,161 @@ public class ApiClient
         return body;
     }
 
+    private static async Task<HttpResponseMessage> SendAsync(Task<HttpResponseMessage> request)
+    {
+        HttpResponseMessage response;
+
+        try
+        {
+            response = await request;
+        }
+        catch (HttpRequestException ex)
+        {
+            throw new ApiException(ApiErrorKind.Network,
+                "Сервер недоступен. Проверьте подключение и повторите попытку.", innerException: ex);
+        }
+        catch (TaskCanceledException ex)
+        {
+            throw new ApiException(ApiErrorKind.Timeout,
+                "Сервер не ответил вовремя. Повторите попытку позже.", innerException: ex);
+        }
+
+        await EnsureSuccessAsync(response);
+        return response;
+    }
+
+    private static async Task<T?> ReadAsync<T>(HttpResponseMessage response)
+    {
+        try
+        {
+            return await response.Content.ReadFromJsonAsync<T>();
+        }
+        catch (JsonException ex)
+        {
+            throw new ApiException(ApiErrorKind.InvalidResponse,
+                "Сервер вернул данные в неожиданном формате.", response.StatusCode, ex);
+        }
+    }
+
+    public async Task<List<MaterialGroupDto>> GetMaterialGroupsAsync()
+    {
+        var response = await SendAsync(_http.GetAsync("api/materialgroups"));
+        return await ReadAsync<List<MaterialGroupDto>>(response) ?? new();
+    }
+
+    public async Task<MaterialGroupDto?> GetMaterialGroupAsync(int id)
+    {
+        try
+        {
+            var response = await SendAsync(_http.GetAsync($"api/materialgroups/{id}"));
+            return await ReadAsync<MaterialGroupDto>(response);
+        }
+        catch (ApiException ex) when (ex.Kind == ApiErrorKind.NotFound)
+        {
+            return null;
+        }
+    }
+
+    public async Task<MaterialGroupDto> CreateMaterialGroupAsync(MaterialGroupEditDto dto)
+    {
+        var response = await SendAsync(_http.PostAsJsonAsync("api/materialgroups", dto));
+        return await ReadAsync<MaterialGroupDto>(response)
+               ?? throw new ApiException(ApiErrorKind.InvalidResponse, "Сервер не вернул созданную группу.");
+    }
+
+    public async Task UpdateMaterialGroupAsync(int id, MaterialGroupEditDto dto)
+    {
+        await SendAsync(_http.PutAsJsonAsync($"api/materialgroups/{id}", dto));
+    }
+
     public async Task<List<UnitDto>> GetUnitsAsync()
-    => await _http.GetFromJsonAsync<List<UnitDto>>("api/units") ?? new();
+    {
+        var response = await SendAsync(_http.GetAsync("api/units"));
+        return await ReadAsync<List<UnitDto>>(response) ?? new();
+    }
 
     public async Task<List<MaterialDto>> GetMaterialsAsync()
-        => await _http.GetFromJsonAsync<List<MaterialDto>>("api/materials") ?? new();
+    {
+        var response = await SendAsync(_http.GetAsync("api/materials"));
+        return await ReadAsync<List<MaterialDto>>(response) ?? new();
+    }
 
     public async Task<MaterialDto?> GetMaterialAsync(int id)
     {
-        var response = await _http.GetAsync($"api/materials/{id}");
-
-        if (response.StatusCode == HttpStatusCode.NotFound)
+        try
+        {
+            var response = await SendAsync(_http.GetAsync($"api/materials/{id}"));
+            return await ReadAsync<MaterialDto>(response);
+        }
+        catch (ApiException ex) when (ex.Kind == ApiErrorKind.NotFound)
+        {
             return null;
-
-        await EnsureSuccessAsync(response);
-        return await response.Content.ReadFromJsonAsync<MaterialDto>();
+        }
     }
 
     public async Task<MaterialDto> CreateMaterialAsync(MaterialEditDto dto)
     {
-        var response = await _http.PostAsJsonAsync("api/materials", dto);
-        await EnsureSuccessAsync(response);
-
-        return await response.Content.ReadFromJsonAsync<MaterialDto>()
+        var response = await SendAsync(_http.PostAsJsonAsync("api/materials", dto));
+        return await ReadAsync<MaterialDto>(response)
                ?? throw new ApiException(ApiErrorKind.InvalidResponse, "Сервер не вернул созданный материал.");
     }
 
     public async Task UpdateMaterialAsync(int id, MaterialEditDto dto)
     {
-        var response = await _http.PutAsJsonAsync($"api/materials/{id}", dto);
-        await EnsureSuccessAsync(response);
+        await SendAsync(_http.PutAsJsonAsync($"api/materials/{id}", dto));
     }
 
     public async Task<List<PurchaseRequestDto>> GetPurchaseRequestsAsync()
-    => await _http.GetFromJsonAsync<List<PurchaseRequestDto>>("api/purchaserequests") ?? new();
+    {
+        var response = await SendAsync(_http.GetAsync("api/purchaserequests"));
+        return await ReadAsync<List<PurchaseRequestDto>>(response) ?? new();
+    }
 
     public async Task<PurchaseRequestDto?> GetPurchaseRequestAsync(int id)
     {
-        var response = await _http.GetAsync($"api/purchaserequests/{id}");
-
-        if (response.StatusCode == HttpStatusCode.NotFound)
+        try
+        {
+            var response = await SendAsync(_http.GetAsync($"api/purchaserequests/{id}"));
+            return await ReadAsync<PurchaseRequestDto>(response);
+        }
+        catch (ApiException ex) when (ex.Kind == ApiErrorKind.NotFound)
+        {
             return null;
-
-        await EnsureSuccessAsync(response);
-        return await response.Content.ReadFromJsonAsync<PurchaseRequestDto>();
+        }
     }
 
     public async Task<PurchaseRequestDto> CreatePurchaseRequestAsync(PurchaseRequestEditDto dto)
     {
-        var response = await _http.PostAsJsonAsync("api/purchaserequests", dto);
-        await EnsureSuccessAsync(response);
-
-        return await response.Content.ReadFromJsonAsync<PurchaseRequestDto>()
+        var response = await SendAsync(_http.PostAsJsonAsync("api/purchaserequests", dto));
+        return await ReadAsync<PurchaseRequestDto>(response)
                ?? throw new ApiException(ApiErrorKind.InvalidResponse, "Сервер не вернул созданную заявку.");
     }
 
     public async Task UpdatePurchaseRequestAsync(int id, PurchaseRequestEditDto dto)
     {
-        var response = await _http.PutAsJsonAsync($"api/purchaserequests/{id}", dto);
-        await EnsureSuccessAsync(response);
+        await SendAsync(_http.PutAsJsonAsync($"api/purchaserequests/{id}", dto));
     }
 
     public async Task<PurchaseRequestDto> ChangeRequestStatusAsync(int id, int statusId)
     {
-        var response = await _http.PostAsJsonAsync(
+        var response = await SendAsync(_http.PostAsJsonAsync(
             $"api/purchaserequests/{id}/status",
-            new RequestStatusChangeDto { StatusId = statusId });
+            new RequestStatusChangeDto { StatusId = statusId }));
 
-        await EnsureSuccessAsync(response);
-
-        return await response.Content.ReadFromJsonAsync<PurchaseRequestDto>()
+        return await ReadAsync<PurchaseRequestDto>(response)
                ?? throw new ApiException(ApiErrorKind.InvalidResponse, "Сервер не вернул обновленную заявку.");
     }
 
     public async Task<List<RequestStatusDto>> GetRequestStatusesAsync()
-    => await _http.GetFromJsonAsync<List<RequestStatusDto>>("api/purchaserequests/statuses") ?? new();
+    {
+        var response = await SendAsync(_http.GetAsync("api/purchaserequests/statuses"));
+        return await ReadAsync<List<RequestStatusDto>>(response) ?? new();
+    }
 
     public async Task<List<PurchaseRequestReportRowDto>> GetPurchaseRequestReportAsync(
         PurchaseRequestReportFilterDto filter)
     {
-        var response = await _http.PostAsJsonAsync("api/reports/purchase-requests", filter);
-        await EnsureSuccessAsync(response);
-
-        return await response.Content.ReadFromJsonAsync<List<PurchaseRequestReportRowDto>>() ?? new();
+        var response = await SendAsync(_http.PostAsJsonAsync("api/reports/purchase-requests", filter));
+        return await ReadAsync<List<PurchaseRequestReportRowDto>>(response) ?? new();
     }
 }
