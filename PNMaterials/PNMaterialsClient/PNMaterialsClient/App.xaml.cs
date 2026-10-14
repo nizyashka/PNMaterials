@@ -5,6 +5,8 @@ using PNMaterialsClient.Services;
 using System.Text.Json;
 using PNMaterialsClient.ViewModels;
 using Microsoft.Extensions.Logging.Abstractions;
+using Serilog;
+using Serilog.Extensions.Logging;
 
 namespace PNMaterialsClient;
 
@@ -94,6 +96,26 @@ public partial class App : Application
         e.Handled = true;
     }
 
+    private static Serilog.ILogger CreateFileLogger()
+    {
+        var logDirectory = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "PNMaterials",
+            "logs");
+
+        return new LoggerConfiguration()
+            .MinimumLevel.Verbose()
+            .WriteTo.File(
+                Path.Combine(logDirectory, "client-.log"),
+                outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff} [{Level:u3}] {SourceContext}: {Message:lj}{NewLine}{Exception}",
+                rollingInterval: RollingInterval.Day,
+                fileSizeLimitBytes: 10 * 1024 * 1024,
+                rollOnFileSizeLimit: true,
+                retainedFileCountLimit: 30,
+                shared: true)
+            .CreateLogger();
+    }
+
     public static void InitializeServices()
     {
         var services = new ServiceCollection();
@@ -102,6 +124,7 @@ public partial class App : Application
         {
             builder.AddDebug();
             builder.AddConsole();
+            builder.AddProvider(new SerilogLoggerProvider(CreateFileLogger(), dispose: true));
 #if DEBUG
             builder.SetMinimumLevel(LogLevel.Debug);
 #else
