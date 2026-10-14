@@ -28,12 +28,12 @@ public abstract partial class ViewModelBase : ObservableObject
         }
         catch (ApiException ex) when (ex.Kind is ApiErrorKind.Validation or ApiErrorKind.NotFound or ApiErrorKind.Conflict)
         {
-            Logger.LogWarning(ex, "{Operation}: {Kind}", operation, ex.Kind);
+            Logger.LogWarning(ex, "{Operation}: {Kind} {StatusCode}", operation, ex.Kind, (int?)ex.StatusCode);
             ShowWarning(ex.Message);
         }
         catch (ApiException ex)
         {
-            Logger.LogError(ex, "{Operation}: {Kind}", operation, ex.Kind);
+            Logger.LogError(ex, "{Operation}: {Kind} {StatusCode}", operation, ex.Kind, (int?)ex.StatusCode);
             ShowError(ex.Message);
         }
         catch (Exception ex)
