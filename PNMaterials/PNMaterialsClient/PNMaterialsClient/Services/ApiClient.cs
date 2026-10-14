@@ -35,7 +35,7 @@ public class ApiClient
 
     private static ApiErrorKind GetErrorKind(HttpStatusCode status) => status switch
     {
-        HttpStatusCode.BadRequest or HttpStatusCode.UnprocessableEntity => ApiErrorKind.Validation,
+        HttpStatusCode.BadRequest => ApiErrorKind.Validation,
         HttpStatusCode.NotFound => ApiErrorKind.NotFound,
         HttpStatusCode.Conflict => ApiErrorKind.Conflict,
         _ when (int)status >= 500 => ApiErrorKind.Server,
