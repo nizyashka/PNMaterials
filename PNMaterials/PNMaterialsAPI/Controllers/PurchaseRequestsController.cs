@@ -50,11 +50,11 @@ public class PurchaseRequestsController : ControllerBase
         var deliveryDate = dto.DeliveryDate?.Date ?? DateTime.Today.AddMonths(1);
 
         if (deliveryDate < DateTime.Today)
-            return BadRequest("Дата поставки не может быть в прошлом.");
+            return Problem(detail: "Дата поставки не может быть в прошлом.", statusCode: StatusCodes.Status400BadRequest);
 
         var error = await ValidateItemsAsync(dto.Items);
         if (error is not null)
-            return BadRequest(error);
+            return Problem(detail: error, statusCode: StatusCodes.Status400BadRequest);
 
         var request = new PurchaseRequest
         {
@@ -90,11 +90,11 @@ public class PurchaseRequestsController : ControllerBase
 
         var deliveryDate = dto.DeliveryDate?.Date ?? request.DeliveryDate;
         if (deliveryDate < DateTime.Today)
-            return BadRequest("Дата поставки не может быть в прошлом.");
+            return Problem(detail: "Дата поставки не может быть в прошлом.", statusCode: StatusCodes.Status400BadRequest);
 
         var error = await ValidateItemsAsync(dto.Items);
         if (error is not null)
-            return BadRequest(error);
+            return Problem(detail: error, statusCode: StatusCodes.Status400BadRequest);
 
         request.DeliveryDate = deliveryDate;
 
@@ -123,12 +123,13 @@ public class PurchaseRequestsController : ControllerBase
 
         var target = (RequestStatus)dto.StatusId;
         if (!Enum.IsDefined(target))
-            return BadRequest("Некорректный статус.");
+            return Problem(detail: "Некорректный статус.", statusCode: StatusCodes.Status400BadRequest);
 
         if (!RequestStatusRules.CanTransition(request.Status, target))
-            return Conflict(
-                $"Переход {RequestStatusInfo.GetCode(request.Status)} → " +
-                $"{RequestStatusInfo.GetCode(target)} не разрешён.");
+            return Problem(
+                detail: $"Переход {RequestStatusInfo.GetCode(request.Status)} → " +
+                        $"{RequestStatusInfo.GetCode(target)} не разрешён.",
+                statusCode: StatusCodes.Status409Conflict);
 
         request.Status = target;
         await _db.SaveChangesAsync();

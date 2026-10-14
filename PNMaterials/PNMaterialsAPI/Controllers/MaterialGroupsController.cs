@@ -102,7 +102,7 @@ public class MaterialGroupsController : ControllerBase
 
         var hasMaterials = await _db.Materials.AnyAsync(m => m.GroupId == id);
         if (hasMaterials)
-            return Conflict("Нельзя удалить группу: в ней есть материалы.");
+            return Problem(detail: "Нельзя удалить группу: в ней есть материалы.", statusCode: StatusCodes.Status409Conflict);
 
         _db.MaterialGroups.Remove(group);
         await _db.SaveChangesAsync();

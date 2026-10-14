@@ -73,7 +73,7 @@ public class MaterialsController : ControllerBase
     {
         var error = await ValidateReferencesAsync(dto);
         if (error is not null)
-            return BadRequest(error);
+            return Problem(detail: error, statusCode: StatusCodes.Status400BadRequest);
 
         var material = new Material
         {
@@ -101,7 +101,7 @@ public class MaterialsController : ControllerBase
 
         var error = await ValidateReferencesAsync(dto);
         if (error is not null)
-            return BadRequest(error);
+            return Problem(detail: error, statusCode: StatusCodes.Status400BadRequest);
 
         material.Name = dto.Name;
         material.Description = dto.Description;
@@ -122,7 +122,7 @@ public class MaterialsController : ControllerBase
 
         var usedInRequests = await _db.PurchaseRequestItems.AnyAsync(i => i.MaterialId == id);
         if (usedInRequests)
-            return Conflict("Нельзя удалить материал: он используется в заявках.");
+            return Problem(detail: "Нельзя удалить материал: он используется в заявках.", statusCode: StatusCodes.Status409Conflict);
 
         _db.Materials.Remove(material);
         await _db.SaveChangesAsync();
