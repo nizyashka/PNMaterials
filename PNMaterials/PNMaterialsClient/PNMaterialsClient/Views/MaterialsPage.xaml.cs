@@ -8,6 +8,8 @@ public sealed partial class MaterialsPage : Page
 {
     public MaterialsViewModel ViewModel { get; }
 
+    private bool _isCardOpen;
+
     public MaterialsPage()
     {
         this.InitializeComponent();
@@ -22,24 +24,39 @@ public sealed partial class MaterialsPage : Page
 
     private async void OnCreateClick(object sender, RoutedEventArgs e)
     {
-        MaterialCardContentDialog materialCardDialog = new MaterialCardContentDialog(0)
-        {
-            XamlRoot = this.XamlRoot
-        };
-        await materialCardDialog.ShowAsync();
-        await ViewModel.LoadAsync();
+        await OpenCardAsync(0);
     }
 
     private async void OnMaterialClick(object sender, ItemClickEventArgs e)
     {
         if (e.ClickedItem is MaterialDto material)
+            await OpenCardAsync(material.Id);
+    }
+
+    private async Task OpenCardAsync(int id)
+    {
+        if (_isCardOpen)
+            return;
+
+        _isCardOpen = true;
+
+        try
         {
-            MaterialCardContentDialog materialCardDialog = new MaterialCardContentDialog(material.Id)
+            var dialog = new MaterialCardContentDialog(id)
             {
-                XamlRoot = this.XamlRoot
+                XamlRoot = XamlRoot
             };
-            await materialCardDialog.ShowAsync();
+
+            await dialog.ShowAsync();
             await ViewModel.LoadAsync();
+        }
+        catch (Exception ex)
+        {
+            ViewModel.ReportError($"Открытие карточки материала {id}", ex);
+        }
+        finally
+        {
+            _isCardOpen = false;
         }
     }
 }

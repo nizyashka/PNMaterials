@@ -8,6 +8,8 @@ public sealed partial class PurchaseRequestsPage : Page
 {
     public PurchaseRequestsViewModel ViewModel { get; }
 
+    private bool _isCardOpen;
+
     public PurchaseRequestsPage()
     {
         this.InitializeComponent();
@@ -22,24 +24,39 @@ public sealed partial class PurchaseRequestsPage : Page
 
     private async void OnCreateClick(object sender, RoutedEventArgs e)
     {
-        PurchaseRequestCardContentDialog requestCardDialog = new PurchaseRequestCardContentDialog(0)
-        {
-            XamlRoot = this.XamlRoot
-        };
-        await requestCardDialog.ShowAsync();
-        await ViewModel.LoadAsync();
+        await OpenCardAsync(0);
     }
 
     private async void OnRequestClick(object sender, ItemClickEventArgs e)
     {
         if (e.ClickedItem is PurchaseRequestDto request)
+            await OpenCardAsync(request.Id);
+    }
+
+    private async Task OpenCardAsync(int id)
+    {
+        if (_isCardOpen)
+            return;
+
+        _isCardOpen = true;
+
+        try
         {
-            PurchaseRequestCardContentDialog requestCardDialog = new PurchaseRequestCardContentDialog(request.Id)
+            var dialog = new PurchaseRequestCardContentDialog(id)
             {
-                XamlRoot = this.XamlRoot
+                XamlRoot = XamlRoot
             };
-            await requestCardDialog.ShowAsync();
+
+            await dialog.ShowAsync();
             await ViewModel.LoadAsync();
+        }
+        catch (Exception ex)
+        {
+            ViewModel.ReportError($"Открытие карточки заявки {id}", ex);
+        }
+        finally
+        {
+            _isCardOpen = false;
         }
     }
 }

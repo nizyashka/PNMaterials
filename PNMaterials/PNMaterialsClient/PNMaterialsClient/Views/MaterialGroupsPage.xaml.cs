@@ -8,6 +8,8 @@ public sealed partial class MaterialGroupsPage : Page
 {
     public MaterialGroupsViewModel ViewModel { get; }
 
+    private bool _isCardOpen;
+
     public MaterialGroupsPage()
     {
         this.InitializeComponent();
@@ -22,24 +24,39 @@ public sealed partial class MaterialGroupsPage : Page
 
     private async void OnCreateClick(object sender, RoutedEventArgs e)
     {
-        MaterialGroupCardContentDialog groupCardDialog = new MaterialGroupCardContentDialog(0)
-        {
-            XamlRoot = this.XamlRoot
-        };
-        await groupCardDialog.ShowAsync();
-        await ViewModel.LoadAsync();
+        await OpenCardAsync(0);
     }
 
     private async void OnGroupClick(object sender, ItemClickEventArgs e)
     {
         if (e.ClickedItem is MaterialGroupDto group)
+            await OpenCardAsync(group.Id);
+    }
+
+    private async Task OpenCardAsync(int id)
+    {
+        if (_isCardOpen)
+            return;
+
+        _isCardOpen = true;
+
+        try
         {
-            MaterialGroupCardContentDialog groupCardDialog = new MaterialGroupCardContentDialog(group.Id)
+            var dialog = new MaterialGroupCardContentDialog(id)
             {
-                XamlRoot = this.XamlRoot
+                XamlRoot = XamlRoot
             };
-            await groupCardDialog.ShowAsync();
+
+            await dialog.ShowAsync();
             await ViewModel.LoadAsync();
+        }
+        catch (Exception ex)
+        {
+            ViewModel.ReportError($"Открытие карточки группы {id}", ex);
+        }
+        finally
+        {
+            _isCardOpen = false;
         }
     }
 }
