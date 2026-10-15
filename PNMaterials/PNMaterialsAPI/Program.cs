@@ -1,3 +1,4 @@
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using PNMaterialsAPI.ErrorHandling;
 using PNMaterialsInfrastructure;
@@ -30,6 +31,17 @@ try
     builder.Services.AddOpenApi();
 
     var app = builder.Build();
+
+    var connection = new SqlConnectionStringBuilder(builder.Configuration.GetConnectionString("DefaultConnection"));
+
+    app.Logger.LogInformation(
+        "Сервер запускается. Версия {Version}, окружение {Environment}, база данных {Database} на {DataSource}",
+        typeof(Program).Assembly.GetName().Version?.ToString(),
+        app.Environment.EnvironmentName,
+        connection.InitialCatalog,
+        connection.DataSource);
+
+    app.UseSerilogRequestLogging();
 
     using (var scope = app.Services.CreateScope())
     {
