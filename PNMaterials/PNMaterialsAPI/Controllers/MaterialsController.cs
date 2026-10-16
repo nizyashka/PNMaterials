@@ -34,6 +34,7 @@ public class MaterialsController : ControllerBase
                 Description = m.Description,
                 UnitId = m.UnitId,
                 UnitName = m.Unit.Name,
+                UnitAllowsFractions = m.Unit.AllowsFractions,
                 GroupId = m.GroupId,
                 GroupName = m.Group.Name
             })
@@ -56,6 +57,7 @@ public class MaterialsController : ControllerBase
                 Description = m.Description,
                 UnitId = m.UnitId,
                 UnitName = m.Unit.Name,
+                UnitAllowsFractions = m.Unit.AllowsFractions,
                 GroupId = m.GroupId,
                 GroupName = m.Group.Name
             })
@@ -154,6 +156,7 @@ public class MaterialsController : ControllerBase
                 Description = m.Description,
                 UnitId = m.UnitId,
                 UnitName = m.Unit.Name,
+                UnitAllowsFractions = m.Unit.AllowsFractions,
                 GroupId = m.GroupId,
                 GroupName = m.Group.Name
             })

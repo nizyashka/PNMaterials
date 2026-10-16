@@ -9,6 +9,7 @@ public class MaterialDto
 
     public int UnitId { get; set; }
     public string UnitName { get; set; } = string.Empty;
+    public bool UnitAllowsFractions { get; set; }
 
     public int GroupId { get; set; }
     public string GroupName { get; set; } = string.Empty;
