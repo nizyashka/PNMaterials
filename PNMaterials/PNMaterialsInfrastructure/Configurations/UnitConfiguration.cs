@@ -16,17 +16,17 @@ public class UnitConfiguration : IEntityTypeConfiguration<Unit>
             .HasMaxLength(20);
 
         builder.HasData(
-            new Unit { Id = 1, Name = "штука" },
-            new Unit { Id = 2, Name = "кВт" },
-            new Unit { Id = 3, Name = "кг" },
-            new Unit { Id = 4, Name = "миллиметр" },
-            new Unit { Id = 5, Name = "метр" },
-            new Unit { Id = 6, Name = "литр" },
-            new Unit { Id = 7, Name = "мм2" },
-            new Unit { Id = 8, Name = "м2" },
-            new Unit { Id = 9, Name = "м3" },
-            new Unit { Id = 10, Name = "л/мин" },
-            new Unit { Id = 11, Name = "м3/час" }
+            new Unit { Id = 1, Name = "штука", AllowsFractions = false },
+            new Unit { Id = 2, Name = "кВт", AllowsFractions = true },
+            new Unit { Id = 3, Name = "кг", AllowsFractions = true },
+            new Unit { Id = 4, Name = "миллиметр", AllowsFractions = false },
+            new Unit { Id = 5, Name = "метр", AllowsFractions = true },
+            new Unit { Id = 6, Name = "литр", AllowsFractions = true },
+            new Unit { Id = 7, Name = "мм2", AllowsFractions = true },
+            new Unit { Id = 8, Name = "м2", AllowsFractions = true },
+            new Unit { Id = 9, Name = "м3", AllowsFractions = true },
+            new Unit { Id = 10, Name = "л/мин", AllowsFractions = true },
+            new Unit { Id = 11, Name = "м3/час", AllowsFractions = true }
         );
     }
 }

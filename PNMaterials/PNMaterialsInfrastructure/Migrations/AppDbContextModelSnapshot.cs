@@ -159,6 +159,9 @@ namespace PNMaterialsInfrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<bool>("AllowsFractions")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(20)
@@ -172,56 +175,67 @@ namespace PNMaterialsInfrastructure.Migrations
                         new
                         {
                             Id = 1,
+                            AllowsFractions = false,
                             Name = "штука"
                         },
                         new
                         {
                             Id = 2,
+                            AllowsFractions = true,
                             Name = "кВт"
                         },
                         new
                         {
                             Id = 3,
+                            AllowsFractions = true,
                             Name = "кг"
                         },
                         new
                         {
                             Id = 4,
+                            AllowsFractions = false,
                             Name = "миллиметр"
                         },
                         new
                         {
                             Id = 5,
+                            AllowsFractions = true,
                             Name = "метр"
                         },
                         new
                         {
                             Id = 6,
+                            AllowsFractions = true,
                             Name = "литр"
                         },
                         new
                         {
                             Id = 7,
+                            AllowsFractions = true,
                             Name = "мм2"
                         },
                         new
                         {
                             Id = 8,
+                            AllowsFractions = true,
                             Name = "м2"
                         },
                         new
                         {
                             Id = 9,
+                            AllowsFractions = true,
                             Name = "м3"
                         },
                         new
                         {
                             Id = 10,
+                            AllowsFractions = true,
                             Name = "л/мин"
                         },
                         new
                         {
                             Id = 11,
+                            AllowsFractions = true,
                             Name = "м3/час"
                         });
                 });
