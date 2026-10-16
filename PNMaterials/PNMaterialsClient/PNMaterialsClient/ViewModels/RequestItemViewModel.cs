@@ -8,6 +8,7 @@ public partial class RequestItemViewModel : ObservableObject
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(MaterialName))]
     [NotifyPropertyChangedFor(nameof(UnitName))]
+    [NotifyPropertyChangedFor(nameof(UnitAllowsFractions))]
     private MaterialDto? _material;
 
     [ObservableProperty]
@@ -21,6 +22,7 @@ public partial class RequestItemViewModel : ObservableObject
 
     public string MaterialName => Material?.Name ?? string.Empty;
     public string UnitName => Material?.UnitName ?? string.Empty;
+    public bool UnitAllowsFractions => Material?.UnitAllowsFractions ?? true;
 
     public IRelayCommand? RemoveCommand { get; set; }
 

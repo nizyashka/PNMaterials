@@ -182,8 +182,18 @@ public partial class PurchaseRequestCardViewModel : ViewModelBase
             }).ToList()
         };
 
+        var quantityErrors = Items
+            .Zip(dto.Items)
+            .Where(pair => pair.First.Material is not null
+                && pair.Second.Quantity is >= 0.01m and <= 999_999.99m
+                && !QuantityRules.IsValid(pair.Second.Quantity, pair.First.UnitAllowsFractions))
+            .Select(pair => pair.First.UnitAllowsFractions
+                ? $"Количество материала «{pair.First.MaterialName}» ({pair.First.UnitName}) должно быть от 0,01 до 999 999,99, не больше двух знаков после запятой."
+                : $"Количество материала «{pair.First.MaterialName}» ({pair.First.UnitName}) должно быть целым числом от 1 до 999 999.");
+
         var errors = DtoValidator.Validate(dto)
             .Concat(dto.Items.SelectMany(DtoValidator.Validate))
+            .Concat(quantityErrors)
             .Distinct()
             .ToList();
 
