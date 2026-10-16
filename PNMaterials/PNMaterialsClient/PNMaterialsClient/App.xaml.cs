@@ -1,12 +1,11 @@
-using System;
-using Microsoft.Extensions.Logging;
-using Uno.Resizetizer;
-using PNMaterialsClient.Services;
 using System.Text.Json;
-using PNMaterialsClient.ViewModels;
 using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.UI.Windowing;
+using PNMaterialsClient.Services;
+using PNMaterialsClient.ViewModels;
 using Serilog;
 using Serilog.Extensions.Logging;
+using Uno.Resizetizer;
 
 namespace PNMaterialsClient;
 
@@ -62,6 +61,8 @@ public partial class App : Application
         MainWindow.UseStudio();
 #endif
 
+        if (MainWindow.AppWindow.Presenter is OverlappedPresenter presenter)
+            presenter.Maximize();
 
         // Do not repeat app initialization when the Window already has content,
         // just ensure that the window is active
