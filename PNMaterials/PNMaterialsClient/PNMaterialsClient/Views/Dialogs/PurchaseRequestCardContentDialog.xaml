@@ -5,7 +5,7 @@
                xmlns:vm="using:PNMaterialsClient.ViewModels">
 
     <ContentDialog.Resources>
-        <x:Double x:Key="ContentDialogMinWidth">700</x:Double>
+        <x:Double x:Key="ContentDialogMinWidth">1100</x:Double>
         <x:Double x:Key="ContentDialogMaxWidth">1100</x:Double>
     </ContentDialog.Resources>
 
