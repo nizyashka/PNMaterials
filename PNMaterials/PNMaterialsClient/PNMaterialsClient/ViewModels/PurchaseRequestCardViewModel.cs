@@ -92,7 +92,7 @@ public partial class PurchaseRequestCardViewModel : ViewModelBase
         Number = request.Number;
         CreatedAt = request.CreatedAt.ToString("dd.MM.yyyy HH:mm");
         DeliveryDate = request.DeliveryDate;
-        StatusText = $"{request.Status.Code} — {request.Status.Name}";
+        StatusText = request.Status.Title;
 
         Items.Clear();
         foreach (var source in request.Items)

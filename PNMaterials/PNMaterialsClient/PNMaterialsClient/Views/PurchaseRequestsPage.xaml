@@ -21,8 +21,8 @@
                     <tv:TableViewTextColumn Header="Номер" Binding="{Binding Number}" Width="*" />
                     <tv:TableViewTextColumn Header="Дата создания" Binding="{Binding CreatedAt, Converter={StaticResource DateFormat}}" Width="*" />
                     <tv:TableViewTextColumn Header="Дата поставки" Binding="{Binding DeliveryDate, Converter={StaticResource DateFormat}}" Width="*" />
-                    <tv:TableViewTextColumn Header="Статус" Binding="{Binding Status.Name}" Width="*" />
-                    <tv:TableViewNumberColumn Header="Позиций" Binding="{Binding Items.Count}" Width="*" />
+                    <tv:TableViewTextColumn Header="Статус" Binding="{Binding Status.Title}" Width="*" />
+                    <tv:TableViewNumberColumn Header="Позиций" Binding="{Binding Items.Count}" Width="Auto" />
                 </tv:TableView.Columns>
             </tv:TableView>
         </controls:EntityListView.Table>
