@@ -30,13 +30,27 @@ public partial class ReportViewModel : ViewModelBase
     private DateTimeOffset? _deliveryTo;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(StatusesSummary))]
     private bool _statusNotEqual;
-
-    [ObservableProperty]
-    private bool _isEmptyResult;
 
     public ObservableCollection<StatusFilterViewModel> Statuses { get; } = new();
     public ObservableCollection<PurchaseRequestReportRowDto> Rows { get; } = new();
+
+    public string StatusesSummary
+    {
+        get
+        {
+            var selected = Statuses.Where(s => s.IsSelected).Select(s => s.Status.Code).ToList();
+
+            if (selected.Count == 0)
+                return "Все статусы";
+
+            var names = selected.Count <= 2 ? string.Join(", ", selected) : $"Выбрано: {selected.Count}";
+            return StatusNotEqual ? $"Кроме: {names}" : names;
+        }
+    }
+
+    public void RefreshStatusesSummary() => OnPropertyChanged(nameof(StatusesSummary));
 
     public async Task LoadAsync()
     {
@@ -48,13 +62,14 @@ public partial class ReportViewModel : ViewModelBase
             foreach (var status in await _api.GetRequestStatusesAsync())
                 Statuses.Add(new StatusFilterViewModel(status));
         });
+
+        await SearchAsync();
     }
 
     [RelayCommand]
     private async Task SearchAsync()
     {
         ShowInfo("Поиск…");
-        IsEmptyResult = false;
 
         await RunAsync("Построение отчёта", async () =>
         {
@@ -75,17 +90,15 @@ public partial class ReportViewModel : ViewModelBase
             foreach (var row in rows)
                 Rows.Add(row);
 
-            IsEmptyResult = Rows.Count == 0;
-
             if (Rows.Count == 0)
-                ClearMessage();
+                ShowInfo("Заявок по заданным критериям не найдено.");
             else
                 ShowInfo($"Найдено заявок: {Rows.Count}");
         });
     }
 
     [RelayCommand]
-    private void Clear()
+    private async Task ClearAsync()
     {
         RequestNumbersText = string.Empty;
         MaterialCodesText = string.Empty;
@@ -97,9 +110,9 @@ public partial class ReportViewModel : ViewModelBase
         foreach (var status in Statuses)
             status.IsSelected = false;
 
-        Rows.Clear();
-        IsEmptyResult = false;
-        ClearMessage();
+        RefreshStatusesSummary();
+
+        await SearchAsync();
     }
 
     private static List<string> ParseValues(string text)

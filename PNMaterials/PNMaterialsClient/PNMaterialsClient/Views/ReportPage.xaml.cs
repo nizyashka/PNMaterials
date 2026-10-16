@@ -17,4 +17,7 @@ public sealed partial class ReportPage : Page
         base.OnNavigatedTo(e);
         await ViewModel.LoadAsync();
     }
+
+    private void OnStatusesFlyoutClosed(object sender, object e)
+        => ViewModel.RefreshStatusesSummary();
 }

@@ -11,8 +11,6 @@ public partial class StatusFilterViewModel : ObservableObject
 
     public RequestStatusDto Status { get; }
 
-    public string Title => $"{Status.Code} — {Status.Name}";
-
     [ObservableProperty]
     private bool _isSelected;
 }
