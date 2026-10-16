@@ -158,14 +158,24 @@ public class PurchaseRequestsController : ControllerBase
 
         var ids = items.Select(i => i.MaterialId).Distinct().ToList();
 
-        var existing = await _db.Materials
+        var materials = await _db.Materials
             .Where(m => ids.Contains(m.Id))
-            .Select(m => m.Id)
-            .ToListAsync();
+            .Select(m => new { m.Id, m.Name, UnitName = m.Unit.Name, m.Unit.AllowsFractions })
+            .ToDictionaryAsync(m => m.Id);
 
-        var missing = ids.Except(existing).ToList();
+        var missing = ids.Where(id => !materials.ContainsKey(id)).ToList();
         if (missing.Count > 0)
             return $"Материалы не найдены: {string.Join(", ", missing)}.";
+
+        foreach (var item in items)
+        {
+            var material = materials[item.MaterialId];
+
+            if (!QuantityRules.IsValid(item.Quantity, material.AllowsFractions))
+                return material.AllowsFractions
+                    ? $"Количество материала «{material.Name}» ({material.UnitName}) должно быть от 0,01 до 999 999,99, не больше двух знаков после запятой."
+                    : $"Количество материала «{material.Name}» ({material.UnitName}) должно быть целым числом от 1 до 999 999.";
+        }
 
         return null;
     }
