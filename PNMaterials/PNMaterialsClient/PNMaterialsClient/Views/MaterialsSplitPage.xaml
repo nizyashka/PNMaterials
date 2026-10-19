@@ -23,6 +23,7 @@
 
             <ListView Grid.Row="1"
                   ItemsSource="{x:Bind MaterialGroupsViewModel.Groups}"
+                  ItemContainerStyle="{StaticResource RoundedListViewItemStyle}"
                   IsItemClickEnabled="True"
                   ItemClick="OnGroupClick">
                 <ListView.ItemTemplate>
