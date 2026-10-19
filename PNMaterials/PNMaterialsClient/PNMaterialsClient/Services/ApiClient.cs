@@ -66,9 +66,7 @@ public class ApiClient
             if (doc.RootElement.TryGetProperty("title", out var title))
                 return title.GetString() ?? body;
         }
-        catch (JsonException)
-        {
-        }
+        catch (Exception ex) when (ex is JsonException or InvalidOperationException) { }
 
         return body;
     }
