@@ -34,7 +34,7 @@
         </Grid>
 
         <toolkit:GridSplitter Grid.Column="1"
-                              Width="12"
+                              Width="16"
                               ResizeDirection="Columns"
                               ResizeBehavior="PreviousAndNext" />
 
