@@ -19,7 +19,7 @@ public partial class MaterialCardViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(CanCreateRequest))]
     private int _id;
 
-    public bool CanCreateRequest => Id != 0;
+    public bool CanCreateRequest => Id != 0 && !IsEditMode;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Header))]
@@ -39,6 +39,7 @@ public partial class MaterialCardViewModel : ViewModelBase
     private MaterialGroupDto? _selectedGroup;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(CanCreateRequest))]
     private bool _isEditMode;
 
     public ObservableCollection<UnitDto> Units { get; } = new();
