@@ -20,11 +20,15 @@ public class MaterialsController : ControllerBase
         _codeGenerator = codeGenerator;
     }
 
-    // Список всех материалов
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<MaterialDto>>> GetAll()
+    public async Task<ActionResult<IEnumerable<MaterialDto>>> GetAll(int? groupId)
     {
-        var materials = await _db.Materials
+        var query = _db.Materials.AsQueryable();
+
+        if (groupId.HasValue)
+            query = query.Where(m => m.GroupId == groupId.Value);
+
+        var materials = await query
             .OrderBy(m => m.Code)
             .Select(m => new MaterialDto
             {
