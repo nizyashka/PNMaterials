@@ -48,6 +48,17 @@ public sealed partial class MaterialsPage : Page
             };
 
             await dialog.ShowAsync();
+
+            if (dialog.RequestedMaterialId is { } requestedMaterialId)
+            {
+                var requestDialog = new PurchaseRequestCardContentDialog(0, requestedMaterialId)
+                {
+                    XamlRoot = XamlRoot
+                };
+
+                await requestDialog.ShowAsync();
+            }
+
             await ViewModel.LoadAsync();
         }
         catch (Exception ex)

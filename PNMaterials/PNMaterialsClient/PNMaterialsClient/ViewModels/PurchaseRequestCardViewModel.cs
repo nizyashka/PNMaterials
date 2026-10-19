@@ -42,7 +42,7 @@ public partial class PurchaseRequestCardViewModel : ViewModelBase
         ? "Новая заявка"
         : $"{Number} — заявка на закупку";
 
-    public async Task LoadAsync(int id)
+    public async Task LoadAsync(int id, int? materialId = null)
     {
         await RunAsync($"Загрузка заявки {id}", async () =>
         {
@@ -62,6 +62,10 @@ public partial class PurchaseRequestCardViewModel : ViewModelBase
 
                 IsEditMode = true;
                 ShowInfo("Номер будет присвоен системой после сохранения.");
+
+                if (materialId.HasValue)
+                    PrefillMaterial(materialId.Value);
+
                 return;
             }
 
@@ -119,12 +123,15 @@ public partial class PurchaseRequestCardViewModel : ViewModelBase
         return item;
     }
 
-    public void PrefillMaterial(int materialId)
+    private void PrefillMaterial(int materialId)
     {
         var material = Materials.FirstOrDefault(m => m.Id == materialId);
 
         if (material is null)
+        {
+            ShowWarning("Материал не найден.");
             return;
+        }
 
         if (Items.Count == 0)
             Items.Add(CreateItem());

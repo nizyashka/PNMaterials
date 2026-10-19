@@ -17,6 +17,7 @@
 
         <controls:EntityCard.ExtraButtons>
             <Button Content="Создать заявку"
+                    Click="OnCreateRequestClick"
                     IsEnabled="{x:Bind ViewModel.CanCreateRequest, Mode=OneWay}" />
         </controls:EntityCard.ExtraButtons>
 

@@ -8,6 +8,7 @@ public sealed partial class MaterialCardContentDialog : ContentDialog
     public ICommand ExitCommand { get; }
 
     public MaterialCardViewModel ViewModel { get; }
+    public int? RequestedMaterialId { get; private set; }
 
     public MaterialCardContentDialog(int id)
     {
@@ -23,8 +24,9 @@ public sealed partial class MaterialCardContentDialog : ContentDialog
         await ViewModel.LoadAsync(_id);
     }
 
-    private void OnCloseClick(object sender, ItemClickEventArgs e)
+    private void OnCreateRequestClick(object sender, RoutedEventArgs e)
     {
+        RequestedMaterialId = ViewModel.Id;
         Hide();
     }
 }
