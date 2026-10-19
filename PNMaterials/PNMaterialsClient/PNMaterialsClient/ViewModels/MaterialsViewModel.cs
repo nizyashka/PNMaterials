@@ -8,6 +8,8 @@ public partial class MaterialsViewModel : ViewModelBase
 {
     private readonly ApiClient _api;
 
+    public int? GroupId { get; set; }
+
     public ObservableCollection<MaterialDto> Materials { get; } = new();
 
     public MaterialsViewModel(ApiClient api, ILogger<MaterialsViewModel> logger)
@@ -20,9 +22,14 @@ public partial class MaterialsViewModel : ViewModelBase
     {
         ShowInfo("Загрузка…");
 
+        var requestedGroupId = GroupId;
+
         await RunAsync("Загрузка списка материалов", async () =>
         {
-            var materials = await _api.GetMaterialsAsync();
+            var materials = await _api.GetMaterialsAsync(requestedGroupId);
+
+            if (GroupId != requestedGroupId)
+                return;
 
             Materials.Clear();
             foreach (var m in materials)

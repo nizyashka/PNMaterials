@@ -144,9 +144,9 @@ public class ApiClient
         return await ReadAsync<List<UnitDto>>(response) ?? new();
     }
 
-    public async Task<List<MaterialDto>> GetMaterialsAsync()
+    public async Task<List<MaterialDto>> GetMaterialsAsync(int? groupId = null)
     {
-        var response = await SendAsync(_http.GetAsync("api/materials"));
+        var response = await SendAsync(_http.GetAsync(groupId.HasValue ? $"api/materials?groupId={groupId}" : "api/materials"));
         return await ReadAsync<List<MaterialDto>>(response) ?? new();
     }
 
