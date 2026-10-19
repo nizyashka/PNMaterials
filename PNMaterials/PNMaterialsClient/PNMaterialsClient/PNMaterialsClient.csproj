@@ -102,4 +102,9 @@
             <Generator>MSBuild:Compile</Generator>
         </Page>
     </ItemGroup>
+    <ItemGroup>
+      <Page Update="Views\MaterialsSplitPage.xaml">
+        <Generator>MSBuild:Compile</Generator>
+      </Page>
+    </ItemGroup>
 </Project>

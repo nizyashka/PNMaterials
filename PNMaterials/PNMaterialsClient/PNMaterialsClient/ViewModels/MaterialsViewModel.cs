@@ -38,4 +38,9 @@ public partial class MaterialsViewModel : ViewModelBase
             ShowInfo($"Загружено материалов: {Materials.Count}");
         });
     }
+
+    public void ShowSelectGroupHint()
+    {
+        ShowInfo("Выберите группу");
+    }
 }

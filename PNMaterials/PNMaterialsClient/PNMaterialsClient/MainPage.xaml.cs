@@ -15,6 +15,7 @@ public sealed partial class MainPage : Page
             [
                 new NavPage { Title = "Материалы", PageType = typeof(MaterialsPage) },
                 new NavPage { Title = "Группы материалов", PageType = typeof(MaterialGroupsPage) },
+                new NavPage { Title = "Группы и материалы", PageType = typeof(MaterialsSplitPage) },
             ]
         },
         new NavFolder
