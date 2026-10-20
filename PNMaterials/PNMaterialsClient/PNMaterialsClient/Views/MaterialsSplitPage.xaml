@@ -4,7 +4,7 @@
       xmlns:controls="using:PNMaterialsClient.Controls"
       xmlns:toolkit="using:CommunityToolkit.WinUI.Controls"
       xmlns:contracts="using:PNMaterialsContracts"
-      xmlns:views="using:PNMaterialsClient.Views">
+      xmlns:tv="using:WinUI.TableView">
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -16,12 +16,46 @@
         <Grid Grid.Column="0" RowSpacing="8">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
             <controls:MessageBar Grid.Row="0" Message="{x:Bind MaterialGroupsViewModel.Message, Mode=OneWay}" />
 
-            <ListView Grid.Row="1"
+            <Grid Grid.Row="1" ColumnSpacing="8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                
+                <Button Grid.Column="0"
+                        Style="{StaticResource IconButtonStyle}"
+                        Click="OnEditGroupClick"
+                        IsEnabled="{x:Bind MaterialsViewModel.IsGroupSelected, Mode=OneWay}"
+                        Width="Auto"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Center"
+                        ToolTipService.ToolTip="Просмотр группы">
+                    <FontIcon Glyph="&#xE7B3;"
+                              FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                              FontSize="14" />
+                </Button>
+
+                <Button Grid.Column="1"
+                        Style="{StaticResource IconButtonStyle}"
+                        Click="OnCreateGroupClick"
+                        Width="Auto"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Center"
+                        ToolTipService.ToolTip="Создать группу">
+                    <FontIcon Glyph="&#xE710;"
+                              FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                              FontSize="14" />
+                </Button>
+            </Grid>
+
+            <ListView Grid.Row="2"
+                      x:Name="GroupsList"
                       ItemsSource="{x:Bind MaterialGroupsViewModel.Groups}"
                       ItemContainerStyle="{StaticResource RoundedListViewItemStyle}"
                       IsItemClickEnabled="True"
@@ -43,6 +77,23 @@
                               ResizeDirection="Columns"
                               ResizeBehavior="PreviousAndNext" />
 
-        <views:MaterialsPage x:Name="MaterialsList" Grid.Column="2" />
+        <controls:EntityListView Grid.Column="2"
+                                 Title="Материалы"
+                                 Message="{x:Bind MaterialsViewModel.Message, Mode=OneWay}"
+                                 CreateClicked="OnCreateMaterialClick">
+
+            <controls:EntityListView.Table>
+                <tv:TableView Style="{StaticResource EntityTableStyle}"
+                              ItemsSource="{x:Bind MaterialsViewModel.Materials}"
+                              ItemClick="OnMaterialClick">
+                    <tv:TableView.Columns>
+                        <tv:TableViewTextColumn Header="Код" Binding="{Binding Code}" Width="Auto" />
+                        <tv:TableViewTextColumn Header="Наименование" Binding="{Binding Name}" Width="Auto" />
+                        <tv:TableViewTextColumn Header="Ед. изм." Binding="{Binding UnitName}" Width="Auto" />
+                        <tv:TableViewTextColumn Header="Описание" Binding="{Binding Description}" Width="*" />
+                    </tv:TableView.Columns>
+                </tv:TableView>
+            </controls:EntityListView.Table>
+        </controls:EntityListView>
     </Grid>
 </Page>

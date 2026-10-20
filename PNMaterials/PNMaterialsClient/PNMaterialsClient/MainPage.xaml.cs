@@ -14,8 +14,6 @@ public sealed partial class MainPage : Page
             Title = "Справочники",
             Children =
             [
-                new NavPage { Title = "Материалы", PageType = typeof(MaterialsPage) },
-                new NavPage { Title = "Группы материалов", PageType = typeof(MaterialGroupsPage) },
                 new NavPage { Title = "Группы и материалы", PageType = typeof(MaterialsSplitPage) },
             ]
         },
@@ -36,7 +34,7 @@ public sealed partial class MainPage : Page
         this.InitializeComponent();
         BuildMenu();
         ContentFrame.Navigated += OnContentFrameNavigated;
-        ContentFrame.Navigate(typeof(MaterialsPage));
+        ContentFrame.Navigate(typeof(MaterialsSplitPage));
     }
 
     private void BuildMenu()

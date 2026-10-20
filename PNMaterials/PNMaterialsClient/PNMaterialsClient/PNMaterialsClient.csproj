@@ -31,16 +31,6 @@
         <ProjectReference Include="..\..\PNMaterialsContracts\PNMaterialsContracts.csproj" />
     </ItemGroup>
     <ItemGroup>
-        <Page Update="Views\MaterialGroupsPage.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-    </ItemGroup>
-    <ItemGroup>
-        <Page Update="Views\MaterialsPage.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-    </ItemGroup>
-    <ItemGroup>
         <Page Update="Views\ReportPage.xaml">
             <Generator>MSBuild:Compile</Generator>
         </Page>

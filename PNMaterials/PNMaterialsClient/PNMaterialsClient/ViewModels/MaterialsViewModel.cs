@@ -8,7 +8,11 @@ public partial class MaterialsViewModel : ViewModelBase
 {
     private readonly ApiClient _api;
 
-    public int? GroupId { get; set; }
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsGroupSelected))]
+    private int? _groupId;
+
+    public bool IsGroupSelected => GroupId.HasValue;
 
     public ObservableCollection<MaterialDto> Materials { get; } = new();
 
@@ -20,9 +24,13 @@ public partial class MaterialsViewModel : ViewModelBase
 
     public async Task LoadAsync()
     {
-        ShowInfo("Загрузка…");
+        if (GroupId is not { } requestedGroupId)
+        {
+            ShowInfo("Выберите группу");
+            return;
+        }
 
-        var requestedGroupId = GroupId;
+        ShowInfo("Загрузка…");
 
         await RunAsync("Загрузка списка материалов", async () =>
         {
