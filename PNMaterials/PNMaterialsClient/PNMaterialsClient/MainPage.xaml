@@ -40,6 +40,16 @@
                                   FontFamily="{ThemeResource SymbolThemeFontFamily}"
                                   FontSize="14" />
                     </Button>
+
+                    <Button x:Name="CreateRequestButton"
+                            Content="Создать заявку"
+                            Style="{StaticResource IconButtonStyle}"
+                            Width="Auto"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            Click="OnCreateRequestClick"
+                            ToolTipService.ToolTip="Создать заявку"
+                            Padding="8" />
                 </StackPanel>
 
                 <MenuBar x:Name="MainMenu"

@@ -1,6 +1,7 @@
 using Microsoft.UI;
 using PNMaterialsClient.Navigation;
 using PNMaterialsClient.Views;
+using PNMaterialsClient.Views.Dialogs;
 
 namespace PNMaterialsClient;
 
@@ -113,5 +114,15 @@ public sealed partial class MainPage : Page
             var isActive = item == active;
             item.BorderBrush = isActive ? accent : new SolidColorBrush(Colors.Transparent);
         }
+    }
+
+    private async void OnCreateRequestClick(object sender, RoutedEventArgs e)
+    {
+        var dialog = new PurchaseRequestCardContentDialog(0)
+        {
+            XamlRoot = XamlRoot
+        };
+
+        await dialog.ShowAsync();
     }
 }
