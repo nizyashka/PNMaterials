@@ -97,6 +97,9 @@ public sealed partial class MaterialsSplitPage : Page
             }
 
             await MaterialsViewModel.LoadAsync();
+
+            if (dialog.IsDeleted)
+                MaterialsViewModel.ShowDeleted();
         }
         catch (Exception ex)
         {

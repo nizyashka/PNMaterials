@@ -155,4 +155,17 @@ public partial class MaterialCardViewModel : ViewModelBase
             ShowSuccess("Справочники обновлены.");
         });
     }
+
+    public async Task<bool> DeleteAsync()
+    {
+        var deleted = false;
+
+        await RunAsync("Удаление материала", async () =>
+        {
+            await _api.DeleteMaterialAsync(Id);
+            deleted = true;
+        });
+
+        return deleted;
+    }
 }

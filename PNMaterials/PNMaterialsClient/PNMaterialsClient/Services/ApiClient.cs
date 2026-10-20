@@ -175,6 +175,11 @@ public class ApiClient
         await SendAsync(_http.PutAsJsonAsync($"api/materials/{id}", dto));
     }
 
+    public async Task DeleteMaterialAsync(int id)
+    {
+        await SendAsync(_http.DeleteAsync($"api/materials/{id}"));
+    }
+
     public async Task<PurchaseRequestDto?> GetPurchaseRequestAsync(int id)
     {
         try

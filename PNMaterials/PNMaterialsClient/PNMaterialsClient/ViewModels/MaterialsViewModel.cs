@@ -13,6 +13,7 @@ public partial class MaterialsViewModel : ViewModelBase
     private int? _groupId;
 
     public bool IsGroupSelected => GroupId.HasValue;
+    public void ShowDeleted() => ShowSuccess("Материал удалён.");
 
     public ObservableCollection<MaterialDto> Materials { get; } = new();
 
