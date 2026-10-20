@@ -48,28 +48,48 @@
 
         <ContentPresenter Grid.Row="2" Content="{x:Bind Body, Mode=OneWay}" />
 
-        <ContentPresenter Grid.Row="3" Content="{x:Bind ExtraButtons, Mode=OneWay}" HorizontalAlignment="Left" />
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
 
-        <Button x:Name="EditButton"
-                Grid.Row="3"
+            <Button x:Name="DeleteButton"
+                Grid.Column="0"
+                HorizontalAlignment="Left"
+                Style="{StaticResource IconButtonStyle}"
+                Command="{x:Bind DeleteCommand, Mode=OneWay}"
+                ToolTipService.ToolTip="Удалить">
+                <FontIcon Glyph="&#xE74D;"
+                      FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                      FontSize="14" />
+            </Button>
+
+            <ContentPresenter Grid.Column="1" Content="{x:Bind ExtraButtons, Mode=OneWay}" HorizontalAlignment="Center" />
+
+            <Button x:Name="EditButton"
+                Grid.Column="2"
                 HorizontalAlignment="Right"
                 Style="{StaticResource IconButtonStyle}"
                 Click="OnToggleEdit"
                 ToolTipService.ToolTip="Редактировать">
-            <FontIcon Glyph="&#xE70F;"
+                <FontIcon Glyph="&#xE70F;"
                       FontFamily="{ThemeResource SymbolThemeFontFamily}"
                       FontSize="14" />
-        </Button>
+            </Button>
 
-        <Button x:Name="SaveButton"
-                Grid.Row="3"
+            <Button x:Name="SaveButton"
+                Grid.Column="2"
                  HorizontalAlignment="Right"
         Style="{StaticResource IconButtonStyle}"
         Command="{x:Bind SaveCommand, Mode=OneWay}"
         ToolTipService.ToolTip="Сохранить">
-            <FontIcon Glyph="&#xE8FB;"
+                <FontIcon Glyph="&#xE8FB;"
               FontFamily="{ThemeResource SymbolThemeFontFamily}"
               FontSize="14" />
-        </Button>
+            </Button>
+
+        </Grid>
     </Grid>
 </UserControl>

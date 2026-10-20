@@ -72,6 +72,16 @@ public sealed partial class EntityCard : UserControl
         set => SetValue(SaveCommandProperty, value);
     }
 
+    public static readonly DependencyProperty DeleteCommandProperty =
+        DependencyProperty.Register(nameof(DeleteCommand), typeof(ICommand), typeof(EntityCard),
+            new PropertyMetadata(null));
+
+    public ICommand? DeleteCommand
+    {
+        get => (ICommand?)GetValue(DeleteCommandProperty);
+        set => SetValue(DeleteCommandProperty, value);
+    }
+
     public static readonly DependencyProperty RefreshCommandProperty =
         DependencyProperty.Register(nameof(RefreshCommand), typeof(ICommand), typeof(EntityCard),
             new PropertyMetadata(null));
