@@ -61,9 +61,9 @@ public partial class ReportViewModel : ViewModelBase
         {
             foreach (var status in await _api.GetRequestStatusesAsync())
                 Statuses.Add(new StatusFilterViewModel(status));
+            
+            ShowInfo("Нажмите Поиск");
         });
-
-        await SearchAsync();
     }
 
     [RelayCommand]
@@ -111,8 +111,6 @@ public partial class ReportViewModel : ViewModelBase
             status.IsSelected = false;
 
         RefreshStatusesSummary();
-
-        await SearchAsync();
     }
 
     private static List<string> ParseValues(string text)
