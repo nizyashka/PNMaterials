@@ -29,7 +29,7 @@
                 </Grid.ColumnDefinitions>
                 <Button Grid.Column="0"
                         Style="{StaticResource IconButtonStyle}"
-                        Command="{x:Bind ViewModel.ClearCommand}"
+                        Command="{x:Bind ReportViewModel.ClearCommand}"
                         Width="Auto"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Center"
@@ -41,11 +41,11 @@
 
                 <Button Grid.Column="1"
                         Style="{StaticResource IconButtonStyle}"
-                        Command="{x:Bind ViewModel.SearchCommand}"
+                        Command="{x:Bind ReportViewModel.SearchCommand}"
                         Width="Auto"
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Center"
-                        ToolTipService.ToolTip="Искать">
+                        ToolTipService.ToolTip="Поиск">
                     <FontIcon Glyph="&#xE721;"
                               FontFamily="{ThemeResource SymbolThemeFontFamily}"
                               FontSize="14" />
@@ -71,28 +71,28 @@
                     <TextBox Grid.Row="0"
                              Header="Код заявки"
                              PlaceholderText="Несколько — через запятую"
-                             Text="{x:Bind ViewModel.RequestNumbersText, Mode=TwoWay}" />
+                             Text="{x:Bind ReportViewModel.RequestNumbersText, Mode=TwoWay}" />
 
                     <TextBox Grid.Row="1"
                              Header="Код материала"
                              PlaceholderText="Несколько — через запятую"
-                             Text="{x:Bind ViewModel.MaterialCodesText, Mode=TwoWay}" />
+                             Text="{x:Bind ReportViewModel.MaterialCodesText, Mode=TwoWay}" />
 
                     <TextBox Grid.Row="2"
                              Header="Наименование материала"
                              PlaceholderText="Неизвестная часть — звёздочка"
-                             Text="{x:Bind ViewModel.MaterialName, Mode=TwoWay}" />
+                             Text="{x:Bind ReportViewModel.MaterialName, Mode=TwoWay}" />
 
                     <CalendarDatePicker Grid.Row="3"
                                         Header="Дата поставки с"
                                         PlaceholderText="Любая"
-                                        Date="{x:Bind ViewModel.DeliveryFrom, Mode=TwoWay}"
+                                        Date="{x:Bind ReportViewModel.DeliveryFrom, Mode=TwoWay}"
                                         HorizontalAlignment="Stretch" />
 
                     <CalendarDatePicker Grid.Row="4"
                                         Header="по"
                                         PlaceholderText="Любая"
-                                        Date="{x:Bind ViewModel.DeliveryTo, Mode=TwoWay}"
+                                        Date="{x:Bind ReportViewModel.DeliveryTo, Mode=TwoWay}"
                                         HorizontalAlignment="Stretch" />
 
                     <TextBlock Grid.Row="5"
@@ -100,11 +100,11 @@
                                Foreground="{StaticResource TextPrimaryBrush}" />
 
                     <DropDownButton Grid.Row="6"
-                                    Content="{x:Bind ViewModel.StatusesSummary, Mode=OneWay}"
+                                    Content="{x:Bind ReportViewModel.StatusesSummary, Mode=OneWay}"
                                     HorizontalAlignment="Stretch">
                         <DropDownButton.Flyout>
                             <Flyout Placement="Bottom" Closed="OnStatusesFlyoutClosed">
-                                <ItemsControl ItemsSource="{x:Bind ViewModel.Statuses}">
+                                <ItemsControl ItemsSource="{x:Bind ReportViewModel.Statuses}">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate x:DataType="vm:StatusFilterViewModel">
                                             <CheckBox Content="{x:Bind Status.Code}"
@@ -117,7 +117,7 @@
                     </DropDownButton>
 
                     <CheckBox Grid.Row="7" Content="Не равно выбранным"
-                              IsChecked="{x:Bind ViewModel.StatusNotEqual, Mode=TwoWay}"
+                              IsChecked="{x:Bind ReportViewModel.StatusNotEqual, Mode=TwoWay}"
                               MinWidth="0" />
                 </Grid>
             </Border>
@@ -136,11 +136,12 @@
                        VerticalAlignment="Top" />
 
             <controls:MessageBar Grid.Row="1"
-                                 Message="{x:Bind ViewModel.Message, Mode=OneWay}" />
+                                 Message="{x:Bind ReportViewModel.Message, Mode=OneWay}" />
 
             <tv:TableView Grid.Row="2"
                           Style="{StaticResource EntityTableStyle}"
-                          ItemsSource="{x:Bind ViewModel.Rows}">
+                          ItemsSource="{x:Bind ReportViewModel.Rows}"
+                          ItemClick="OnRequestClick">
                 <tv:TableView.Columns>
                     <tv:TableViewTextColumn Header="Номер" Binding="{Binding Number}" Width="*" />
                     <tv:TableViewTextColumn Header="Дата поставки" Binding="{Binding DeliveryDate, Converter={StaticResource DateFormat}}" Width="*" />
