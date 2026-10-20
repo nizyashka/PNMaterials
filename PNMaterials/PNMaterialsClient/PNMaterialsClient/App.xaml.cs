@@ -142,7 +142,6 @@ public partial class App : Application
 
         services.AddTransient<MaterialsViewModel>();
         services.AddTransient<MaterialGroupsViewModel>();
-        services.AddTransient<PurchaseRequestsViewModel>();
         services.AddTransient<MaterialCardViewModel>();
         services.AddTransient<MaterialGroupCardViewModel>();
         services.AddTransient<PurchaseRequestCardViewModel>();

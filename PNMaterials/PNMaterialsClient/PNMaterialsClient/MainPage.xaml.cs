@@ -21,14 +21,6 @@ public sealed partial class MainPage : Page
         },
         new NavFolder
         {
-            Title = "Заявки",
-            Children =
-            [
-                new NavPage { Title = "Список заявок", PageType = typeof(PurchaseRequestsPage) },
-            ]
-        },
-        new NavFolder
-        {
             Title = "Отчеты",
             Children =
             [

@@ -41,11 +41,6 @@
         </Page>
     </ItemGroup>
     <ItemGroup>
-        <Page Update="Views\PurchaseRequestsPage.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-    </ItemGroup>
-    <ItemGroup>
         <Page Update="Views\ReportPage.xaml">
             <Generator>MSBuild:Compile</Generator>
         </Page>

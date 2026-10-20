@@ -175,12 +175,6 @@ public class ApiClient
         await SendAsync(_http.PutAsJsonAsync($"api/materials/{id}", dto));
     }
 
-    public async Task<List<PurchaseRequestDto>> GetPurchaseRequestsAsync()
-    {
-        var response = await SendAsync(_http.GetAsync("api/purchaserequests"));
-        return await ReadAsync<List<PurchaseRequestDto>>(response) ?? new();
-    }
-
     public async Task<PurchaseRequestDto?> GetPurchaseRequestAsync(int id)
     {
         try
