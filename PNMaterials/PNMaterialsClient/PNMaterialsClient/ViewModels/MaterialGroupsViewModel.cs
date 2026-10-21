@@ -12,6 +12,8 @@ public partial class MaterialGroupsViewModel : ViewModelBase
 
     public ObservableCollection<MaterialGroupDto> Groups { get; } = new();
 
+    public void ShowDeleted() => ShowSuccess("Группа удалена.");
+
     public MaterialGroupsViewModel(ApiClient api, ILogger<MaterialGroupsViewModel> logger)
         : base(logger)
     {

@@ -56,6 +56,9 @@ public sealed partial class MaterialsSplitPage : Page
             await dialog.ShowAsync();
             await MaterialGroupsViewModel.LoadAsync();
             GroupsList.SelectedItem = MaterialGroupsViewModel.Groups.FirstOrDefault(g => g.Id == MaterialsViewModel.GroupId);
+
+            if (dialog.IsDeleted)
+                MaterialGroupsViewModel.ShowDeleted();
         }
         catch (Exception ex)
         {

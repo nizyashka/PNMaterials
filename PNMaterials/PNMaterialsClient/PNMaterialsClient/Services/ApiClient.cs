@@ -138,6 +138,11 @@ public class ApiClient
         await SendAsync(_http.PutAsJsonAsync($"api/materialgroups/{id}", dto));
     }
 
+    public async Task DeleteMaterialGroupAsync(int id)
+    {
+        await SendAsync(_http.DeleteAsync($"api/materialgroups/{id}"));
+    }
+
     public async Task<List<UnitDto>> GetUnitsAsync()
     {
         var response = await SendAsync(_http.GetAsync("api/units"));
