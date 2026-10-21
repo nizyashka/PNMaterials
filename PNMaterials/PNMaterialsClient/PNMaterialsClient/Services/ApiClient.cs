@@ -107,9 +107,9 @@ public class ApiClient
         }
     }
 
-    public async Task<List<MaterialGroupDto>> GetMaterialGroupsAsync()
+    public async Task<List<MaterialGroupDto>> GetMaterialGroupsAsync(bool includeArchived = false)
     {
-        var response = await SendAsync(_http.GetAsync("api/materialgroups"));
+        var response = await SendAsync(_http.GetAsync($"api/materialgroups?includeArchived={includeArchived}"));
         return await ReadAsync<List<MaterialGroupDto>>(response) ?? new();
     }
 
@@ -138,6 +138,20 @@ public class ApiClient
         await SendAsync(_http.PutAsJsonAsync($"api/materialgroups/{id}", dto));
     }
 
+    public async Task<MaterialGroupDto> ArchiveMaterialGroupAsync(int id)
+    {
+        var response = await SendAsync(_http.PostAsync($"api/materialgroups/{id}/archive", null));
+        return await ReadAsync<MaterialGroupDto>(response)
+            ?? throw new ApiException(ApiErrorKind.InvalidResponse, "Сервер не вернул архивированную группу.");
+    }
+
+    public async Task<MaterialGroupDto> RestoreMaterialGroupAsync(int id)
+    {
+        var response = await SendAsync(_http.PostAsync($"api/materialgroups/{id}/restore", null));
+        return await ReadAsync<MaterialGroupDto>(response)
+            ?? throw new ApiException(ApiErrorKind.InvalidResponse, "Сервер не вернул восстановленную группу.");
+    }
+
     public async Task DeleteMaterialGroupAsync(int id)
     {
         await SendAsync(_http.DeleteAsync($"api/materialgroups/{id}"));
@@ -149,9 +163,10 @@ public class ApiClient
         return await ReadAsync<List<UnitDto>>(response) ?? new();
     }
 
-    public async Task<List<MaterialDto>> GetMaterialsAsync(int? groupId = null)
+    public async Task<List<MaterialDto>> GetMaterialsAsync(int? groupId = null, bool includeArchived = false)
     {
-        var response = await SendAsync(_http.GetAsync(groupId.HasValue ? $"api/materials?groupId={groupId}" : "api/materials"));
+        var response = await SendAsync(_http.GetAsync(groupId.HasValue ? $"api/materials?includeArchived={includeArchived}&groupId={groupId}" 
+            : $"api/materials?includeArchived={includeArchived}"));
         return await ReadAsync<List<MaterialDto>>(response) ?? new();
     }
 
@@ -178,6 +193,20 @@ public class ApiClient
     public async Task UpdateMaterialAsync(int id, MaterialEditDto dto)
     {
         await SendAsync(_http.PutAsJsonAsync($"api/materials/{id}", dto));
+    }
+
+    public async Task<MaterialDto> ArchiveMaterialAsync(int id)
+    {
+        var response = await SendAsync(_http.PostAsync($"api/materials/{id}/archive", null));
+        return await ReadAsync<MaterialDto>(response)
+            ?? throw new ApiException(ApiErrorKind.InvalidResponse, "Сервер не вернул архивированный материал.");
+    }
+
+    public async Task<MaterialDto> RestoreMaterialAsync(int id)
+    {
+        var response = await SendAsync(_http.PostAsync($"api/materials/{id}/restore", null));
+        return await ReadAsync<MaterialDto>(response)
+            ?? throw new ApiException(ApiErrorKind.InvalidResponse, "Сервер не вернул восстановленный материал.");
     }
 
     public async Task DeleteMaterialAsync(int id)
