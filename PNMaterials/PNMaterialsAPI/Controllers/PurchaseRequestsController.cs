@@ -160,12 +160,15 @@ public class PurchaseRequestsController : ControllerBase
 
         var materials = await _db.Materials
             .Where(m => ids.Contains(m.Id))
-            .Select(m => new { m.Id, m.Name, UnitName = m.Unit.Name, m.Unit.AllowsFractions })
+            .Select(m => new { m.Id, m.Name, UnitName = m.Unit.Name, m.Unit.AllowsFractions, m.IsArchived })
             .ToDictionaryAsync(m => m.Id);
 
         var missing = ids.Where(id => !materials.ContainsKey(id)).ToList();
         if (missing.Count > 0)
             return $"Материалы не найдены: {string.Join(", ", missing)}.";
+
+        if (materials.Values.Count(m => m.IsArchived) > 0)
+            return "Заявка не должна содержать архивированные материалы.";
 
         foreach (var item in items)
         {
