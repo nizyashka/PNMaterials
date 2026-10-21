@@ -10,6 +10,7 @@ namespace PNMaterialsDomain.Entities
         public string Code { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
         public string? Description { get; set; }
+        public bool IsArchived { get; set; }
 
         public int UnitId { get; set; }
         public Unit Unit { get; set; } = null!;
