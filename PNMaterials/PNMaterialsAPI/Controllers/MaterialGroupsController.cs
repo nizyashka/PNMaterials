@@ -19,15 +19,21 @@ public class MaterialGroupsController : ControllerBase
 
     // Список всех групп
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<MaterialGroupDto>>> GetAll()
+    public async Task<ActionResult<IEnumerable<MaterialGroupDto>>> GetAll(bool includeArchived = false)
     {
-        var groups = await _db.MaterialGroups
+        var query = _db.MaterialGroups.AsQueryable();
+
+        if (!includeArchived)
+            query = query.Where(g => !g.IsArchived);
+
+        var groups = await query
             .OrderBy(g => g.Name)
             .Select(g => new MaterialGroupDto
             {
                 Id = g.Id,
                 Name = g.Name,
-                Description = g.Description
+                Description = g.Description,
+                IsArchived = g.IsArchived,
             })
             .ToListAsync();
 
@@ -44,7 +50,8 @@ public class MaterialGroupsController : ControllerBase
             {
                 Id = g.Id,
                 Name = g.Name,
-                Description = g.Description
+                Description = g.Description,
+                IsArchived = g.IsArchived,
             })
             .FirstOrDefaultAsync();
 
@@ -92,6 +99,40 @@ public class MaterialGroupsController : ControllerBase
         return NoContent();
     }
 
+    //Поместить группу в архив
+    [HttpPost("{id:int}/archive")]
+    public async Task<ActionResult<MaterialGroupDto>> Archive(int id)
+    {
+        var group = await _db.MaterialGroups.FindAsync(id);
+        if (group is null)
+            return NotFound();
+
+        var hasMaterials = await _db.Materials.AnyAsync(m => m.GroupId == id);
+        if (hasMaterials)
+            return Problem(detail: "Нельзя архивировать группу: она содержит материалы.", statusCode: StatusCodes.Status409Conflict);
+
+        group.IsArchived = true;
+        await _db.SaveChangesAsync();
+        var groupDto = await ToDtoAsync(group.Id);
+
+        return Ok(groupDto);
+    }
+
+    //Восстановить группу из архива
+    [HttpPost("{id:int}/restore")]
+    public async Task<ActionResult<MaterialGroupDto>> Restore(int id)
+    {
+        var group = await _db.MaterialGroups.FindAsync(id);
+        if (group is null)
+            return NotFound();
+
+        group.IsArchived = false;
+        await _db.SaveChangesAsync();
+        var groupDto = await ToDtoAsync(group.Id);
+
+        return Ok(groupDto);
+    }
+
     // Удалить
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
@@ -107,5 +148,20 @@ public class MaterialGroupsController : ControllerBase
         _db.MaterialGroups.Remove(group);
         await _db.SaveChangesAsync();
         return NoContent();
+    }
+
+    // Перечитать группу
+    private async Task<MaterialGroupDto> ToDtoAsync(int id)
+    {
+        return await _db.MaterialGroups
+            .Where(g => g.Id == id)
+            .Select(g => new MaterialGroupDto
+            {
+                Id = g.Id,
+                Name = g.Name,
+                Description = g.Description,
+                IsArchived = g.IsArchived,
+            })
+            .FirstAsync();
     }
 }
