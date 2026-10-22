@@ -111,9 +111,9 @@
     <SolidColorBrush x:Key="ToggleButtonBackgroundPointerOver" Color="{StaticResource HoverColor}" />
     <SolidColorBrush x:Key="ToggleButtonBackgroundPressed" Color="{StaticResource SelectedColor}" />
     <SolidColorBrush x:Key="ToggleButtonBackgroundDisabled" Color="{StaticResource PanelColor}" />
-    <SolidColorBrush x:Key="ToggleButtonBackgroundChecked" Color="{StaticResource SelectedColor}" />
-    <SolidColorBrush x:Key="ToggleButtonBackgroundCheckedPointerOver" Color="{StaticResource SelectedColor}" />
-    <SolidColorBrush x:Key="ToggleButtonBackgroundCheckedPressed" Color="{StaticResource HoverColor}" />
+    <SolidColorBrush x:Key="ToggleButtonBackgroundChecked" Color="{StaticResource PanelColor}" />
+    <SolidColorBrush x:Key="ToggleButtonBackgroundCheckedPointerOver" Color="{StaticResource HoverColor}" />
+    <SolidColorBrush x:Key="ToggleButtonBackgroundCheckedPressed" Color="{StaticResource SelectedColor}" />
     <SolidColorBrush x:Key="ToggleButtonBackgroundCheckedDisabled" Color="{StaticResource PanelColor}" />
 
     <SolidColorBrush x:Key="ToggleButtonBorderBrush" Color="{StaticResource PanelBorderColor}" />
