@@ -105,4 +105,32 @@
     <SolidColorBrush x:Key="ComboBoxItemBackgroundSelectedPointerOver" Color="{StaticResource SelectedColor}" />
 
     <SolidColorBrush x:Key="ComboBoxItemPillFillBrush" Color="{StaticResource AccentColor}" />
+
+    <!--Цвета кнопки включения/выключения-->
+    <SolidColorBrush x:Key="ToggleButtonBackground" Color="{StaticResource PanelColor}" />
+    <SolidColorBrush x:Key="ToggleButtonBackgroundPointerOver" Color="{StaticResource HoverColor}" />
+    <SolidColorBrush x:Key="ToggleButtonBackgroundPressed" Color="{StaticResource SelectedColor}" />
+    <SolidColorBrush x:Key="ToggleButtonBackgroundDisabled" Color="{StaticResource PanelColor}" />
+    <SolidColorBrush x:Key="ToggleButtonBackgroundChecked" Color="{StaticResource SelectedColor}" />
+    <SolidColorBrush x:Key="ToggleButtonBackgroundCheckedPointerOver" Color="{StaticResource SelectedColor}" />
+    <SolidColorBrush x:Key="ToggleButtonBackgroundCheckedPressed" Color="{StaticResource HoverColor}" />
+    <SolidColorBrush x:Key="ToggleButtonBackgroundCheckedDisabled" Color="{StaticResource PanelColor}" />
+
+    <SolidColorBrush x:Key="ToggleButtonBorderBrush" Color="{StaticResource PanelBorderColor}" />
+    <SolidColorBrush x:Key="ToggleButtonBorderBrushPointerOver" Color="{StaticResource PanelBorderColor}" />
+    <SolidColorBrush x:Key="ToggleButtonBorderBrushPressed" Color="{StaticResource AccentColor}" />
+    <SolidColorBrush x:Key="ToggleButtonBorderBrushDisabled" Color="{StaticResource PanelBorderColor}" />
+    <SolidColorBrush x:Key="ToggleButtonBorderBrushChecked" Color="{StaticResource AccentColor}" />
+    <SolidColorBrush x:Key="ToggleButtonBorderBrushCheckedPointerOver" Color="{StaticResource AccentColor}" />
+    <SolidColorBrush x:Key="ToggleButtonBorderBrushCheckedPressed" Color="{StaticResource AccentColor}" />
+    <SolidColorBrush x:Key="ToggleButtonBorderBrushCheckedDisabled" Color="{StaticResource PanelBorderColor}" />
+
+    <SolidColorBrush x:Key="ToggleButtonForeground" Color="{StaticResource TextSecondaryColor}" />
+    <SolidColorBrush x:Key="ToggleButtonForegroundPointerOver" Color="{StaticResource TextPrimaryColor}" />
+    <SolidColorBrush x:Key="ToggleButtonForegroundPressed" Color="{StaticResource TextPrimaryColor}" />
+    <SolidColorBrush x:Key="ToggleButtonForegroundDisabled" Color="{StaticResource TextDisabledColor}" />
+    <SolidColorBrush x:Key="ToggleButtonForegroundChecked" Color="{StaticResource TextPrimaryColor}" />
+    <SolidColorBrush x:Key="ToggleButtonForegroundCheckedPointerOver" Color="{StaticResource TextPrimaryColor}" />
+    <SolidColorBrush x:Key="ToggleButtonForegroundCheckedPressed" Color="{StaticResource TextPrimaryColor}" />
+    <SolidColorBrush x:Key="ToggleButtonForegroundCheckedDisabled" Color="{StaticResource TextDisabledColor}" />
 </ResourceDictionary>
