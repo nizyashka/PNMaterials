@@ -207,6 +207,7 @@ public class MaterialsController : ControllerBase
                 Code = m.Code,
                 Name = m.Name,
                 Description = m.Description,
+                IsArchived = m.IsArchived,
                 UnitId = m.UnitId,
                 UnitName = m.Unit.Name,
                 UnitAllowsFractions = m.Unit.AllowsFractions,
