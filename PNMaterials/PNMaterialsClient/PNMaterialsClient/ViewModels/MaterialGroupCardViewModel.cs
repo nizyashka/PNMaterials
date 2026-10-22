@@ -16,6 +16,7 @@ public partial class MaterialGroupCardViewModel : ViewModelBase
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Header))]
     [NotifyCanExecuteChangedFor(nameof(RefreshCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ToggleArchiveCommand))]
     private int _id;
 
     [ObservableProperty]
@@ -26,11 +27,16 @@ public partial class MaterialGroupCardViewModel : ViewModelBase
     private string _description = string.Empty;
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(ToggleArchiveCommand))]
     private bool _isEditMode;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Header))]
+    private bool _isArchived;
 
     public string Header => Id == 0
         ? "Новая группа материалов"
-        : $"{Id} — {Name}";
+        : $"{Id} — {Name}{(IsArchived ? " (в архиве)" : string.Empty)}";
 
     public async Task LoadAsync(int id)
     {
@@ -58,6 +64,7 @@ public partial class MaterialGroupCardViewModel : ViewModelBase
             Name = group.Name;
             Description = group.Description ?? string.Empty;
             IsEditMode = false;
+            IsArchived = group.IsArchived;
             ShowInfo("Данные перечитаны из базы.");
         });
     }
@@ -104,16 +111,16 @@ public partial class MaterialGroupCardViewModel : ViewModelBase
         await LoadAsync(Id);
     }
 
-    public async Task<bool> DeleteAsync()
+    private bool CanArchive() => Id != 0 && !IsEditMode;
+
+    [RelayCommand(CanExecute = nameof(CanArchive))]
+    private async Task ToggleArchiveAsync()
     {
-        bool deleted = false;
-
-        await RunAsync("Удаление группы", async () =>
+        await RunAsync(IsArchived ? "Восстановление группы" : "Архивирование группы", async () =>
         {
-            await _api.DeleteMaterialGroupAsync(Id);
-            deleted = true;
+            var result = IsArchived ? await _api.RestoreMaterialGroupAsync(Id) : await _api.ArchiveMaterialGroupAsync(Id);
+            IsArchived = result.IsArchived;
+            ShowSuccess(IsArchived ? "Группа перемещена в архив." : "Группа восстановлена из архива.");
         });
-
-        return deleted;
     }
 }

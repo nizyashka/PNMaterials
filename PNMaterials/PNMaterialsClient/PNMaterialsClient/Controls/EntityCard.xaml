@@ -55,15 +55,16 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <Button x:Name="DeleteButton"
-                Grid.Column="0"
-                HorizontalAlignment="Left"
-                Style="{StaticResource IconButtonStyle}"
-                Command="{x:Bind DeleteCommand, Mode=OneWay}"
-                ToolTipService.ToolTip="Удалить">
-                <FontIcon Glyph="&#xE74D;"
-                      FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                      FontSize="14" />
+            <Button x:Name="ArchiveButton"
+                    Grid.Column="0"
+                    Command="{x:Bind ArchiveCommand, Mode=OneWay}"
+                    HorizontalAlignment="Left"
+                    Style="{StaticResource IconButtonStyle}"
+                    ToolTipService.ToolTip="Архивировать">
+                <FontIcon x:Name="ArchiveIcon"
+                          Glyph="&#xE74D;"
+                          FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                          FontSize="14" />
             </Button>
 
             <ContentPresenter Grid.Column="1" Content="{x:Bind ExtraButtons, Mode=OneWay}" HorizontalAlignment="Center" />

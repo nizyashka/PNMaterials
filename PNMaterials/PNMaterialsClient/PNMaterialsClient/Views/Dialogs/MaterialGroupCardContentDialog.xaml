@@ -10,8 +10,9 @@
 
     <controls:EntityCard Header="{x:Bind ViewModel.Header, Mode=OneWay}"
                          IsEditMode="{x:Bind ViewModel.IsEditMode, Mode=TwoWay}"
+                         IsArchived="{x:Bind ViewModel.IsArchived, Mode=OneWay}"
                          SaveCommand="{x:Bind ViewModel.SaveCommand}"
-                         DeleteCommand="{x:Bind DeleteCommand}"
+                         ArchiveCommand="{x:Bind ViewModel.ToggleArchiveCommand}"
                          RefreshCommand="{x:Bind ViewModel.RefreshCommand}"
                          ExitCommand="{x:Bind ExitCommand}"
                          Message="{x:Bind ViewModel.Message, Mode=OneWay}">

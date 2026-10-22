@@ -17,9 +17,10 @@ public partial class MaterialCardViewModel : ViewModelBase
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Header))]
     [NotifyPropertyChangedFor(nameof(CanCreateRequest))]
+    [NotifyCanExecuteChangedFor(nameof(ToggleArchiveCommand))]
     private int _id;
 
-    public bool CanCreateRequest => Id != 0 && !IsEditMode;
+    public bool CanCreateRequest => Id != 0 && !IsEditMode && !IsArchived;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Header))]
@@ -40,14 +41,20 @@ public partial class MaterialCardViewModel : ViewModelBase
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(CanCreateRequest))]
+    [NotifyCanExecuteChangedFor(nameof(ToggleArchiveCommand))]
     private bool _isEditMode;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Header))]
+    [NotifyPropertyChangedFor(nameof(CanCreateRequest))]
+    private bool _isArchived;
 
     public ObservableCollection<UnitDto> Units { get; } = new();
     public ObservableCollection<MaterialGroupDto> Groups { get; } = new();
 
     public string Header => Id == 0
         ? "Новый материал"
-        : $"{Code} — {Name}";
+        : $"{Code} — {Name}{(IsArchived ? " (в архиве)" : string.Empty)}";
 
     public async Task LoadAsync(int id)
     {
@@ -83,6 +90,7 @@ public partial class MaterialCardViewModel : ViewModelBase
             SelectedUnit = Units.FirstOrDefault(u => u.Id == material.UnitId);
             SelectedGroup = Groups.FirstOrDefault(g => g.Id == material.GroupId);
             IsEditMode = false;
+            IsArchived = material.IsArchived;
             ShowInfo("Данные перечитаны из базы.");
         });
     }
@@ -156,16 +164,16 @@ public partial class MaterialCardViewModel : ViewModelBase
         });
     }
 
-    public async Task<bool> DeleteAsync()
+    private bool CanArchive() => Id != 0 && !IsEditMode;
+
+    [RelayCommand(CanExecute = nameof(CanArchive))]
+    private async Task ToggleArchiveAsync()
     {
-        var deleted = false;
-
-        await RunAsync("Удаление материала", async () =>
+        await RunAsync(IsArchived ? "Восстановление материала" : "Архивирование материала", async () =>
         {
-            await _api.DeleteMaterialAsync(Id);
-            deleted = true;
+            var result = IsArchived ? await _api.RestoreMaterialAsync(Id) : await _api.ArchiveMaterialAsync(Id);
+            IsArchived = result.IsArchived;
+            ShowSuccess(IsArchived ? "Материал перемещен в архив." : "Материал восстановлен из архива.");
         });
-
-        return deleted;
     }
 }
