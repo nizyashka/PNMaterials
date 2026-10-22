@@ -103,17 +103,4 @@ public partial class MaterialGroupCardViewModel : ViewModelBase
     {
         await LoadAsync(Id);
     }
-
-    public async Task<bool> DeleteAsync()
-    {
-        bool deleted = false;
-
-        await RunAsync("Удаление группы", async () =>
-        {
-            await _api.DeleteMaterialGroupAsync(Id);
-            deleted = true;
-        });
-
-        return deleted;
-    }
 }

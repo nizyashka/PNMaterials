@@ -7,11 +7,9 @@ public sealed partial class MaterialCardContentDialog : ContentDialog
 {
     private readonly int _id;
     public ICommand ExitCommand { get; }
-    public AsyncRelayCommand DeleteCommand { get; }
 
     public MaterialCardViewModel ViewModel { get; }
     public int? RequestedMaterialId { get; private set; }
-    public bool IsDeleted { get; private set; }
 
     public MaterialCardContentDialog(int id)
     {
@@ -19,8 +17,6 @@ public sealed partial class MaterialCardContentDialog : ContentDialog
         _id = id;
         ViewModel = App.Services.GetRequiredService<MaterialCardViewModel>();
         ExitCommand = new RelayCommand(Hide);
-        DeleteCommand = new AsyncRelayCommand(DeleteAsync, () => ViewModel.Id != 0);
-        ViewModel.PropertyChanged += OnViewModelPropertyChanged;
         Opened += OnOpened;
     }
 
@@ -33,20 +29,5 @@ public sealed partial class MaterialCardContentDialog : ContentDialog
     {
         RequestedMaterialId = ViewModel.Id;
         Hide();
-    }
-
-    private async Task DeleteAsync()
-    {
-        if (await ViewModel.DeleteAsync())
-        {
-            IsDeleted = true;
-            Hide();
-        }
-    }
-
-    private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
-    {
-        if (e.PropertyName == nameof(MaterialCardViewModel.Id))
-            DeleteCommand.NotifyCanExecuteChanged();
     }
 }

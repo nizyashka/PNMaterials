@@ -10,6 +10,7 @@ public sealed partial class EntityCard : UserControl
     {
         this.InitializeComponent();
         UpdateEditButtons();
+        UpdateArchiveButtons();
     }
 
     public static readonly DependencyProperty HeaderProperty =
@@ -30,6 +31,16 @@ public sealed partial class EntityCard : UserControl
     {
         get => (bool)GetValue(IsEditModeProperty);
         set => SetValue(IsEditModeProperty, value);
+    }
+
+    public static readonly DependencyProperty IsArchivedProperty =
+        DependencyProperty.Register(nameof(IsArchived), typeof(bool), typeof(EntityCard),
+            new PropertyMetadata(false, OnIsArchivedStatusChanged));
+
+    public bool IsArchived
+    {
+        get => (bool)GetValue(IsArchivedProperty);
+        set => SetValue(IsArchivedProperty, value);
     }
 
     public static readonly DependencyProperty MessageProperty =
@@ -72,14 +83,14 @@ public sealed partial class EntityCard : UserControl
         set => SetValue(SaveCommandProperty, value);
     }
 
-    public static readonly DependencyProperty DeleteCommandProperty =
-        DependencyProperty.Register(nameof(DeleteCommand), typeof(ICommand), typeof(EntityCard),
+    public static readonly DependencyProperty ArchiveCommandProperty =
+        DependencyProperty.Register(nameof(ArchiveCommand), typeof(ICommand), typeof(EntityCard),
             new PropertyMetadata(null));
 
-    public ICommand? DeleteCommand
+    public ICommand? ArchiveCommand
     {
-        get => (ICommand?)GetValue(DeleteCommandProperty);
-        set => SetValue(DeleteCommandProperty, value);
+        get => (ICommand?)GetValue(ArchiveCommandProperty);
+        set => SetValue(ArchiveCommandProperty, value);
     }
 
     public static readonly DependencyProperty RefreshCommandProperty =
@@ -109,6 +120,16 @@ public sealed partial class EntityCard : UserControl
     {
         EditButton.Visibility = IsEditMode ? Visibility.Collapsed : Visibility.Visible;
         SaveButton.Visibility = IsEditMode ? Visibility.Visible : Visibility.Collapsed;
+    }
+
+    private static void OnIsArchivedStatusChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        => ((EntityCard)d).UpdateArchiveButtons();
+
+    private void UpdateArchiveButtons()
+    {
+        ArchiveIcon.Glyph = IsArchived ? "\uE7A7" : "\uE74D";
+        ToolTipService.SetToolTip(ArchiveButton, IsArchived ? "Восстановить из архива" : "Архивировать");
+        EditButton.IsEnabled = !IsArchived;
     }
 
     private void OnToggleEdit(object sender, RoutedEventArgs e)

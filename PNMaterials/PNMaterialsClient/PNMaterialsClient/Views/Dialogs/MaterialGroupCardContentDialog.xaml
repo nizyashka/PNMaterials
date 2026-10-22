@@ -11,7 +11,6 @@
     <controls:EntityCard Header="{x:Bind ViewModel.Header, Mode=OneWay}"
                          IsEditMode="{x:Bind ViewModel.IsEditMode, Mode=TwoWay}"
                          SaveCommand="{x:Bind ViewModel.SaveCommand}"
-                         DeleteCommand="{x:Bind DeleteCommand}"
                          RefreshCommand="{x:Bind ViewModel.RefreshCommand}"
                          ExitCommand="{x:Bind ExitCommand}"
                          Message="{x:Bind ViewModel.Message, Mode=OneWay}">
