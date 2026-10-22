@@ -21,12 +21,15 @@ public class MaterialsController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<MaterialDto>>> GetAll(int? groupId)
+    public async Task<ActionResult<IEnumerable<MaterialDto>>> GetAll(int? groupId, bool includeArchived = false)
     {
         var query = _db.Materials.AsQueryable();
 
         if (groupId.HasValue)
             query = query.Where(m => m.GroupId == groupId.Value);
+
+        if (!includeArchived)
+            query = query.Where(m => !m.IsArchived);
 
         var materials = await query
             .OrderBy(m => m.Code)
@@ -36,6 +39,7 @@ public class MaterialsController : ControllerBase
                 Code = m.Code,
                 Name = m.Name,
                 Description = m.Description,
+                IsArchived = m.IsArchived,
                 UnitId = m.UnitId,
                 UnitName = m.Unit.Name,
                 UnitAllowsFractions = m.Unit.AllowsFractions,
@@ -59,6 +63,7 @@ public class MaterialsController : ControllerBase
                 Code = m.Code,
                 Name = m.Name,
                 Description = m.Description,
+                IsArchived = m.IsArchived,
                 UnitId = m.UnitId,
                 UnitName = m.Unit.Name,
                 UnitAllowsFractions = m.Unit.AllowsFractions,
@@ -118,6 +123,40 @@ public class MaterialsController : ControllerBase
         return NoContent();
     }
 
+    //Поместить материал в архив
+    [HttpPost("{id:int}/archive")]
+    public async Task<ActionResult<MaterialDto>> Archive(int id)
+    {
+        var material = await _db.Materials.FindAsync(id);
+        if (material is null)
+            return NotFound();
+
+        var usedInRequests = await _db.PurchaseRequestItems.AnyAsync(i => i.MaterialId == id);
+        if (usedInRequests)
+            return Problem(detail: "Нельзя архивировать материал: он используется в заявках.", statusCode: StatusCodes.Status409Conflict);
+
+        material.IsArchived = true;
+        await _db.SaveChangesAsync();
+        var materialDto = await ToDtoAsync(material.Id);
+
+        return Ok(materialDto);
+    }
+
+    //Восстановить материал из архива
+    [HttpPost("{id:int}/restore")]
+    public async Task<ActionResult<MaterialDto>> Restore(int id)
+    {
+        var material = await _db.Materials.FindAsync(id);
+        if (material is null)
+            return NotFound();
+
+        material.IsArchived = false;
+        await _db.SaveChangesAsync();
+        var materialDto = await ToDtoAsync(material.Id);
+
+        return Ok(materialDto);
+    }
+
     // Удалить
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
@@ -158,6 +197,7 @@ public class MaterialsController : ControllerBase
                 Code = m.Code,
                 Name = m.Name,
                 Description = m.Description,
+                IsArchived = m.IsArchived,
                 UnitId = m.UnitId,
                 UnitName = m.Unit.Name,
                 UnitAllowsFractions = m.Unit.AllowsFractions,
