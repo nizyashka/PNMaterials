@@ -1,4 +1,5 @@
 ﻿<Page x:Class="PNMaterialsClient.Views.MaterialsSplitPage"
+      NavigationCacheMode="Enabled"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:controls="using:PNMaterialsClient.Controls"
