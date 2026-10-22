@@ -13,6 +13,7 @@ public partial class MaterialsViewModel : ViewModelBase
     private int? _groupId;
 
     public bool IsGroupSelected => GroupId.HasValue;
+    public bool IncludeArchived { get; set; }
 
     public ObservableCollection<MaterialDto> Materials { get; } = new();
 
@@ -34,7 +35,7 @@ public partial class MaterialsViewModel : ViewModelBase
 
         await RunAsync("Загрузка списка материалов", async () =>
         {
-            var materials = await _api.GetMaterialsAsync(requestedGroupId);
+            var materials = await _api.GetMaterialsAsync(requestedGroupId, IncludeArchived);
 
             if (GroupId != requestedGroupId)
                 return;

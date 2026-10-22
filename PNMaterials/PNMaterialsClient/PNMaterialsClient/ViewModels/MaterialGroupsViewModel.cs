@@ -12,6 +12,8 @@ public partial class MaterialGroupsViewModel : ViewModelBase
 
     public ObservableCollection<MaterialGroupDto> Groups { get; } = new();
 
+    public bool IncludeArchived { get; set; }
+
     public MaterialGroupsViewModel(ApiClient api, ILogger<MaterialGroupsViewModel> logger)
         : base(logger)
     {
@@ -24,7 +26,7 @@ public partial class MaterialGroupsViewModel : ViewModelBase
 
         await RunAsync("Загрузка списка групп", async () =>
         {
-            var groups = await _api.GetMaterialGroupsAsync();
+            var groups = await _api.GetMaterialGroupsAsync(IncludeArchived);
 
             Groups.Clear();
             foreach (var g in groups)
