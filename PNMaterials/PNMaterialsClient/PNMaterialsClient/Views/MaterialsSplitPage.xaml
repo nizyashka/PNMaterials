@@ -5,7 +5,14 @@
       xmlns:controls="using:PNMaterialsClient.Controls"
       xmlns:toolkit="using:CommunityToolkit.WinUI.Controls"
       xmlns:contracts="using:PNMaterialsContracts"
-      xmlns:tv="using:WinUI.TableView">
+      xmlns:tv="using:WinUI.TableView"
+      xmlns:converters="using:PNMaterialsClient.Converters">
+
+    <Page.Resources>
+        <converters:BoolToBrushConverter x:Key="ArchivedForeground"
+                                 TrueBrush="{StaticResource TextSecondaryBrush}"
+                                 FalseBrush="{StaticResource TextPrimaryBrush}" />
+    </Page.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -28,7 +35,7 @@
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
-                
+
                 <Button Grid.Column="0"
                         Style="{StaticResource IconButtonStyle}"
                         Click="OnEditGroupClick"
@@ -87,6 +94,15 @@
                 <tv:TableView Style="{StaticResource EntityTableStyle}"
                               ItemsSource="{x:Bind MaterialsViewModel.Materials}"
                               ItemClick="OnMaterialClick">
+                    <tv:TableView.ConditionalCellStyles>
+                        <tv:TableViewConditionalCellStyle Predicate="{x:Bind IsArchivedMaterial}">
+                            <tv:TableViewConditionalCellStyle.Style>
+                                <Style TargetType="tv:TableViewCell">
+                                    <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+                                </Style>
+                            </tv:TableViewConditionalCellStyle.Style>
+                        </tv:TableViewConditionalCellStyle>
+                    </tv:TableView.ConditionalCellStyles>
                     <tv:TableView.Columns>
                         <tv:TableViewTextColumn Header="Код" Binding="{Binding Code}" Width="Auto" />
                         <tv:TableViewTextColumn Header="Наименование" Binding="{Binding Name}" Width="Auto" />
@@ -95,6 +111,20 @@
                     </tv:TableView.Columns>
                 </tv:TableView>
             </controls:EntityListView.Table>
+
+            <controls:EntityListView.ExtraButtons>
+                <ToggleButton Height="32"
+                              Width="32"
+                              Padding="0"
+                              Click="OnIncludeArchivedClick"
+                              ToolTipService.ToolTip="Показывать архивированные материалы">
+                    <FontIcon x:Name="ArchiveToggleIcon"
+                              Glyph="&#xE890;"
+                              FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                              FontSize="14" />
+                </ToggleButton>
+            </controls:EntityListView.ExtraButtons>
         </controls:EntityListView>
+
     </Grid>
 </Page>

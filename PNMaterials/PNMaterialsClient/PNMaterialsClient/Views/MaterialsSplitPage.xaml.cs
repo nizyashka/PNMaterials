@@ -1,6 +1,8 @@
+using Microsoft.UI.Xaml.Controls.Primitives;
 using PNMaterialsClient.ViewModels;
 using PNMaterialsClient.Views.Dialogs;
 using PNMaterialsContracts;
+using WinUI.TableView;
 
 namespace PNMaterialsClient.Views;
 
@@ -8,6 +10,9 @@ public sealed partial class MaterialsSplitPage : Page
 {
     public MaterialGroupsViewModel MaterialGroupsViewModel { get; }
     public MaterialsViewModel MaterialsViewModel { get; }
+
+    public Predicate<TableViewConditionalCellStyleContext> IsArchivedMaterial { get; } =
+        context => context.DataItem is MaterialDto { IsArchived: true };
 
     public MaterialsSplitPage()
     {
@@ -42,6 +47,16 @@ public sealed partial class MaterialsSplitPage : Page
     {
         if (MaterialsViewModel.GroupId is { } groupId)
             await OpenGroupCardAsync(groupId);
+    }
+
+    private async void OnIncludeArchivedClick(object sender, RoutedEventArgs e)
+    {
+        var includeArchived = ((ToggleButton)sender).IsChecked == true;
+
+        ArchiveToggleIcon.Glyph = includeArchived ? "\uED1A" : "\uE890";
+
+        MaterialsViewModel.IncludeArchived = includeArchived;
+        await MaterialsViewModel.LoadAsync();
     }
 
     private async Task OpenGroupCardAsync(int id)
