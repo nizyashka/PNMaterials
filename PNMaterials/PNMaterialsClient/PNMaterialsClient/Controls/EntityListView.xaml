@@ -14,6 +14,7 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
             <TextBlock Grid.Column="0"
@@ -22,7 +23,9 @@
                        FontWeight="SemiBold"
                        VerticalAlignment="Center" />
 
-            <Button Grid.Column="1"
+            <ContentPresenter Grid.Column="1" Content="{x:Bind ExtraButtons, Mode=OneWay}" />
+
+            <Button Grid.Column="2"
                     Style="{StaticResource IconButtonStyle}"
                     Click="OnCreateButtonClick"
                     VerticalAlignment="Center"

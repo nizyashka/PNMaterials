@@ -12,6 +12,14 @@ public sealed partial class EntityListView : UserControl
         set => SetValue(TitleProperty, value);
     }
 
+    public static readonly DependencyProperty ExtraButtonsProperty =
+        DependencyProperty.Register(nameof(ExtraButtons), typeof(object), typeof(EntityListView), new PropertyMetadata(null));
+    public object? ExtraButtons
+    {
+        get => GetValue(ExtraButtonsProperty);
+        set => SetValue(ExtraButtonsProperty, value);
+    }
+
     public static readonly DependencyProperty MessageProperty =
         DependencyProperty.Register(nameof(Message), typeof(UiMessage), typeof(EntityListView), new PropertyMetadata(null));
     public UiMessage? Message
