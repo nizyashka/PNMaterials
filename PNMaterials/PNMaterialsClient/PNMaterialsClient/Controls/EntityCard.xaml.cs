@@ -85,7 +85,7 @@ public sealed partial class EntityCard : UserControl
 
     public static readonly DependencyProperty ArchiveCommandProperty =
         DependencyProperty.Register(nameof(ArchiveCommand), typeof(ICommand), typeof(EntityCard),
-            new PropertyMetadata(null));
+            new PropertyMetadata(null, OnArchiveCommandChanged));
 
     public ICommand? ArchiveCommand
     {
@@ -125,10 +125,14 @@ public sealed partial class EntityCard : UserControl
     private static void OnIsArchivedStatusChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         => ((EntityCard)d).UpdateArchiveButtons();
 
+    private static void OnArchiveCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        => ((EntityCard)d).UpdateArchiveButtons();
+
     private void UpdateArchiveButtons()
     {
         ArchiveIcon.Glyph = IsArchived ? "\uE7A7" : "\uE74D";
         ToolTipService.SetToolTip(ArchiveButton, IsArchived ? "Восстановить из архива" : "Архивировать");
+        ArchiveButton.Visibility = ArchiveCommand is null ? Visibility.Collapsed : Visibility.Visible;
         EditButton.IsEnabled = !IsArchived;
     }
 
