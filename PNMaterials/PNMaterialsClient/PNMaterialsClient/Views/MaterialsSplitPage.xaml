@@ -37,7 +37,7 @@
                         HorizontalAlignment="Stretch"
                         VerticalAlignment="Center"
                         ToolTipService.ToolTip="Просмотр группы">
-                    <FontIcon Glyph="&#xE7B3;"
+                    <FontIcon Glyph="&#xE70F;"
                               FontFamily="{ThemeResource SymbolThemeFontFamily}"
                               FontSize="14" />
                 </Button>
