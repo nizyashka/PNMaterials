@@ -55,9 +55,6 @@
       <PackageReference Include="WinUI.TableView" />
     </ItemGroup>
     <ItemGroup>
-        <Compile Update="Controls\EntityListView.xaml.cs">
-            <DependentUpon>EntityListView.xaml</DependentUpon>
-        </Compile>
         <Compile Update="Views\Dialogs\MaterialCardContentDialog.xaml.cs">
             <DependentUpon>MaterialCardContentDialog.xaml</DependentUpon>
         </Compile>
@@ -79,11 +76,6 @@
     </ItemGroup>
     <ItemGroup>
         <Page Update="Styles\Controls.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-    </ItemGroup>
-    <ItemGroup>
-        <Page Update="Controls\EntityListView.xaml">
             <Generator>MSBuild:Compile</Generator>
         </Page>
     </ItemGroup>

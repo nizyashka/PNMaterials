@@ -22,8 +22,6 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-
-
             <Grid Grid.Row="1" ColumnSpacing="8">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -84,34 +82,26 @@
                               ResizeDirection="Columns"
                               ResizeBehavior="PreviousAndNext" />
 
-        <controls:EntityListView Grid.Column="2"
-                                 Title="Материалы"
-                                 CreateClicked="OnCreateMaterialClick">
+        <Grid Grid.Column="2" RowSpacing="16">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-            <controls:EntityListView.Table>
-                <tv:TableView Style="{StaticResource EntityTableStyle}"
-                              ItemsSource="{x:Bind MaterialsViewModel.Materials}"
-                              ItemClick="OnMaterialClick">
-                    <tv:TableView.ConditionalCellStyles>
-                        <tv:TableViewConditionalCellStyle Predicate="{x:Bind IsArchivedMaterial}">
-                            <tv:TableViewConditionalCellStyle.Style>
-                                <Style TargetType="tv:TableViewCell">
-                                    <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
-                                </Style>
-                            </tv:TableViewConditionalCellStyle.Style>
-                        </tv:TableViewConditionalCellStyle>
-                    </tv:TableView.ConditionalCellStyles>
-                    <tv:TableView.Columns>
-                        <tv:TableViewTextColumn Header="Код" Binding="{Binding Code}" Width="Auto" />
-                        <tv:TableViewTextColumn Header="Наименование" Binding="{Binding Name}" Width="Auto" />
-                        <tv:TableViewTextColumn Header="Ед. изм." Binding="{Binding UnitName}" Width="Auto" />
-                        <tv:TableViewTextColumn Header="Описание" Binding="{Binding Description}" Width="*" />
-                    </tv:TableView.Columns>
-                </tv:TableView>
-            </controls:EntityListView.Table>
+            <Grid Grid.Row="0" ColumnSpacing="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
 
-            <controls:EntityListView.ExtraButtons>
-                <ToggleButton Height="32"
+                <TextBlock Grid.Column="0"
+                           Text="Материалы"
+                           FontSize="24"
+                           FontWeight="SemiBold"
+                           VerticalAlignment="Center" />
+
+                <ToggleButton Grid.Column="1"
+                              Height="32"
                               Width="32"
                               Padding="0"
                               Click="OnIncludeArchivedClick"
@@ -121,8 +111,28 @@
                               FontFamily="{ThemeResource SymbolThemeFontFamily}"
                               FontSize="14" />
                 </ToggleButton>
-            </controls:EntityListView.ExtraButtons>
-        </controls:EntityListView>
+            </Grid>
 
+            <tv:TableView Grid.Row="1"
+                          Style="{StaticResource EntityTableStyle}"
+                          ItemsSource="{x:Bind MaterialsViewModel.Materials}"
+                          ItemClick="OnMaterialClick">
+                <tv:TableView.ConditionalCellStyles>
+                    <tv:TableViewConditionalCellStyle Predicate="{x:Bind IsArchivedMaterial}">
+                        <tv:TableViewConditionalCellStyle.Style>
+                            <Style TargetType="tv:TableViewCell">
+                                <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+                            </Style>
+                        </tv:TableViewConditionalCellStyle.Style>
+                    </tv:TableViewConditionalCellStyle>
+                </tv:TableView.ConditionalCellStyles>
+                <tv:TableView.Columns>
+                    <tv:TableViewTextColumn Header="Код" Binding="{Binding Code}" Width="Auto" />
+                    <tv:TableViewTextColumn Header="Наименование" Binding="{Binding Name}" Width="Auto" />
+                    <tv:TableViewTextColumn Header="Ед. изм." Binding="{Binding UnitName}" Width="Auto" />
+                    <tv:TableViewTextColumn Header="Описание" Binding="{Binding Description}" Width="*" />
+                </tv:TableView.Columns>
+            </tv:TableView>
+        </Grid>
     </Grid>
 </Page>
