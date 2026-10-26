@@ -25,7 +25,6 @@ public sealed partial class MaterialsSplitPage : Page
     {
         base.OnNavigatedTo(e);
         await MaterialGroupsViewModel.LoadAsync();
-        MaterialsViewModel.ShowSelectGroupHint();
     }
 
     //Методы для групп

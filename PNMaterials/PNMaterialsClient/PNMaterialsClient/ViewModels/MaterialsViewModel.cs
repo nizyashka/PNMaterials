@@ -28,11 +28,8 @@ public partial class MaterialsViewModel : ViewModelBase
     {
         if (GroupId is not { } requestedGroupId)
         {
-            MessagesService.ShowInfo("Выберите группу");
             return;
         }
-
-        MessagesService.ShowInfo("Загрузка…");
 
         await RunAsync("Загрузка списка материалов", async () =>
         {
@@ -47,10 +44,5 @@ public partial class MaterialsViewModel : ViewModelBase
 
             MessagesService.ShowInfo($"Загружено материалов: {Materials.Count}");
         });
-    }
-
-    public void ShowSelectGroupHint()
-    {
-        MessagesService.ShowInfo("Выберите группу");
     }
 }

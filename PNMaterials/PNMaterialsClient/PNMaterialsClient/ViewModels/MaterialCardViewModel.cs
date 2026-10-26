@@ -71,7 +71,6 @@ public partial class MaterialCardViewModel : ViewModelBase
                 SelectedUnit = null;
                 SelectedGroup = null;
                 IsEditMode = true;
-                MessagesService.ShowInfo("Код будет присвоен системой после сохранения.");
                 return;
             }
 

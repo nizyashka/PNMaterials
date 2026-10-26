@@ -61,7 +61,6 @@ public partial class PurchaseRequestCardViewModel : ViewModelBase
                 StatusActions.Clear();
 
                 IsEditMode = true;
-                MessagesService.ShowInfo("Номер будет присвоен системой после сохранения.");
 
                 if (materialId.HasValue)
                     PrefillMaterial(materialId.Value);

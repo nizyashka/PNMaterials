@@ -20,8 +20,6 @@ public partial class MaterialGroupsViewModel : ViewModelBase
 
     public async Task LoadAsync()
     {
-        MessagesService.ShowInfo("Загрузка…");
-
         await RunAsync("Загрузка списка групп", async () =>
         {
             var groups = await _api.GetMaterialGroupsAsync();

@@ -40,7 +40,6 @@ public partial class MaterialGroupCardViewModel : ViewModelBase
             Name = string.Empty;
             Description = string.Empty;
             IsEditMode = true;
-            MessagesService.ShowInfo("Заполните поля и нажмите «Сохранить».");
             return;
         }
 

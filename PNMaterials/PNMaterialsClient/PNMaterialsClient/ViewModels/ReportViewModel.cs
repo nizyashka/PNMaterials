@@ -61,16 +61,12 @@ public partial class ReportViewModel : ViewModelBase
         {
             foreach (var status in await _api.GetRequestStatusesAsync())
                 Statuses.Add(new StatusFilterViewModel(status));
-            
-            MessagesService.ShowInfo("Нажмите Поиск");
         });
     }
 
     [RelayCommand]
     private async Task SearchAsync()
     {
-        MessagesService.ShowInfo("Поиск…");
-
         await RunAsync("Построение отчёта", async () =>
         {
             var filter = new PurchaseRequestReportFilterDto
