@@ -43,16 +43,6 @@ public sealed partial class EntityCard : UserControl
         set => SetValue(IsArchivedProperty, value);
     }
 
-    public static readonly DependencyProperty MessageProperty =
-        DependencyProperty.Register(nameof(Message), typeof(UiMessage), typeof(EntityCard),
-            new PropertyMetadata(null));
-
-    public UiMessage? Message
-    {
-        get => (UiMessage?)GetValue(MessageProperty);
-        set => SetValue(MessageProperty, value);
-    }
-
     public static readonly DependencyProperty BodyProperty =
         DependencyProperty.Register(nameof(Body), typeof(object), typeof(EntityCard),
             new PropertyMetadata(null));
