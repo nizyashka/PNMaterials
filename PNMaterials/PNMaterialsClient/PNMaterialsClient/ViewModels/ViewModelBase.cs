@@ -5,20 +5,22 @@ namespace PNMaterialsClient.ViewModels;
 public abstract partial class ViewModelBase : ObservableObject
 {
     protected ILogger Logger { get; }
+    protected MessagesService MessagesService { get; }
 
     protected ViewModelBase(ILogger logger)
     {
         Logger = logger;
+        MessagesService = App.Services.GetRequiredService<MessagesService>();
     }
 
-    [ObservableProperty]
-    private UiMessage? _message;
+    //[ObservableProperty]
+    //private UiMessage? _message;
 
-    protected void ShowInfo(string text) => Message = new UiMessage(MessageSeverity.Info, text);
-    protected void ShowSuccess(string text) => Message = new UiMessage(MessageSeverity.Success, text);
-    protected void ShowWarning(string text) => Message = new UiMessage(MessageSeverity.Warning, text);
-    protected void ShowError(string text) => Message = new UiMessage(MessageSeverity.Error, text);
-    protected void ClearMessage() => Message = null;
+    //protected void ShowInfo(string text) => Message = new UiMessage(MessageSeverity.Info, text);
+    //protected void ShowSuccess(string text) => Message = new UiMessage(MessageSeverity.Success, text);
+    //protected void ShowWarning(string text) => Message = new UiMessage(MessageSeverity.Warning, text);
+    //protected void ShowError(string text) => Message = new UiMessage(MessageSeverity.Error, text);
+    //protected void ClearMessage() => Message = null;
 
     protected async Task RunAsync(string operation, Func<Task> action)
     {
@@ -29,12 +31,12 @@ public abstract partial class ViewModelBase : ObservableObject
         catch (ApiException ex) when (ex.Kind is ApiErrorKind.Validation or ApiErrorKind.NotFound or ApiErrorKind.Conflict)
         {
             Logger.LogWarning(ex, "{Operation}: {Kind}, ответ сервера: {StatusCode}", operation, ex.Kind.ToString(), FormatStatusCode(ex));
-            ShowWarning(ex.Message);
+            MessagesService.ShowWarning(ex.Message);
         }
         catch (ApiException ex)
         {
             Logger.LogError(ex, "{Operation}: {Kind}, ответ сервера: {StatusCode}", operation, ex.Kind.ToString(), FormatStatusCode(ex));
-            ShowError(ex.Message);
+            MessagesService.ShowError(ex.Message);
         }
         catch (Exception ex)
         {
@@ -48,6 +50,6 @@ public abstract partial class ViewModelBase : ObservableObject
     public void ReportError(string operation, Exception exception)
     {
         Logger.LogError(exception, "{Operation}: непредвиденная ошибка", operation);
-        ShowError("Непредвиденная ошибка. Подробности записаны в журнал.");
+        MessagesService.ShowError("Непредвиденная ошибка. Подробности записаны в журнал.");
     }
 }

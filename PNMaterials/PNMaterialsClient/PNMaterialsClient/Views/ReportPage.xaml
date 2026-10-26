@@ -135,10 +135,10 @@
                        FontSize="24"
                        FontWeight="SemiBold"
                        VerticalAlignment="Top" />
-
+<!--
             <controls:MessageBar Grid.Row="1"
                                  Message="{x:Bind ReportViewModel.Message, Mode=OneWay}" />
-
+-->
             <tv:TableView Grid.Row="2"
                           Style="{StaticResource EntityTableStyle}"
                           ItemsSource="{x:Bind ReportViewModel.Rows}"

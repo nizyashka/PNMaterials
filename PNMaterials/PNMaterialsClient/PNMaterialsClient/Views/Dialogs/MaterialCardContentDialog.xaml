@@ -14,8 +14,7 @@
                          SaveCommand="{x:Bind ViewModel.SaveCommand}"
                          ArchiveCommand="{x:Bind ViewModel.ToggleArchiveCommand}"
                          RefreshCommand="{x:Bind ViewModel.RefreshCommand}"
-                         ExitCommand="{x:Bind ExitCommand}"
-                         Message="{x:Bind ViewModel.Message, Mode=OneWay}">
+                         ExitCommand="{x:Bind ExitCommand}">
 
         <controls:EntityCard.ExtraButtons>
             <Button Content="Создать заявку"

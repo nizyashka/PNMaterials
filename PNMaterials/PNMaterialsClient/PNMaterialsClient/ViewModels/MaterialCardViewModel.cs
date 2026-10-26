@@ -71,7 +71,7 @@ public partial class MaterialCardViewModel : ViewModelBase
                 SelectedUnit = null;
                 SelectedGroup = null;
                 IsEditMode = true;
-                ShowInfo("Код будет присвоен системой после сохранения.");
+                MessagesService.ShowInfo("Код будет присвоен системой после сохранения.");
                 return;
             }
 
@@ -79,7 +79,7 @@ public partial class MaterialCardViewModel : ViewModelBase
 
             if (material is null)
             {
-                ShowWarning("Материал не найден.");
+                MessagesService.ShowWarning("Материал не найден.");
                 return;
             }
 
@@ -91,7 +91,7 @@ public partial class MaterialCardViewModel : ViewModelBase
             SelectedUnit = Units.FirstOrDefault(u => u.Id == material.UnitId);
             SelectedGroup = Groups.FirstOrDefault(g => g.Id == material.GroupId);
             IsEditMode = false;
-            ShowInfo("Данные перечитаны из базы.");
+            MessagesService.ShowInfo("Данные перечитаны из базы.");
         });
     }
 
@@ -120,7 +120,7 @@ public partial class MaterialCardViewModel : ViewModelBase
         var errors = DtoValidator.Validate(dto);
         if (errors.Count > 0)
         {
-            ShowWarning(string.Join(Environment.NewLine, errors));
+            MessagesService.ShowWarning(string.Join(Environment.NewLine, errors));
             return;
         }
 
@@ -131,12 +131,12 @@ public partial class MaterialCardViewModel : ViewModelBase
                 var created = await _api.CreateMaterialAsync(dto);
                 Id = created.Id;
                 Code = created.Code;
-                ShowSuccess($"Материал создан, код {created.Code}.");
+                MessagesService.ShowSuccess($"Материал создан, код {created.Code}.");
             }
             else
             {
                 await _api.UpdateMaterialAsync(Id, dto);
-                ShowSuccess("Изменения сохранены.");
+                MessagesService.ShowSuccess("Изменения сохранены.");
             }
 
             IsEditMode = false;
@@ -160,7 +160,7 @@ public partial class MaterialCardViewModel : ViewModelBase
             await LoadReferencesAsync();
             SelectedUnit = Units.FirstOrDefault(u => u.Id == unitId);
             SelectedGroup = Groups.FirstOrDefault(g => g.Id == groupId);
-            ShowSuccess("Справочники обновлены.");
+            MessagesService.ShowSuccess("Справочники обновлены.");
         });
     }
 
@@ -172,7 +172,7 @@ public partial class MaterialCardViewModel : ViewModelBase
         {
             var result = IsArchived ? await _api.RestoreMaterialAsync(Id) : await _api.ArchiveMaterialAsync(Id);
             IsArchived = result.IsArchived;
-            ShowSuccess(IsArchived ? "Материал перемещен в архив." : "Материал восстановлен из архива.");
+            MessagesService.ShowSuccess(IsArchived ? "Материал перемещен в архив." : "Материал восстановлен из архива.");
         });
     }
 }

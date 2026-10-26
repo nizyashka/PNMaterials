@@ -42,10 +42,10 @@
                                   FontSize="14" />
             </Button>
         </Grid>
-
+<!--
         <local:MessageBar Grid.Row="1"
                           Message="{x:Bind Message, Mode=OneWay}" />
-
+-->
         <ContentPresenter Grid.Row="2" Content="{x:Bind Body, Mode=OneWay}" />
 
         <Grid Grid.Row="3">

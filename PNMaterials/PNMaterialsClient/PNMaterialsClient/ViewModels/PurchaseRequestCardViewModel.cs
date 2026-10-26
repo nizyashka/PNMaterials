@@ -61,7 +61,7 @@ public partial class PurchaseRequestCardViewModel : ViewModelBase
                 StatusActions.Clear();
 
                 IsEditMode = true;
-                ShowInfo("Номер будет присвоен системой после сохранения.");
+                MessagesService.ShowInfo("Номер будет присвоен системой после сохранения.");
 
                 if (materialId.HasValue)
                     PrefillMaterial(materialId.Value);
@@ -73,13 +73,13 @@ public partial class PurchaseRequestCardViewModel : ViewModelBase
 
             if (request is null)
             {
-                ShowWarning("Заявка не найдена.");
+                MessagesService.ShowWarning("Заявка не найдена.");
                 return;
             }
 
             Apply(request);
             IsEditMode = false;
-            ShowInfo("Данные перечитаны из базы.");
+            MessagesService.ShowInfo("Данные перечитаны из базы.");
         });
     }
 
@@ -129,7 +129,7 @@ public partial class PurchaseRequestCardViewModel : ViewModelBase
 
         if (material is null)
         {
-            ShowWarning("Материал не найден.");
+            MessagesService.ShowWarning("Материал не найден.");
             return;
         }
 
@@ -168,7 +168,7 @@ public partial class PurchaseRequestCardViewModel : ViewModelBase
         {
             var updated = await _api.ChangeRequestStatusAsync(Id, statusId);
             Apply(updated);
-            ShowSuccess($"Статус изменён на {updated.Status.Code}.");
+            MessagesService.ShowSuccess($"Статус изменён на {updated.Status.Code}.");
         });
     }
 
@@ -206,7 +206,7 @@ public partial class PurchaseRequestCardViewModel : ViewModelBase
 
         if (errors.Count > 0)
         {
-            ShowWarning(string.Join(Environment.NewLine, errors));
+            MessagesService.ShowWarning(string.Join(Environment.NewLine, errors));
             return;
         }
 
@@ -216,7 +216,7 @@ public partial class PurchaseRequestCardViewModel : ViewModelBase
             {
                 var created = await _api.CreatePurchaseRequestAsync(dto);
                 Apply(created);
-                ShowSuccess($"Заявка создана, номер {created.Number}.");
+                MessagesService.ShowSuccess($"Заявка создана, номер {created.Number}.");
             }
             else
             {
@@ -226,7 +226,7 @@ public partial class PurchaseRequestCardViewModel : ViewModelBase
                 if (reloaded is not null)
                     Apply(reloaded);
 
-                ShowSuccess("Изменения сохранены.");
+                MessagesService.ShowSuccess("Изменения сохранены.");
             }
 
             IsEditMode = false;
@@ -253,7 +253,7 @@ public partial class PurchaseRequestCardViewModel : ViewModelBase
             foreach (var (item, materialId) in selected)
                 item.Material = Materials.FirstOrDefault(m => m.Id == materialId);
 
-            ShowSuccess("Список материалов обновлён.");
+            MessagesService.ShowSuccess("Список материалов обновлён.");
         });
     }
 

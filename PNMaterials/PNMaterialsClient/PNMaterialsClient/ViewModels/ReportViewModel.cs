@@ -62,14 +62,14 @@ public partial class ReportViewModel : ViewModelBase
             foreach (var status in await _api.GetRequestStatusesAsync())
                 Statuses.Add(new StatusFilterViewModel(status));
             
-            ShowInfo("Нажмите Поиск");
+            MessagesService.ShowInfo("Нажмите Поиск");
         });
     }
 
     [RelayCommand]
     private async Task SearchAsync()
     {
-        ShowInfo("Поиск…");
+        MessagesService.ShowInfo("Поиск…");
 
         await RunAsync("Построение отчёта", async () =>
         {
@@ -91,9 +91,9 @@ public partial class ReportViewModel : ViewModelBase
                 Rows.Add(row);
 
             if (Rows.Count == 0)
-                ShowInfo("Заявок по заданным критериям не найдено.");
+                MessagesService.ShowInfo("Заявок по заданным критериям не найдено.");
             else
-                ShowInfo($"Найдено заявок: {Rows.Count}");
+                MessagesService.ShowInfo($"Найдено заявок: {Rows.Count}");
         });
     }
 

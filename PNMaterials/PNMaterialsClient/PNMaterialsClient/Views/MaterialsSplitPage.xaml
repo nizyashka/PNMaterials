@@ -22,7 +22,7 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <controls:MessageBar Grid.Row="0" Message="{x:Bind MaterialGroupsViewModel.Message, Mode=OneWay}" />
+
 
             <Grid Grid.Row="1" ColumnSpacing="8">
                 <Grid.ColumnDefinitions>
@@ -86,7 +86,6 @@
 
         <controls:EntityListView Grid.Column="2"
                                  Title="Материалы"
-                                 Message="{x:Bind MaterialsViewModel.Message, Mode=OneWay}"
                                  CreateClicked="OnCreateMaterialClick">
 
             <controls:EntityListView.Table>

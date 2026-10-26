@@ -20,7 +20,7 @@ public partial class MaterialGroupsViewModel : ViewModelBase
 
     public async Task LoadAsync()
     {
-        ShowInfo("Загрузка…");
+        MessagesService.ShowInfo("Загрузка…");
 
         await RunAsync("Загрузка списка групп", async () =>
         {
@@ -30,7 +30,7 @@ public partial class MaterialGroupsViewModel : ViewModelBase
             foreach (var g in groups)
                 Groups.Add(g);
 
-            ShowInfo($"Загружено групп: {Groups.Count}");
+            MessagesService.ShowInfo($"Загружено групп: {Groups.Count}");
         });
     }
 }

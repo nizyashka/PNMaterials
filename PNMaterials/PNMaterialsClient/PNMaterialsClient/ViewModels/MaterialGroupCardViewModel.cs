@@ -40,7 +40,7 @@ public partial class MaterialGroupCardViewModel : ViewModelBase
             Name = string.Empty;
             Description = string.Empty;
             IsEditMode = true;
-            ShowInfo("Заполните поля и нажмите «Сохранить».");
+            MessagesService.ShowInfo("Заполните поля и нажмите «Сохранить».");
             return;
         }
 
@@ -50,7 +50,7 @@ public partial class MaterialGroupCardViewModel : ViewModelBase
 
             if (group is null)
             {
-                ShowWarning("Группа не найдена.");
+                MessagesService.ShowWarning("Группа не найдена.");
                 return;
             }
 
@@ -58,7 +58,7 @@ public partial class MaterialGroupCardViewModel : ViewModelBase
             Name = group.Name;
             Description = group.Description ?? string.Empty;
             IsEditMode = false;
-            ShowInfo("Данные перечитаны из базы.");
+            MessagesService.ShowInfo("Данные перечитаны из базы.");
         });
     }
 
@@ -74,7 +74,7 @@ public partial class MaterialGroupCardViewModel : ViewModelBase
         var errors = DtoValidator.Validate(dto);
         if (errors.Count > 0)
         {
-            ShowWarning(string.Join(Environment.NewLine, errors));
+            MessagesService.ShowWarning(string.Join(Environment.NewLine, errors));
             return;
         }
 
@@ -84,12 +84,12 @@ public partial class MaterialGroupCardViewModel : ViewModelBase
             {
                 var created = await _api.CreateMaterialGroupAsync(dto);
                 Id = created.Id;
-                ShowSuccess("Группа создана.");
+                MessagesService.ShowSuccess("Группа создана.");
             }
             else
             {
                 await _api.UpdateMaterialGroupAsync(Id, dto);
-                ShowSuccess("Изменения сохранены.");
+                MessagesService.ShowSuccess("Изменения сохранены.");
             }
 
             IsEditMode = false;
