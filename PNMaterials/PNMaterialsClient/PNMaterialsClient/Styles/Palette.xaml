@@ -3,6 +3,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Color x:Key="AppBackgroundColor">#172735</Color>
+    <Color x:Key="TabBarBackgroundColor">#152330</Color>
     <Color x:Key="PanelColor">#213445</Color>
     <Color x:Key="PanelBorderColor">#32495D</Color>
     <Color x:Key="HoverColor">#2A4054</Color>
@@ -13,6 +14,7 @@
     <Color x:Key="TextDisabledColor">#55708A</Color>
 
     <SolidColorBrush x:Key="AppBackgroundBrush" Color="{StaticResource AppBackgroundColor}" />
+    <SolidColorBrush x:Key="TabBarBackgroundBrush" Color="{StaticResource TabBarBackgroundColor}" />
     <SolidColorBrush x:Key="PanelBrush" Color="{StaticResource PanelColor}" />
     <SolidColorBrush x:Key="PanelBorderBrush" Color="{StaticResource PanelBorderColor}" />
     <SolidColorBrush x:Key="HoverBrush" Color="{StaticResource HoverColor}" />
