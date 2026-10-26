@@ -24,7 +24,7 @@
                        VerticalAlignment="Center" />
 
             <ContentPresenter Grid.Column="1" Content="{x:Bind ExtraButtons, Mode=OneWay}" />
-
+<!--
             <Button Grid.Column="2"
                     Style="{StaticResource IconButtonStyle}"
                     Click="OnCreateButtonClick"
@@ -34,6 +34,7 @@
                           FontFamily="{ThemeResource SymbolThemeFontFamily}"
                           FontSize="14" />
             </Button>
+            -->
         </Grid>
 
         <local:MessageBar Grid.Row="1"
