@@ -147,6 +147,8 @@ public partial class App : Application
         services.AddTransient<PurchaseRequestCardViewModel>();
         services.AddTransient<ReportViewModel>();
 
+        services.AddSingleton<MessagesService>();
+
         Services = services.BuildServiceProvider(new ServiceProviderOptions
         {
             ValidateOnBuild = true

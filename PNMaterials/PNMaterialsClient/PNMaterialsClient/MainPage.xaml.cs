@@ -1,5 +1,7 @@
+using System.Collections.Specialized;
 using Microsoft.UI;
 using PNMaterialsClient.Navigation;
+using PNMaterialsClient.Services;
 using PNMaterialsClient.Views;
 using PNMaterialsClient.Views.Dialogs;
 
@@ -29,12 +31,24 @@ public sealed partial class MainPage : Page
 
     private readonly Dictionary<Type, MenuBarItem> _sectionByPage = [];
 
+    private MessagesService MessagesService { get; }
+
     public MainPage()
     {
         this.InitializeComponent();
+        MessagesService = App.Services.GetRequiredService<MessagesService>();
         BuildMenu();
         ContentFrame.Navigated += OnContentFrameNavigated;
         ContentFrame.Navigate(typeof(MaterialsSplitPage));
+        Loaded += OnLoaded;
+    }
+
+    private void OnLoaded(object sender, RoutedEventArgs e)
+    {
+        XamlRoot?.Changed += OnXamlRootChanged;
+        MessagesService.Messages.CollectionChanged += RedrawPopup;
+        ResizePopup();
+        InfoPopup.IsOpen = true;
     }
 
     private void BuildMenu()
@@ -114,5 +128,22 @@ public sealed partial class MainPage : Page
         };
 
         await dialog.ShowAsync();
+    }
+
+    private void RedrawPopup(object? sender, NotifyCollectionChangedEventArgs e)
+    {
+        InfoPopup.IsOpen = false;
+        InfoPopup.IsOpen = true;
+    }
+
+    private void ResizePopup()
+    {
+        PopupGrid.Width = XamlRoot?.Size.Width ?? 0;
+        PopupGrid.Height = XamlRoot?.Size.Height ?? 0;
+    }
+
+    private void OnXamlRootChanged(XamlRoot sender, XamlRootChangedEventArgs args)
+    {
+        ResizePopup();
     }
 }
