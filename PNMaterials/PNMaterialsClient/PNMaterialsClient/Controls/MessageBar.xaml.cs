@@ -1,15 +1,20 @@
+using PNMaterialsClient.Services;
 using PNMaterialsClient.ViewModels;
 
 namespace PNMaterialsClient.Controls;
 
 public sealed partial class MessageBar : UserControl
 {
-    private readonly DispatcherTimer _hideTimer = new() { Interval = TimeSpan.FromSeconds(4) };
+    private readonly DispatcherTimer _hideTimer = new() { Interval = TimeSpan.FromSeconds(3) };
+
+    private MessagesService MessagesService { get; }
 
     public MessageBar()
     {
         this.InitializeComponent();
+        MessagesService = App.Services.GetRequiredService<MessagesService>();
         _hideTimer.Tick += OnHideTimerTick;
+        Bar.Closed += OnInfoBarClosed;
     }
 
     public static readonly DependencyProperty MessageProperty =
@@ -45,7 +50,7 @@ public sealed partial class MessageBar : UserControl
         Bar.Message = Message.Text;
         Bar.IsOpen = true;
 
-        if (Message.Severity == MessageSeverity.Success)
+        if (Message.Severity == MessageSeverity.Success || Message.Severity == MessageSeverity.Info)
             _hideTimer.Start();
     }
 
@@ -53,5 +58,11 @@ public sealed partial class MessageBar : UserControl
     {
         _hideTimer.Stop();
         Bar.IsOpen = false;
+    }
+
+    private void OnInfoBarClosed(InfoBar sender, InfoBarClosedEventArgs args)
+    {
+        _hideTimer.Stop();
+        MessagesService.RemoveMessage(Message);
     }
 }

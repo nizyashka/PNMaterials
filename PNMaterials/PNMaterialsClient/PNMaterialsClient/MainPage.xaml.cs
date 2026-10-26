@@ -132,8 +132,11 @@ public sealed partial class MainPage : Page
 
     private void RedrawPopup(object? sender, NotifyCollectionChangedEventArgs e)
     {
-        InfoPopup.IsOpen = false;
-        InfoPopup.IsOpen = true;
+        if (e.Action == NotifyCollectionChangedAction.Add)
+        {
+            InfoPopup.IsOpen = false;
+            InfoPopup.IsOpen = true;
+        }
     }
 
     private void ResizePopup()
