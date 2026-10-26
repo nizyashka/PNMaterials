@@ -135,4 +135,10 @@
     <SolidColorBrush x:Key="ToggleButtonForegroundCheckedPointerOver" Color="{StaticResource TextPrimaryColor}" />
     <SolidColorBrush x:Key="ToggleButtonForegroundCheckedPressed" Color="{StaticResource TextPrimaryColor}" />
     <SolidColorBrush x:Key="ToggleButtonForegroundCheckedDisabled" Color="{StaticResource TextDisabledColor}" />
+
+    <!--Цвета информационного сообщения-->
+    <SolidColorBrush x:Key="InfoBarInformationalSeverityBackgroundBrush" Color="{StaticResource PanelColor}" />
+    <SolidColorBrush x:Key="InfoBarSuccessSeverityBackgroundBrush" Color="#1E3A2E" />
+    <SolidColorBrush x:Key="InfoBarWarningSeverityBackgroundBrush" Color="#3B3322" />
+    <SolidColorBrush x:Key="InfoBarErrorSeverityBackgroundBrush" Color="#3F2529" />
 </ResourceDictionary>
