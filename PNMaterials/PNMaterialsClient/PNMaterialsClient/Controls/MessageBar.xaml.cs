@@ -63,6 +63,8 @@ public sealed partial class MessageBar : UserControl
     private void OnInfoBarClosed(InfoBar sender, InfoBarClosedEventArgs args)
     {
         _hideTimer.Stop();
-        MessagesService.RemoveMessage(Message);
+
+        if (Message is { } message)
+            MessagesService.RemoveMessage(message);
     }
 }
