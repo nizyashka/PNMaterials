@@ -18,7 +18,8 @@
             <TextBox Header="Наименование группы *"
                      Text="{x:Bind ViewModel.Name, Mode=TwoWay}"
                      IsEnabled="{x:Bind ViewModel.IsEditMode, Mode=OneWay}"
-                     MaxLength="40" />
+                     MaxLength="40"
+                     controls:TextBoxCounter.CharCounter="True" />
 
             <TextBox Header="Описание"
                      Text="{x:Bind ViewModel.Description, Mode=TwoWay}"
@@ -26,7 +27,8 @@
                      MaxLength="200"
                      AcceptsReturn="True"
                      TextWrapping="Wrap"
-                     Height="120" />
+                     Height="120"
+                     controls:TextBoxCounter.CharCounter="True" />
         </StackPanel>
     </controls:EntityCard>
 </ContentDialog>

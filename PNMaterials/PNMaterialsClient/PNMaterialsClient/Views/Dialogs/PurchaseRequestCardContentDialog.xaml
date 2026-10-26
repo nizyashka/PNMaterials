@@ -113,34 +113,41 @@
                                           SelectedItem="{x:Bind Material, Mode=TwoWay}"
                                           DisplayMemberPath="Code"
                                           IsEnabled="{x:Bind IsEditMode, Mode=OneWay}"
-                                          HorizontalAlignment="Stretch" />
+                                          HorizontalAlignment="Stretch"
+                                          VerticalAlignment="Top" />
 
                                 <TextBlock Grid.Column="1"
                                            Text="{x:Bind MaterialName, Mode=OneWay}"
-                                           VerticalAlignment="Center"
+                                           VerticalAlignment="Top"
+                                           Padding="0, 6"
                                            TextTrimming="CharacterEllipsis" />
 
                                 <TextBlock Grid.Column="2"
                                            Text="{x:Bind UnitName, Mode=OneWay}"
-                                           VerticalAlignment="Center" />
+                                           Padding="0, 6"
+                                           VerticalAlignment="Top"  />
 
                                 <NumberBox Grid.Column="3"
                                            Value="{x:Bind Quantity, Mode=TwoWay}"
                                            Minimum="0.01" Maximum="999999.99"
                                            SmallChange="1"
                                            SpinButtonPlacementMode="Compact"
-                                           IsEnabled="{x:Bind IsEditMode, Mode=OneWay}" />
+                                           IsEnabled="{x:Bind IsEditMode, Mode=OneWay}"
+                                           VerticalAlignment="Top" />
 
                                 <TextBox Grid.Column="4"
                                          Text="{x:Bind PositionText, Mode=TwoWay}"
                                          MaxLength="200"
-                                         IsEnabled="{x:Bind IsEditMode, Mode=OneWay}" />
+                                         IsEnabled="{x:Bind IsEditMode, Mode=OneWay}"
+                                         controls:TextBoxCounter.CharCounter="True"
+                                         VerticalAlignment="Top" />
 
                                 <Button Grid.Column="5"
                                         Style="{StaticResource IconButtonStyle}"
                                         Command="{x:Bind RemoveCommand}"
                                         IsEnabled="{x:Bind IsEditMode, Mode=OneWay}"
-                                        ToolTipService.ToolTip="Убрать">
+                                        ToolTipService.ToolTip="Убрать"
+                                        VerticalAlignment="Top">
                                     <FontIcon Glyph="&#xE711;"
                                               FontFamily="{ThemeResource SymbolThemeFontFamily}"
                                               FontSize="14" />

@@ -30,13 +30,17 @@
             <TextBox Header="Наименование материала *"
                      Text="{x:Bind ViewModel.Name, Mode=TwoWay}"
                      IsEnabled="{x:Bind ViewModel.IsEditMode, Mode=OneWay}"
-                     MaxLength="40" />
+                     MaxLength="40"
+                     controls:TextBoxCounter.CharCounter="True" />
 
             <TextBox Header="Описание материала"
                      Text="{x:Bind ViewModel.Description, Mode=TwoWay}"
                      IsEnabled="{x:Bind ViewModel.IsEditMode, Mode=OneWay}"
                      MaxLength="200"
-                     AcceptsReturn="True" TextWrapping="Wrap" Height="120" />
+                     AcceptsReturn="True"
+                     TextWrapping="Wrap"
+                     Height="120"
+                     controls:TextBoxCounter.CharCounter="True"/>
 
             <ComboBox Header="Единица измерения *"
                       ItemsSource="{x:Bind ViewModel.Units}"
