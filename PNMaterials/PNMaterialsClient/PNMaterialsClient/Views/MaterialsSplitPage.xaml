@@ -8,12 +8,6 @@
       xmlns:tv="using:WinUI.TableView"
       xmlns:converters="using:PNMaterialsClient.Converters">
 
-    <Page.Resources>
-        <converters:BoolToBrushConverter x:Key="ArchivedForeground"
-                                 TrueBrush="{StaticResource TextSecondaryBrush}"
-                                 FalseBrush="{StaticResource TextPrimaryBrush}" />
-    </Page.Resources>
-
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="260" MinWidth="200" MaxWidth="350" />
