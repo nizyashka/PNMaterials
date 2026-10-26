@@ -58,6 +58,10 @@ public class MaterialGroupsController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<MaterialGroupDto>> Create(MaterialGroupEditDto dto)
     {
+        var name = dto.Name.Trim();
+        if (await _db.MaterialGroups.AnyAsync(g => g.Name == name))
+            return Problem(detail: "Группа материалов с таким именем уже существует.", statusCode: StatusCodes.Status409Conflict);
+
         var group = new MaterialGroup
         {
             Name = dto.Name,
@@ -84,6 +88,10 @@ public class MaterialGroupsController : ControllerBase
         var group = await _db.MaterialGroups.FindAsync(id);
         if (group is null)
             return NotFound();
+
+        var name = dto.Name.Trim();
+        if (await _db.MaterialGroups.AnyAsync(g => g.Name == name && g.Id != id))
+            return Problem(detail: "Группа материалов с таким именем уже существует.", statusCode: StatusCodes.Status409Conflict);
 
         group.Name = dto.Name;
         group.Description = dto.Description;

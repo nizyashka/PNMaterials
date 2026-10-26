@@ -15,6 +15,9 @@ public class MaterialGroupConfiguration : IEntityTypeConfiguration<MaterialGroup
             .IsRequired()
             .HasMaxLength(40);
 
+        builder.HasIndex(g => g.Name)
+            .IsUnique();
+
         builder.Property(g => g.Description)
             .HasMaxLength(200);
     }
