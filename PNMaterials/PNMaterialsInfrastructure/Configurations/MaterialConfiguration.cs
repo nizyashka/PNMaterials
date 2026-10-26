@@ -22,6 +22,9 @@ public class MaterialConfiguration : IEntityTypeConfiguration<Material>
             .IsRequired()
             .HasMaxLength(40);
 
+        builder.HasIndex(m => m.Name)
+            .IsUnique();
+
         builder.Property(m => m.Description)
             .HasMaxLength(200);
 

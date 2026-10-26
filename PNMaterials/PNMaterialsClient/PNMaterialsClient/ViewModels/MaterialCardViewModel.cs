@@ -119,7 +119,11 @@ public partial class MaterialCardViewModel : ViewModelBase
         var errors = DtoValidator.Validate(dto);
         if (errors.Count > 0)
         {
-            MessagesService.ShowWarning(string.Join(Environment.NewLine, errors));
+            foreach (var error in errors)
+            {
+                MessagesService.ShowWarning(error);
+                //MessagesService.ShowWarning(string.Join(Environment.NewLine, errors));
+            }
             return;
         }
 

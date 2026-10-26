@@ -66,6 +66,9 @@ namespace PNMaterialsInfrastructure.Migrations
 
                     b.HasIndex("GroupId");
 
+                    b.HasIndex("Name")
+                        .IsUnique();
+
                     b.HasIndex("UnitId");
 
                     b.ToTable("Materials", (string)null);

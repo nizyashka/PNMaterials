@@ -86,10 +86,14 @@ public class MaterialsController : ControllerBase
         if (error is not null)
             return Problem(detail: error, statusCode: StatusCodes.Status400BadRequest);
 
+        var name = dto.Name.Trim();
+        if (await _db.Materials.AnyAsync(m => m.Name == name))
+            return Problem(detail: "Материал с таким именем уже существует.", statusCode: StatusCodes.Status409Conflict);
+
         var material = new Material
         {
             Code = await _codeGenerator.NextAsync(),
-            Name = dto.Name,
+            Name = name,
             Description = dto.Description,
             UnitId = dto.UnitId,
             GroupId = dto.GroupId
@@ -114,7 +118,11 @@ public class MaterialsController : ControllerBase
         if (error is not null)
             return Problem(detail: error, statusCode: StatusCodes.Status400BadRequest);
 
-        material.Name = dto.Name;
+        var name = dto.Name.Trim();
+        if (await _db.Materials.AnyAsync(m => m.Name == name && m.Id != id))
+            return Problem(detail: "Материал с таким именем уже существует.", statusCode: StatusCodes.Status409Conflict);
+
+        material.Name = name;
         material.Description = dto.Description;
         material.UnitId = dto.UnitId;
         material.GroupId = dto.GroupId;
