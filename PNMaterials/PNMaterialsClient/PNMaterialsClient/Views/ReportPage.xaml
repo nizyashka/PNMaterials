@@ -127,7 +127,6 @@
         <Grid Grid.Column="1" RowSpacing="8">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0"
@@ -135,11 +134,8 @@
                        FontSize="24"
                        FontWeight="SemiBold"
                        VerticalAlignment="Top" />
-<!--
-            <controls:MessageBar Grid.Row="1"
-                                 Message="{x:Bind ReportViewModel.Message, Mode=OneWay}" />
--->
-            <tv:TableView Grid.Row="2"
+            
+            <tv:TableView Grid.Row="1"
                           Style="{StaticResource EntityTableStyle}"
                           ItemsSource="{x:Bind ReportViewModel.Rows}"
                           ItemClick="OnRequestClick">

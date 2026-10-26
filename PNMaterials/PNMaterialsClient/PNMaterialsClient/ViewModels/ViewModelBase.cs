@@ -13,15 +13,6 @@ public abstract partial class ViewModelBase : ObservableObject
         MessagesService = App.Services.GetRequiredService<MessagesService>();
     }
 
-    //[ObservableProperty]
-    //private UiMessage? _message;
-
-    //protected void ShowInfo(string text) => Message = new UiMessage(MessageSeverity.Info, text);
-    //protected void ShowSuccess(string text) => Message = new UiMessage(MessageSeverity.Success, text);
-    //protected void ShowWarning(string text) => Message = new UiMessage(MessageSeverity.Warning, text);
-    //protected void ShowError(string text) => Message = new UiMessage(MessageSeverity.Error, text);
-    //protected void ClearMessage() => Message = null;
-
     protected async Task RunAsync(string operation, Func<Task> action)
     {
         try

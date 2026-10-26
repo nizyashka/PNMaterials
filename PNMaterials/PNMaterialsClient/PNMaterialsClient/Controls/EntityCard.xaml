@@ -6,7 +6,6 @@
     <Grid RowSpacing="16">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
@@ -42,13 +41,10 @@
                                   FontSize="14" />
             </Button>
         </Grid>
-<!--
-        <local:MessageBar Grid.Row="1"
-                          Message="{x:Bind Message, Mode=OneWay}" />
--->
-        <ContentPresenter Grid.Row="2" Content="{x:Bind Body, Mode=OneWay}" />
+        
+        <ContentPresenter Grid.Row="1" Content="{x:Bind Body, Mode=OneWay}" />
 
-        <Grid Grid.Row="3">
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />

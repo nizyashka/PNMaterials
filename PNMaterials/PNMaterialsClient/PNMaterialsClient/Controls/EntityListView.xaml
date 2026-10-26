@@ -6,7 +6,6 @@
     <Grid RowSpacing="16">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -24,23 +23,9 @@
                        VerticalAlignment="Center" />
 
             <ContentPresenter Grid.Column="1" Content="{x:Bind ExtraButtons, Mode=OneWay}" />
-<!--
-            <Button Grid.Column="2"
-                    Style="{StaticResource IconButtonStyle}"
-                    Click="OnCreateButtonClick"
-                    VerticalAlignment="Center"
-                    ToolTipService.ToolTip="Создать">
-                <FontIcon Glyph="&#xE710;"
-                          FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                          FontSize="14" />
-            </Button>
-            -->
         </Grid>
 
-        <local:MessageBar Grid.Row="1"
-                          Message="{x:Bind Message, Mode=OneWay}" />
-
-        <ContentPresenter Grid.Row="2"
+        <ContentPresenter Grid.Row="1"
                           Content="{x:Bind Table, Mode=OneWay}" />
     </Grid>
 </UserControl>
