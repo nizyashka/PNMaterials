@@ -16,6 +16,9 @@ try
     // Add services to the container.
 
     builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+    
+
     builder.Services.AddScoped<IMaterialCodeGenerator, MaterialCodeGenerator>();
     builder.Services.AddScoped<IRequestNumberGenerator, RequestNumberGenerator>();
     builder.Services.AddSerilog((services, lc) => lc

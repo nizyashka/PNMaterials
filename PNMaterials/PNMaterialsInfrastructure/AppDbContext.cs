@@ -1,9 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using PNMaterialsDomain.Entities;
+using PNMaterialsInfrastructure.Identity;
 
 namespace PNMaterialsInfrastructure;
 
-public class AppDbContext : DbContext
+public class AppDbContext : IdentityDbContext<PNUser, IdentityRole<int>, int>
 {
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
