@@ -5,6 +5,7 @@ using PNMaterialsAPI.ErrorHandling;
 using PNMaterialsInfrastructure;
 using PNMaterialsInfrastructure.Identity;
 using PNMaterialsInfrastructure.Services;
+using PNMaterialsAPI.Identity;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -31,6 +32,7 @@ try
         .AddRoles<IdentityRole<int>>()
         .AddEntityFrameworkStores<AppDbContext>();
 
+    builder.Services.AddScoped<IdentitySeeder>();
     builder.Services.AddScoped<IMaterialCodeGenerator, MaterialCodeGenerator>();
     builder.Services.AddScoped<IRequestNumberGenerator, RequestNumberGenerator>();
     builder.Services.AddSerilog((services, lc) => lc
@@ -63,6 +65,7 @@ try
     {
         var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         await db.Database.MigrateAsync();
+        await scope.ServiceProvider.GetRequiredService<IdentitySeeder>().SeedAsync();
     }
 
     app.UseExceptionHandler();
