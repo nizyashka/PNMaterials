@@ -29,6 +29,7 @@ try
         options.Password.RequiredLength = 6;
         options.Password.RequiredUniqueChars = 0;
     })
+        .AddSignInManager()
         .AddRoles<IdentityRole<int>>()
         .AddEntityFrameworkStores<AppDbContext>();
 
