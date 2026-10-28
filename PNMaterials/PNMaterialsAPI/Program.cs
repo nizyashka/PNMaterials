@@ -32,6 +32,10 @@ try
         .AddRoles<IdentityRole<int>>()
         .AddEntityFrameworkStores<AppDbContext>();
 
+    builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));
+
+    builder.Services.AddSingleton<TokenService>();
+
     builder.Services.AddScoped<IdentitySeeder>();
     builder.Services.AddScoped<IMaterialCodeGenerator, MaterialCodeGenerator>();
     builder.Services.AddScoped<IRequestNumberGenerator, RequestNumberGenerator>();
