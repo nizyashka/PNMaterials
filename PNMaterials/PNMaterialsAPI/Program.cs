@@ -1,7 +1,9 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using PNMaterialsAPI.ErrorHandling;
 using PNMaterialsInfrastructure;
+using PNMaterialsInfrastructure.Identity;
 using PNMaterialsInfrastructure.Services;
 using Serilog;
 
@@ -17,7 +19,17 @@ try
 
     builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-    
+    builder.Services.AddIdentityCore<PNUser>(options =>
+    {
+        options.Password.RequireDigit = false;
+        options.Password.RequireLowercase = false;
+        options.Password.RequireNonAlphanumeric = false;
+        options.Password.RequireUppercase = false;
+        options.Password.RequiredLength = 6;
+        options.Password.RequiredUniqueChars = 0;
+    })
+        .AddRoles<IdentityRole<int>>()
+        .AddEntityFrameworkStores<AppDbContext>();
 
     builder.Services.AddScoped<IMaterialCodeGenerator, MaterialCodeGenerator>();
     builder.Services.AddScoped<IRequestNumberGenerator, RequestNumberGenerator>();
@@ -27,6 +39,7 @@ try
         .Enrich.FromLogContext()
     );
 
+    builder.Services.AddAuthentication();
     builder.Services.AddControllers();
     builder.Services.AddProblemDetails();
     builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
@@ -63,6 +76,7 @@ try
 
     app.UseHttpsRedirection();
 
+    app.UseAuthentication();
     app.UseAuthorization();
 
     app.MapControllers();
