@@ -8,15 +8,15 @@ public class PNUserConfiguration : IEntityTypeConfiguration<PNUser>
 {
     public void Configure(EntityTypeBuilder<PNUser> builder)
     {
-        builder.Property(m => m.FirstName)
+        builder.Property(u => u.FirstName)
             .IsRequired()
             .HasMaxLength(50);
 
-        builder.Property(m => m.LastName)
+        builder.Property(u => u.LastName)
             .IsRequired()
             .HasMaxLength(50);
 
-        builder.Property(m => m.MiddleName)
+        builder.Property(u => u.MiddleName)
             .HasMaxLength(50);
     }
 }
