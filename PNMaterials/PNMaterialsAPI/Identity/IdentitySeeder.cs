@@ -24,7 +24,7 @@ public class IdentitySeeder(
 
         var admin = configuration.GetSection("PNAdmin").Get<PNAdminOptions>();
         if (admin is null || string.IsNullOrWhiteSpace(admin.Username) || string.IsNullOrWhiteSpace(admin.Password))
-            throw new InvalidOperationException("В базе нет администратора, или в конфигурации не задан раздел PNAdmin с логином и паролем.");
+            throw new InvalidOperationException("В системе нет администратора, а в конфигурации не задан раздел PNAdmin с логином и паролем.");
 
         if (await userManager.FindByNameAsync(admin.Username) is not null)
             throw new InvalidOperationException($"В системе нет администратора, а логин {admin.Username} из раздела PNAdmin уже занят другим пользователем.");

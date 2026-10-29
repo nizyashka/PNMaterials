@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.UI.Windowing;
 using PNMaterialsClient.Services;
 using PNMaterialsClient.ViewModels;
+using PNMaterialsClient.Views;
 using Serilog;
 using Serilog.Extensions.Logging;
 using Uno.Resizetizer;
@@ -82,7 +83,7 @@ public partial class App : Application
             // When the navigation stack isn't restored navigate to the first page,
             // configuring the new page by passing required information as a navigation
             // parameter
-            rootFrame.Navigate(typeof(MainPage), args.Arguments);
+            rootFrame.Navigate(typeof(LoginPage), args.Arguments);
         }
 
         MainWindow.SetWindowIcon();
@@ -138,7 +139,11 @@ public partial class App : Application
 
         var (apiBaseAddress, addressProblem, addressError) = ResolveApiBaseAddress();
 
-        services.AddHttpClient<ApiClient>(client => client.BaseAddress = apiBaseAddress);
+        services.AddTransient<JwtAuthorizationHandler>();
+
+        services.AddHttpClient<ApiClient>(client => client.BaseAddress = apiBaseAddress)
+            .AddHttpMessageHandler<JwtAuthorizationHandler>();
+        services.AddHttpClient<AuthApiClient>(client => client.BaseAddress = apiBaseAddress);
 
         services.AddTransient<MaterialsViewModel>();
         services.AddTransient<MaterialGroupsViewModel>();
@@ -146,8 +151,10 @@ public partial class App : Application
         services.AddTransient<MaterialGroupCardViewModel>();
         services.AddTransient<PurchaseRequestCardViewModel>();
         services.AddTransient<ReportViewModel>();
+        services.AddTransient<LoginViewModel>();
 
         services.AddSingleton<MessagesService>();
+        services.AddSingleton<AccessTokenProvider>();
 
         Services = services.BuildServiceProvider(new ServiceProviderOptions
         {
