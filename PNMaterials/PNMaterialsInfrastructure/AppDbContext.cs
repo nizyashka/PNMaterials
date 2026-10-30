@@ -17,6 +17,7 @@ public class AppDbContext : IdentityDbContext<PNUser, IdentityRole<int>, int>
     public DbSet<Material> Materials => Set<Material>();
     public DbSet<PurchaseRequest> PurchaseRequests => Set<PurchaseRequest>();
     public DbSet<PurchaseRequestItem> PurchaseRequestItems => Set<PurchaseRequestItem>();
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -3,6 +3,7 @@ using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
 using PNMaterialsInfrastructure.Identity;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace PNMaterialsAPI.Identity;
@@ -38,5 +39,10 @@ public class TokenService(IOptions<JwtOptions> options)
         var token = new JsonWebTokenHandler().CreateToken(securityTokenDescriptor);
 
         return (token, dateTimeOffset);
+    }
+
+    public string GenerateRefreshToken()
+    {
+        return Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
     }
 }
