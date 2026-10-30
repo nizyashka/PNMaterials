@@ -40,7 +40,6 @@ public partial class LoginViewModel : ViewModelBase
         await RunAsync("Попытка входа.", async () =>
         {
             var result = await _authApiClient.Login(new LoginDto { Login = Login!, Password = Password! });
-            //Че-то делать с результатом
             _accessTokenProvider.SetAccessToken(result.Token);
             loggedIn = true;
             OnSuccessfulLogin();

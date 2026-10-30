@@ -102,6 +102,12 @@ public sealed partial class MainPage : Page
 
     private void OnContentFrameNavigated(object sender, NavigationEventArgs e)
     {
+        if (e.SourcePageType == typeof(MainPage))
+        {
+            ContentFrame.BackStack.Clear();
+            ContentFrame.ForwardStack.Clear();
+        }
+
         BackButton.IsEnabled = ContentFrame.CanGoBack;
         ForwardButton.IsEnabled = ContentFrame.CanGoForward;
 
