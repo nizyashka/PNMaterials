@@ -10,7 +10,9 @@ namespace PNMaterialsAPI.Identity;
 
 public class TokenService(IOptions<JwtOptions> options)
 {
-    public (string Token, DateTimeOffset Expiration) CreateToken(PNUser user, IEnumerable<string> roles)
+    public record AccessToken(string Token, DateTimeOffset Expiration);
+
+    public AccessToken CreateToken(PNUser user, IEnumerable<string> roles)
     {
         var claims = new List<Claim> 
         {
@@ -38,7 +40,7 @@ public class TokenService(IOptions<JwtOptions> options)
 
         var token = new JsonWebTokenHandler().CreateToken(securityTokenDescriptor);
 
-        return (token, dateTimeOffset);
+        return new AccessToken(token, dateTimeOffset);
     }
 
     public string GenerateRefreshToken()

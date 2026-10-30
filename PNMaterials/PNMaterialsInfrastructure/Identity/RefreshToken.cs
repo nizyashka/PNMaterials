@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PNMaterialsInfrastructure.Identity;
+﻿namespace PNMaterialsInfrastructure.Identity;
 
 public class RefreshToken
 {
