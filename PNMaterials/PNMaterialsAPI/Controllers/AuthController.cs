@@ -43,23 +43,15 @@ public class AuthController : ControllerBase
             return Problem(detail: "Неверный логин или пароль.", statusCode: StatusCodes.Status401Unauthorized);
 
         var roles = await _userManager.GetRolesAsync(user);
-        var issued = _tokenService.CreateToken(user, roles);
+        var accessToken = _tokenService.CreateToken(TokenService.TokenType.Access, user, roles);
+        var refreshToken = _tokenService.CreateToken(TokenService.TokenType.Refresh, user);
 
-        var refreshToken = new RefreshToken
-        {
-            Token = _tokenService.GenerateRefreshToken(),
-            ExpiresOn = DateTime.UtcNow.AddDays(7),
-            UserId = user.Id,
-        };
-
-        _db.RefreshTokens.Add(refreshToken);
-        await _db.SaveChangesAsync();
 
         return Ok(new LoginResultDto
         {
-            Token = issued.Token,
-            Expiration = issued.Expiration,
-            RefreshToken = refreshToken.Token,
+            Token = accessToken.TokenString,
+            Expiration = accessToken.Expiration,
+            RefreshToken = refreshToken.TokenString,
             Login = user.UserName!,
             FullName = $"{user.LastName} {user.FirstName} {user.MiddleName}".Trim(),
             Roles = roles.ToArray()
@@ -69,28 +61,23 @@ public class AuthController : ControllerBase
     [HttpPost("refresh")]
     public async Task<ActionResult<TokenResponse>> RefreshToken([FromBody] RefreshTokenRequest request)
     {
-        RefreshToken existing = await _db.RefreshTokens.Include(t => t.User).FirstOrDefaultAsync(t => t.Token == request.RefreshToken);
+        int? userId = await _tokenService.ValidateRefreshTokenAsync(request.RefreshToken);
 
-        if (existing == null)
-            return Problem(detail: "Отсутствует токен обновления.", statusCode: StatusCodes.Status401Unauthorized);
+        if (userId == null)
+            return Problem(detail: "Не удалось подтвердить валидность токена обновления.", statusCode: StatusCodes.Status401Unauthorized);
 
-        if (existing.ExpiresOn < DateTime.UtcNow)
-            return Problem(detail: "Токен обновления просрочен.", statusCode: StatusCodes.Status401Unauthorized);
+        PNUser? user = await _userManager.FindByIdAsync(userId.Value.ToString());
 
-        var roles = await _userManager.GetRolesAsync(existing.User);
-        var accessToken = _tokenService.CreateToken(existing.User, roles);
+        if (user == null)
+            return Problem(detail: "Пользователь не найден.", statusCode: StatusCodes.Status401Unauthorized);
 
-        var newRefreshToken = new RefreshToken
-        {
-            Token = _tokenService.GenerateRefreshToken(),
-            ExpiresOn = DateTime.UtcNow.AddDays(7),
-            UserId = existing.UserId
-        };
+        if (await _userManager.IsLockedOutAsync(user))
+            return Problem(detail: "Пользователь заблокирован.", statusCode: StatusCodes.Status403Forbidden);
 
-        _db.RefreshTokens.Add(newRefreshToken);
-        _db.RefreshTokens.Remove(existing);
-        await _db.SaveChangesAsync();
+        var roles = await _userManager.GetRolesAsync(user);
+        var accessToken = _tokenService.CreateToken(TokenService.TokenType.Access, user, roles);
+        var refreshToken = _tokenService.CreateToken(TokenService.TokenType.Refresh, user);
 
-        return Ok(new TokenResponse { AccessToken = accessToken.Token, RefreshToken = newRefreshToken.Token, AccessTokenExpiresAt = accessToken.Expiration });
+        return Ok(new TokenResponse { AccessToken = accessToken.TokenString, RefreshToken = refreshToken.TokenString, AccessTokenExpiresAt = accessToken.Expiration });
     }
 }

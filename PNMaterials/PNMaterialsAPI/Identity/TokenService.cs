@@ -10,9 +10,11 @@ namespace PNMaterialsAPI.Identity;
 
 public class TokenService(IOptions<JwtOptions> options)
 {
-    public record AccessToken(string Token, DateTimeOffset Expiration);
+    public record Token(string TokenString, DateTimeOffset Expiration);
 
-    public AccessToken CreateToken(PNUser user, IEnumerable<string> roles)
+    public enum TokenType { Access, Refresh }
+
+    public Token CreateToken(TokenType tokenType, PNUser user, IEnumerable<string>? roles = null)
     {
         var claims = new List<Claim> 
         {
@@ -20,18 +22,24 @@ public class TokenService(IOptions<JwtOptions> options)
             new Claim(JwtRegisteredClaimNames.Name, user.UserName!),
         };
 
-        foreach (var role in roles)
+        if (roles != null && roles.Any())
         {
-            claims.Add(new Claim("role", role));
+            foreach (var role in roles)
+            {
+                claims.Add(new Claim("role", role));
+            }
         }
 
         var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(options.Value.SecretKey));
-        DateTimeOffset dateTimeOffset = DateTime.UtcNow.AddHours(options.Value.ExpirationInHours);
+
+        var lifetime = tokenType == TokenType.Access ? options.Value.AccessTokenLifetime : options.Value.RefreshTokenLifetime;
+        DateTimeOffset dateTimeOffset = DateTime.UtcNow.Add(lifetime);
 
 
         var securityTokenDescriptor = new SecurityTokenDescriptor 
         {
             Subject = new ClaimsIdentity(claims),
+            TokenType = tokenType.ToString(),
             Issuer = options.Value.Issuer,
             Audience = options.Value.Audience,
             Expires = dateTimeOffset.UtcDateTime,
@@ -40,11 +48,43 @@ public class TokenService(IOptions<JwtOptions> options)
 
         var token = new JsonWebTokenHandler().CreateToken(securityTokenDescriptor);
 
-        return new AccessToken(token, dateTimeOffset);
+        return new Token(token, dateTimeOffset);
     }
 
-    public string GenerateRefreshToken()
+    public async Task<int?> ValidateRefreshTokenAsync(string refreshToken)
     {
-        return Convert.ToBase64String(RandomNumberGenerator.GetBytes(32));
+        var validationParameters = new TokenValidationParameters
+        {
+            RequireSignedTokens = true,
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(options.Value.SecretKey)),
+            ValidAlgorithms = [SecurityAlgorithms.HmacSha256],
+
+            ValidateIssuer = true,
+            ValidIssuer = options.Value.Issuer,
+
+            ValidateAudience = true,
+            RequireAudience = true,
+            ValidAudience = options.Value.Audience,
+
+            ValidTypes = [TokenType.Refresh.ToString()],
+
+            ValidateLifetime = true,
+            RequireExpirationTime = true,
+            ClockSkew = TimeSpan.Zero
+        };
+
+        var result = await new JsonWebTokenHandler().ValidateTokenAsync(refreshToken, validationParameters);
+
+        if (!result.IsValid)
+            return null;
+
+        var subject = result.ClaimsIdentity
+            .FindFirst(JwtRegisteredClaimNames.Sub)?.Value;
+
+        if (!int.TryParse(subject, out var userId) || userId <= 0)
+            return null;
+
+        return userId;
     }
 }
