@@ -66,7 +66,7 @@ public class MaterialGroupsController : ControllerBase
 
         var group = new MaterialGroup
         {
-            Name = dto.Name,
+            Name = name,
             Description = dto.Description
         };
 
@@ -95,7 +95,7 @@ public class MaterialGroupsController : ControllerBase
         if (await _db.MaterialGroups.AnyAsync(g => g.Name == name && g.Id != id))
             return Problem(detail: "Группа материалов с таким именем уже существует.", statusCode: StatusCodes.Status409Conflict);
 
-        group.Name = dto.Name;
+        group.Name = name;
         group.Description = dto.Description;
 
         await _db.SaveChangesAsync();
