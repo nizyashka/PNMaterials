@@ -21,4 +21,11 @@ public class AuthApiClient
         return await ApiRequestExecutor.ReadAsync<LoginResultDto>(response)
             ?? throw new ApiException(ApiErrorKind.InvalidResponse, "Сервер не вернул результат логина.");
     }
+
+    public async Task<TokenResponse> Refresh(RefreshTokenRequest dto)
+    {
+        var response = await ApiRequestExecutor.SendAsync(_http.PostAsJsonAsync("api/auth/refresh", dto));
+        return await ApiRequestExecutor.ReadAsync<TokenResponse>(response)
+            ?? throw new ApiException(ApiErrorKind.InvalidResponse, "Сервер не вернул результат обновления токена.");
+    }
 }
