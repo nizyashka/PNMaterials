@@ -41,6 +41,7 @@ public partial class LoginViewModel : ViewModelBase
         {
             var result = await _authApiClient.Login(new LoginDto { Login = Login!, Password = Password! });
             _accessTokenProvider.SetAccessToken(result.Token);
+            _accessTokenProvider.SetRefreshToken(result.RefreshToken);
             loggedIn = true;
             OnSuccessfulLogin();
         });
