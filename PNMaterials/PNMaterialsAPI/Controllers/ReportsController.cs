@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PNMaterialsContracts;
 using PNMaterialsDomain;
@@ -9,6 +10,7 @@ namespace PNMaterialsAPI.Controllers;
 
 [ApiController]
 [Route("api/reports")]
+[Authorize]
 public class ReportsController : ControllerBase
 {
     private readonly AppDbContext _db;

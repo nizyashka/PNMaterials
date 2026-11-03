@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PNMaterialsContracts;
 using PNMaterialsInfrastructure;
@@ -7,6 +8,7 @@ namespace PNMaterialsAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class UnitsController : ControllerBase
 {
     private readonly AppDbContext _db;

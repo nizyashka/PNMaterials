@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PNMaterialsContracts;
 using PNMaterialsDomain;
@@ -10,6 +11,7 @@ namespace PNMaterialsAPI.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class PurchaseRequestsController : ControllerBase
 {
     private readonly AppDbContext _db;
