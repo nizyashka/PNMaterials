@@ -19,7 +19,7 @@ public abstract partial class ViewModelBase : ObservableObject
         {
             await action();
         }
-        catch (ApiException ex) when (ex.Kind is ApiErrorKind.Validation or ApiErrorKind.NotFound or ApiErrorKind.Conflict)
+        catch (ApiException ex) when (ex.Kind is ApiErrorKind.Validation or ApiErrorKind.NotFound or ApiErrorKind.Conflict or ApiErrorKind.Forbidden)
         {
             Logger.LogWarning(ex, "{Operation}: {Kind}, ответ сервера: {StatusCode}", operation, ex.Kind.ToString(), FormatStatusCode(ex));
             MessagesService.ShowWarning(ex.Message);

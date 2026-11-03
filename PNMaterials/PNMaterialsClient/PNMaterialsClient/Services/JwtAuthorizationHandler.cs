@@ -28,14 +28,20 @@ public class JwtAuthorizationHandler : DelegatingHandler
         if (result.StatusCode == HttpStatusCode.Unauthorized)
         {
             if (string.IsNullOrWhiteSpace(_tokenProvider.RefreshToken))
-                return result;
+                throw new ApiException(ApiErrorKind.SessionExpired, "Срок сессии завершился. Выполните аутентификацию заново.");
 
-            var tokenResponse = await _authApiClient.Refresh(new RefreshTokenRequest { RefreshToken = _tokenProvider.RefreshToken });
-            _tokenProvider.SetAccessToken(tokenResponse.AccessToken);
-            _tokenProvider.SetRefreshToken(tokenResponse.RefreshToken);
-
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _tokenProvider.AccessToken);
-            result = await base.SendAsync(request, cancellationToken);
+            try
+            {
+                var tokenResponse = await _authApiClient.Refresh(new RefreshTokenRequest { RefreshToken = _tokenProvider.RefreshToken });
+                _tokenProvider.SetAccessToken(tokenResponse.AccessToken);
+                _tokenProvider.SetRefreshToken(tokenResponse.RefreshToken);
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _tokenProvider.AccessToken);
+                result = await base.SendAsync(request, cancellationToken);
+            }
+            catch (ApiException ex) when (ex.Kind is ApiErrorKind.Unauthorized)
+            {
+                throw new ApiException(ApiErrorKind.SessionExpired, "Срок сессии завершился. Выполните аутентификацию заново.", ex.StatusCode, ex);
+            }
         }
 
         return result;
