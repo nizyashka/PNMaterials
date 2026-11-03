@@ -54,6 +54,10 @@ public static class ApiRequestExecutor
             ApiErrorKind.Validation or ApiErrorKind.Conflict =>
                 ExtractMessage(await response.Content.ReadAsStringAsync(), response.StatusCode),
             ApiErrorKind.NotFound => "Запись не найдена. Возможно, она была удалена.",
+            ApiErrorKind.Unauthorized =>
+                ExtractMessage(await response.Content.ReadAsStringAsync(), response.StatusCode, "Не удалось подтвердить вход. Войдите в систему повторно."),
+            ApiErrorKind.Forbidden =>
+                ExtractMessage(await response.Content.ReadAsStringAsync(), response.StatusCode, "Доступ запрещён."),
             ApiErrorKind.Server => "Ошибка на сервере. Попробуйте повторить позже.",
             _ => $"Неожиданный ответ сервера ({(int)response.StatusCode})."
         };
@@ -66,14 +70,18 @@ public static class ApiRequestExecutor
         HttpStatusCode.BadRequest => ApiErrorKind.Validation,
         HttpStatusCode.NotFound => ApiErrorKind.NotFound,
         HttpStatusCode.Conflict => ApiErrorKind.Conflict,
+        HttpStatusCode.Unauthorized => ApiErrorKind.Unauthorized,
+        HttpStatusCode.Forbidden => ApiErrorKind.Forbidden,
         _ when (int)status >= 500 => ApiErrorKind.Server,
         _ => ApiErrorKind.Unexpected
     };
 
-    private static string ExtractMessage(string body, HttpStatusCode status)
+    private static string ExtractMessage(string body, HttpStatusCode status, string? fallbackMessage = null)
     {
+        fallbackMessage ??= $"Ошибка запроса ({(int)status}).";
+
         if (string.IsNullOrWhiteSpace(body))
-            return $"Ошибка сервера ({(int)status}).";
+            return fallbackMessage;
 
         try
         {
@@ -85,17 +93,22 @@ public static class ApiRequestExecutor
                     .SelectMany(p => p.Value.EnumerateArray().Select(v => v.GetString()))
                     .Where(m => !string.IsNullOrWhiteSpace(m));
 
-                return string.Join(Environment.NewLine, messages);
+                var message = string.Join(Environment.NewLine, messages);
+
+                if (!string.IsNullOrWhiteSpace(message))
+                    return message;
             }
 
-            if (doc.RootElement.TryGetProperty("detail", out var detail) && detail.GetString() is { Length: > 0 } detailText)
-                return detailText;
+            if (doc.RootElement.TryGetProperty("detail", out var detail))
+            {
+                var message = detail.GetString();
 
-            if (doc.RootElement.TryGetProperty("title", out var title))
-                return title.GetString() ?? body;
+                if (!string.IsNullOrWhiteSpace(message))
+                    return message;
+            }
         }
         catch (Exception ex) when (ex is JsonException or InvalidOperationException) { }
 
-        return body;
+        return fallbackMessage;
     }
 }

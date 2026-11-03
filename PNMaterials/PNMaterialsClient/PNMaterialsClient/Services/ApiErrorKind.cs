@@ -9,5 +9,7 @@ public enum ApiErrorKind
     Conflict,
     Server,
     InvalidResponse,
+    Unauthorized,
+    Forbidden,
     Unexpected
 }
