@@ -9,38 +9,37 @@ namespace PNMaterialsClient.Services;
 
 public class JwtAuthorizationHandler : DelegatingHandler
 {
-    private AccessTokenProvider _tokenProvider { get; }
+    private LoginInfoProvider _loginProvider { get; }
     private AuthApiClient _authApiClient { get; }
 
-    public JwtAuthorizationHandler(AccessTokenProvider tokenProvider, AuthApiClient authApiClient)
+    public JwtAuthorizationHandler(LoginInfoProvider loginProvider, AuthApiClient authApiClient)
     {
-        _tokenProvider = tokenProvider;
+        _loginProvider = loginProvider;
         _authApiClient = authApiClient;
     }
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        if (!string.IsNullOrWhiteSpace(_tokenProvider.AccessToken))
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _tokenProvider.AccessToken);
+        if (!string.IsNullOrWhiteSpace(_loginProvider.AccessToken))
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _loginProvider.AccessToken);
 
         var result = await base.SendAsync(request, cancellationToken);
 
         if (result.StatusCode == HttpStatusCode.Unauthorized)
         {
-            if (string.IsNullOrWhiteSpace(_tokenProvider.RefreshToken))
-                throw new ApiException(ApiErrorKind.SessionExpired, "Срок сессии завершился. Выполните аутентификацию заново.");
+            if (string.IsNullOrWhiteSpace(_loginProvider.Username) || string.IsNullOrWhiteSpace(_loginProvider.Password))
+                throw new ApiException(ApiErrorKind.Unauthorized, "Не выполнен вход в приложение.");
 
             try
             {
-                var tokenResponse = await _authApiClient.Refresh(new RefreshTokenRequest { RefreshToken = _tokenProvider.RefreshToken });
-                _tokenProvider.SetAccessToken(tokenResponse.AccessToken);
-                _tokenProvider.SetRefreshToken(tokenResponse.RefreshToken);
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _tokenProvider.AccessToken);
+                var loginResult = await _authApiClient.Login(new LoginDto { Username = _loginProvider.Username, Password = _loginProvider.Password });
+                _loginProvider.SetAccessToken(loginResult.AccessToken);
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _loginProvider.AccessToken);
                 result = await base.SendAsync(request, cancellationToken);
             }
             catch (ApiException ex) when (ex.Kind is ApiErrorKind.Unauthorized)
             {
-                throw new ApiException(ApiErrorKind.SessionExpired, "Срок сессии завершился. Выполните аутентификацию заново.", ex.StatusCode, ex);
+                throw new ApiException(ApiErrorKind.Unauthorized, "Повторите вход в приложение.", HttpStatusCode.Unauthorized, ex);
             }
         }
 

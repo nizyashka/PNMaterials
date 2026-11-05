@@ -4,9 +4,9 @@ namespace PNMaterialsContracts;
 
 public class LoginDto
 {
-    [Required(ErrorMessage = "Логин обязателен")]
-    public string Login { get; set; } = string.Empty;
+    [Required(ErrorMessage = "Имя пользователя обязательно.")]
+    public string Username { get; set; } = string.Empty;
 
-    [Required(ErrorMessage = "Пароль обязателен")]
+    [Required(ErrorMessage = "Пароль обязателен.")]
     public string Password { get; set; } = string.Empty;
 }

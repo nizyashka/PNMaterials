@@ -2,7 +2,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.IdentityModel.Tokens;
 using PNMaterialsAPI.ErrorHandling;
 using PNMaterialsAPI.Identity;
@@ -64,7 +63,6 @@ try
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("Jwt:SecretKey").Value!)),
                 ClockSkew = TimeSpan.Zero,
                 ValidAlgorithms = [SecurityAlgorithms.HmacSha256],
-                ValidTypes = [TokenService.TokenType.Access.ToString()],
             };
         });
     builder.Services.AddControllers();

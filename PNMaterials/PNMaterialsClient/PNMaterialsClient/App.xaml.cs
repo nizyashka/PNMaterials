@@ -154,7 +154,7 @@ public partial class App : Application
         services.AddTransient<LoginViewModel>();
 
         services.AddSingleton<MessagesService>();
-        services.AddSingleton<AccessTokenProvider>();
+        services.AddSingleton<LoginInfoProvider>();
 
         Services = services.BuildServiceProvider(new ServiceProviderOptions
         {

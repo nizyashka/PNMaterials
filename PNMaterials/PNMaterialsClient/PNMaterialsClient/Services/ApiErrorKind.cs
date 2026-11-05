@@ -11,6 +11,5 @@ public enum ApiErrorKind
     InvalidResponse,
     Unauthorized,
     Forbidden,
-    SessionExpired,
     Unexpected
 }

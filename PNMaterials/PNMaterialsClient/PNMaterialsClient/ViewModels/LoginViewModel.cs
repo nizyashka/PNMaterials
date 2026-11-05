@@ -9,45 +9,51 @@ namespace PNMaterialsClient.ViewModels;
 public partial class LoginViewModel : ViewModelBase
 {
     private AuthApiClient _authApiClient;
-    private AccessTokenProvider _accessTokenProvider;
+    private LoginInfoProvider _loginInfoProvider;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(LogInCommand))]
-    public string _login;
+    private string _username = string.Empty;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(LogInCommand))]
-    public string _password;
+    private string _password = string.Empty;
 
-    private Action OnSuccessfulLogin { get; set; }
-    private Action OnFailedLogin { get; set; }
+    private Action? OnSuccessfulLogin { get; set; }
+    private Action? OnFailedLogin { get; set; }
 
     public LoginViewModel(
         AuthApiClient authApiClient, 
-        AccessTokenProvider accessTokenProvider, 
-        ILogger<MaterialCardViewModel> logger) 
+        LoginInfoProvider loginInfoProvider, 
+        ILogger<LoginViewModel> logger) 
         : base(logger)
     {
         _authApiClient = authApiClient;
-        _accessTokenProvider = accessTokenProvider;
+        _loginInfoProvider = loginInfoProvider;
     }
 
     [RelayCommand(CanExecute = nameof(TextBoxesAreFilled))]
     public async Task LogInAsync()
     {
+        var onSuccessfulLogin = OnSuccessfulLogin 
+            ?? throw new InvalidOperationException("Обработчик успешного входа не задан.");
+
+        var onFailedLogin = OnFailedLogin
+            ?? throw new InvalidOperationException("Обработчик неудачного входа не задан.");
+
         bool loggedIn = false;
 
-        await RunAsync("Попытка входа.", async () =>
+        await RunAsync("Попытка аутентификации.", async () =>
         {
-            var result = await _authApiClient.Login(new LoginDto { Login = Login!, Password = Password! });
-            _accessTokenProvider.SetAccessToken(result.Token);
-            _accessTokenProvider.SetRefreshToken(result.RefreshToken);
+            LoginDto loginDto = new LoginDto { Username = Username!, Password = Password! };
+            var result = await _authApiClient.Login(loginDto);
+            _loginInfoProvider.SetLoginInfo(result.AccessToken, result.Username, loginDto.Password);
             loggedIn = true;
-            OnSuccessfulLogin();
+            onSuccessfulLogin();
         });
 
         if (!loggedIn)
-            OnFailedLogin();
+            onFailedLogin();
     }
 
     public void Bind(Action onSuccessfulLogin, Action onFailedLogin)
@@ -56,5 +62,5 @@ public partial class LoginViewModel : ViewModelBase
         OnFailedLogin = onFailedLogin;
     }
 
-    private bool TextBoxesAreFilled() => !string.IsNullOrWhiteSpace(Password) && !string.IsNullOrWhiteSpace(Login);
+    private bool TextBoxesAreFilled() => !string.IsNullOrWhiteSpace(Password) && !string.IsNullOrWhiteSpace(Username);
 }
