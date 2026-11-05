@@ -8,9 +8,7 @@ namespace PNMaterialsInfrastructure;
 
 public class AppDbContext : IdentityDbContext<PNUser, IdentityRole<int>, int>
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
-    {
-    }
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
     public DbSet<Unit> Units => Set<Unit>();
     public DbSet<MaterialGroup> MaterialGroups => Set<MaterialGroup>();

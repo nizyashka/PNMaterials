@@ -94,7 +94,7 @@ public partial class ReportViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private async Task ClearAsync()
+    private void Clear()
     {
         RequestNumbersText = string.Empty;
         MaterialCodesText = string.Empty;
