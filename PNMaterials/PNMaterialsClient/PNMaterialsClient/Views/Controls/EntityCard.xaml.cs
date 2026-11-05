@@ -1,7 +1,6 @@
 using Microsoft.UI.Xaml.Markup;
-using PNMaterialsClient.ViewModels;
 
-namespace PNMaterialsClient.Controls;
+namespace PNMaterialsClient.Views.Controls;
 
 [ContentProperty(Name = nameof(Body))]
 public sealed partial class EntityCard : UserControl

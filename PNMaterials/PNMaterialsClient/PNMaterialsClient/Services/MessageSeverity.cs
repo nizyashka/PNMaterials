@@ -1,4 +1,4 @@
-namespace PNMaterialsClient.ViewModels;
+namespace PNMaterialsClient.Services;
 
 public enum MessageSeverity
 {

@@ -1,8 +1,8 @@
-﻿<Page x:Class="PNMaterialsClient.MainPage"
+﻿<Page x:Class="PNMaterialsClient.Views.MainPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:vm="using:PNMaterialsClient.ViewModels"
-      xmlns:controls="using:PNMaterialsClient.Controls"
+      xmlns:services="using:PNMaterialsClient.Services"
+      xmlns:controls="using:PNMaterialsClient.Views.Controls"
       Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Grid>
         <Grid Background="{StaticResource AppBackgroundBrush}">
@@ -85,7 +85,7 @@
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="vm:UiMessage">
+                        <DataTemplate x:DataType="services:UiMessage">
                             <controls:MessageBar Message="{x:Bind}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>

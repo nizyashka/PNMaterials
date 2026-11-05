@@ -36,11 +36,6 @@
         </Page>
     </ItemGroup>
     <ItemGroup>
-        <Page Update="Controls\EntityCard.xaml">
-            <Generator>MSBuild:Compile</Generator>
-        </Page>
-    </ItemGroup>
-    <ItemGroup>
         <None Update="appsettings.json" CopyToOutputDirectory="PreserveNewest" />
         <None Update="Views\Dialogs\MaterialGroupCardContentDialog.xaml">
             <Generator>MSBuild:Compile</Generator>

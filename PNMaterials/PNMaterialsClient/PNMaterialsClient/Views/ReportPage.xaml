@@ -4,7 +4,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:vm="using:PNMaterialsClient.ViewModels"
       xmlns:converters="using:PNMaterialsClient.Converters"
-      xmlns:controls="using:PNMaterialsClient.Controls"
+      xmlns:controls="using:PNMaterialsClient.Views.Controls"
       xmlns:tv="using:WinUI.TableView">
 
     <Page.Resources>

@@ -2,10 +2,9 @@ using System.Collections.Specialized;
 using Microsoft.UI;
 using PNMaterialsClient.Navigation;
 using PNMaterialsClient.Services;
-using PNMaterialsClient.Views;
 using PNMaterialsClient.Views.Dialogs;
 
-namespace PNMaterialsClient;
+namespace PNMaterialsClient.Views;
 
 public sealed partial class MainPage : Page
 {

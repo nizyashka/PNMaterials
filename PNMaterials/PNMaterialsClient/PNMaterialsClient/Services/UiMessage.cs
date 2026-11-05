@@ -1,4 +1,4 @@
-namespace PNMaterialsClient.ViewModels;
+namespace PNMaterialsClient.Services;
 
 public sealed class UiMessage(MessageSeverity severity, string text)
 {

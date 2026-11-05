@@ -1,5 +1,4 @@
 using System.Collections.ObjectModel;
-using PNMaterialsClient.ViewModels;
 
 namespace PNMaterialsClient.Services;
 

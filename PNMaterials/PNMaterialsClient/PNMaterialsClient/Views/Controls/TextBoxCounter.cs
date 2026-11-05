@@ -1,4 +1,4 @@
-namespace PNMaterialsClient.Controls;
+namespace PNMaterialsClient.Views.Controls;
 
 public static class TextBoxCounter
 {

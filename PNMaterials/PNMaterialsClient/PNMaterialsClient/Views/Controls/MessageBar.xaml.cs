@@ -1,7 +1,6 @@
 using PNMaterialsClient.Services;
-using PNMaterialsClient.ViewModels;
 
-namespace PNMaterialsClient.Controls;
+namespace PNMaterialsClient.Views.Controls;
 
 public sealed partial class MessageBar : UserControl
 {

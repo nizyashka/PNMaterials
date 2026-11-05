@@ -1,7 +1,7 @@
 ﻿<ContentDialog x:Class="PNMaterialsClient.Views.Dialogs.PurchaseRequestCardContentDialog"
                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-               xmlns:controls="using:PNMaterialsClient.Controls"
+               xmlns:controls="using:PNMaterialsClient.Views.Controls"
                xmlns:vm="using:PNMaterialsClient.ViewModels">
 
     <ContentDialog.Resources>
