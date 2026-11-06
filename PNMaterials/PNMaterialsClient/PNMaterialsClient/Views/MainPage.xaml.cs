@@ -26,9 +26,10 @@ public sealed partial class MainPage : Page
                 new NavPage { Title = "Отчет по заявкам на закупку", PageType = typeof(ReportPage) },
             ]
         },
+        new NavPage { Title = "Пользователи", PageType = typeof(UsersPage) }
     ];
 
-    private readonly Dictionary<Type, MenuBarItem> _sectionByPage = [];
+    private readonly Dictionary<Type, Button> _sectionByPage = [];
 
     private MessagesService MessagesService { get; }
 
@@ -52,73 +53,69 @@ public sealed partial class MainPage : Page
 
     private void BuildMenu()
     {
-        foreach (var folder in NavItems.OfType<NavFolder>())
+        foreach (var rootItem in NavItems)
         {
-            var menuItem = new MenuBarItem
+            var menuButton = new Button
             {
-                Title = folder.Title,
-                BorderThickness = new Thickness(0, 0, 0, 2),
-                BorderBrush = new SolidColorBrush(Colors.Transparent)
+                Content = rootItem.Title,
+                BorderBrush = new SolidColorBrush(Colors.Transparent),
+                BorderThickness = new Thickness(0, 0, 0, 2)
             };
 
-            foreach (var page in folder.Children.OfType<NavPage>())
+            if (rootItem is NavFolder parentItem)
             {
-                var flyoutItem = new MenuFlyoutItem
-                {
-                    Text = page.Title,
-                    Tag = page
-                };
-                flyoutItem.Click += OnMenuItemClick;
+                var menuFlyout = new MenuFlyout();
 
-                menuItem.Items.Add(flyoutItem);
-                _sectionByPage[page.PageType] = menuItem;
+                foreach (var page in parentItem.Children.OfType<NavPage>())
+                {
+                    var flyoutItem = new MenuFlyoutItem
+                    {
+                        Text = page.Title,
+                        Tag = page
+                    };
+
+                    flyoutItem.Click += OnMenuItemClick;
+                    menuFlyout.Items.Add(flyoutItem);
+                    _sectionByPage[page.PageType] = menuButton;
+                }
+
+                menuButton.Flyout = menuFlyout;
             }
 
-            MainMenu.Items.Add(menuItem);
+            if (rootItem is NavPage pageItem)
+            {
+                menuButton.Tag = pageItem;
+                menuButton.Click += OnMenuItemClick;
+                _sectionByPage[pageItem.PageType] = menuButton;
+            }
+
+            MainMenu.Items.Add(menuButton);
         }
     }
 
     private void OnMenuItemClick(object sender, RoutedEventArgs e)
     {
-        if (sender is MenuFlyoutItem { Tag: NavPage page }
+        if (sender is FrameworkElement { Tag: NavPage page }
             && ContentFrame.CurrentSourcePageType != page.PageType)
         {
             ContentFrame.Navigate(page.PageType);
         }
     }
 
-    private void OnBackClick(object sender, RoutedEventArgs e)
-    {
-        if (ContentFrame.CanGoBack)
-            ContentFrame.GoBack();
-    }
-
-    private void OnForwardClick(object sender, RoutedEventArgs e)
-    {
-        if (ContentFrame.CanGoForward)
-            ContentFrame.GoForward();
-    }
-
     private void OnContentFrameNavigated(object sender, NavigationEventArgs e)
     {
-        if (e.SourcePageType == typeof(MainPage))
-        {
-            ContentFrame.BackStack.Clear();
-            ContentFrame.ForwardStack.Clear();
-        }
-
-        BackButton.IsEnabled = ContentFrame.CanGoBack;
-        ForwardButton.IsEnabled = ContentFrame.CanGoForward;
+        ContentFrame.BackStack.Clear();
+        ContentFrame.ForwardStack.Clear();
 
         if (_sectionByPage.TryGetValue(e.SourcePageType, out var section))
             HighlightSection(section);
     }
 
-    private void HighlightSection(MenuBarItem active)
+    private void HighlightSection(Button active)
     {
         var accent = (Brush)Application.Current.Resources["AccentBrush"];
 
-        foreach (var item in MainMenu.Items)
+        foreach (var item in MainMenu.Items.OfType<Button>())
         {
             var isActive = item == active;
             item.BorderBrush = isActive ? accent : new SolidColorBrush(Colors.Transparent);
