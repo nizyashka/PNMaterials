@@ -9,10 +9,10 @@
                 Width="200"
                 Spacing="16">
         <TextBox PlaceholderText="Логин"
-                 Text="{x:Bind LoginViewModel.Username, Mode=TwoWay}" />
+                 Text="{x:Bind LoginViewModel.Username, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <TextBox PlaceholderText="Пароль"
-                 Text="{x:Bind LoginViewModel.Password, Mode=TwoWay}" />
+                 Text="{x:Bind LoginViewModel.Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <Button Style="{StaticResource IconButtonStyle}"
                 Command="{x:Bind LoginViewModel.LogInCommand}"

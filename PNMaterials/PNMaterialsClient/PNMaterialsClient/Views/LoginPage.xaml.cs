@@ -20,7 +20,11 @@ public sealed partial class LoginPage : Page
     private void OnSuccessfulLogin()
     {
         FailedLoginTextBlock.Visibility = Visibility.Collapsed;
-        Frame.Navigate(typeof(MainPage));
+        if (Frame.Navigate(typeof(MainPage)))
+        {
+            Frame.BackStack.Clear();
+            Frame.ForwardStack.Clear();
+        }
     }
 
     private void OnFailedLogin()
