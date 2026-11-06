@@ -72,4 +72,40 @@ public class UsersController : ControllerBase
             Roles = (await _userManager.GetRolesAsync(user)).ToArray()
         });
     }
+
+    [HttpPut("{id:int}/profile")]
+    public async Task<ActionResult<ProfileDto>> EditProfile(int id, ProfileEditDto dto)
+    {
+        var user = await _userManager.FindByIdAsync(id.ToString());
+
+        if (user is null)
+            return Problem(detail: "Пользователь не найден.", statusCode: StatusCodes.Status404NotFound);
+
+        user.UserName = dto.Username.Trim();
+        user.FirstName = dto.FirstName.Trim();
+        user.LastName = dto.LastName.Trim();
+        user.MiddleName = dto.MiddleName?.Trim();
+
+        var userResult = await _userManager.UpdateAsync(user);
+
+        if (!userResult.Succeeded)
+        {
+            var hasConflict = userResult.Errors.Any(error =>
+                error.Code is nameof(IdentityErrorDescriber.DuplicateUserName)
+                           or nameof(IdentityErrorDescriber.ConcurrencyFailure));
+
+            var status = hasConflict ? StatusCodes.Status409Conflict : StatusCodes.Status400BadRequest;
+
+            var message = string.Join(Environment.NewLine, userResult.Errors.Select(error => error.Description));
+            return Problem(detail: message, statusCode: status);
+        }
+
+        return Ok(new ProfileDto 
+        {
+            Username = user.UserName,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            MiddleName = user.MiddleName
+        });
+    }
 }
