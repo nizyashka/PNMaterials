@@ -11,6 +11,15 @@
         <Setter Property="BorderThickness" Value="1"/>
     </Style>
 
+    <Style x:Key="TabBarButtonStyle"
+           BasedOn="{StaticResource DefaultButtonStyle}"
+           TargetType="Button">
+        <Setter Property="Background" Value="Transparent" />
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryColor}" />
+        <Setter Property="BorderThickness" Value="0, 0, 0, 2" />
+        <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}" />
+    </Style>
+
     <Style x:Key="EntityTableStyle"
            TargetType="tv:TableView">
         <Setter Property="AutoGenerateColumns" Value="False" />

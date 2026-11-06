@@ -44,9 +44,13 @@
                                   Grid.Column="1"
                                   VerticalAlignment="Center">
                         <ItemsControl.Resources>
-                            <SolidColorBrush x:Key="ButtonForeground" Color="{StaticResource TextPrimaryColor}" />
+                            <Style TargetType="Button" BasedOn="{StaticResource TabBarButtonStyle}" />
                             <SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="White" />
                             <SolidColorBrush x:Key="ButtonForegroundPressed" Color="{StaticResource TextPrimaryColor}" />
+                            <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="Transparent" />
+                            <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="Transparent" />
+                            <SolidColorBrush x:Key="ButtonBorderBrushPointerOver" Color="Transparent" />
+                            <SolidColorBrush x:Key="ButtonBorderBrushPressed" Color="Transparent" />
                         </ItemsControl.Resources>
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>

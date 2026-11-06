@@ -57,9 +57,7 @@ public sealed partial class MainPage : Page
         {
             var menuButton = new Button
             {
-                Content = rootItem.Title,
-                BorderBrush = new SolidColorBrush(Colors.Transparent),
-                BorderThickness = new Thickness(0, 0, 0, 2)
+                Content = rootItem.Title
             };
 
             if (rootItem is NavFolder parentItem)
