@@ -152,6 +152,7 @@ public partial class App : Application
         services.AddTransient<PurchaseRequestCardViewModel>();
         services.AddTransient<ReportViewModel>();
         services.AddTransient<LoginViewModel>();
+        services.AddTransient<UsersViewModel>();
 
         services.AddSingleton<MessagesService>();
         services.AddSingleton<LoginInfoProvider>();

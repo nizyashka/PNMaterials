@@ -2,6 +2,8 @@
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:services="using:PNMaterialsClient.Services"
-      xmlns:controls="using:PNMaterialsClient.Views.Controls">
+      xmlns:controls="using:PNMaterialsClient.Views.Controls"
+      xmlns:toolkit="using:CommunityToolkit.WinUI.Controls"
+      xmlns:tv="using:WinUI.TableView">
     
 </Page>
