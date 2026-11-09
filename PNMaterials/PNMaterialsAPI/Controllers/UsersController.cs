@@ -2,12 +2,8 @@
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using PNMaterialsContracts;
-using PNMaterialsInfrastructure;
 using PNMaterialsInfrastructure.Identity;
-using System.Net.NetworkInformation;
-using static Azure.Core.HttpHeader;
 
 namespace PNMaterialsAPI.Controllers;
 
@@ -28,9 +24,6 @@ public class UsersController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<UserDto>> CreateUser(CreateUserDto dto)
     {
-        if (dto.Roles.Count() <= 0)
-            return Problem(detail: "Для создаваемого пользователя не выбраны роли.", statusCode: StatusCodes.Status400BadRequest);
-
         if (!dto.Roles.All(x => PNRoles.All.Contains(x)))
             return Problem(detail: "Попытка добавить пользователю несуществующую роль.", statusCode: StatusCodes.Status400BadRequest);
 
@@ -45,9 +38,13 @@ public class UsersController : ControllerBase
 
         if (!userResult.Succeeded)
         {
-            var usernameTaken = userResult.Errors.Any(e => e.Code == "DuplicateUserName");
+            var usernameTaken = userResult.Errors.Any(error => error.Code is nameof(IdentityErrorDescriber.DuplicateUserName));
+            var shortPassword = userResult.Errors.Any(error => error.Code is nameof(IdentityErrorDescriber.PasswordTooShort));
             var status = usernameTaken ? StatusCodes.Status409Conflict : StatusCodes.Status400BadRequest;
-            var message = string.Join(Environment.NewLine, userResult.Errors.Select(e => e.Description));
+            var message = usernameTaken ? "Этот логин уже занят. Введите другой." 
+                : (shortPassword ? $"Пароль должен содержать не менее {_userManager.Options.Password.RequiredLength} символов." : "Ошибка создания пользователя.");
+            message += (usernameTaken && shortPassword) ? $" Пароль должен содержать не менее {_userManager.Options.Password.RequiredLength} символов." : "";
+
             return Problem(detail: message, statusCode: status);
         }
 
@@ -57,8 +54,12 @@ public class UsersController : ControllerBase
 
             if (!roleResult.Succeeded)
             {
-                var message = string.Join(Environment.NewLine, roleResult.Errors.Select(e => e.Description));
-                return Problem(detail: message, statusCode: StatusCodes.Status400BadRequest);
+                var hasConflict = roleResult.Errors.Any(e => e.Code is nameof(IdentityErrorDescriber.ConcurrencyFailure));
+                var status = hasConflict ? StatusCodes.Status409Conflict : StatusCodes.Status400BadRequest;
+                var message = hasConflict ? "Пользователь создан. При назначении роли его данные изменились. Обновите карточку и проверьте назначенные роли."
+                    : $"Пользователь создан, но назначить роль {role} не удалось. Откройте карточку пользователя и проверьте его роли";
+
+                return Problem(detail: message, statusCode: status);
             }
         }
 
@@ -93,10 +94,12 @@ public class UsersController : ControllerBase
             var hasConflict = userResult.Errors.Any(error =>
                 error.Code is nameof(IdentityErrorDescriber.DuplicateUserName)
                            or nameof(IdentityErrorDescriber.ConcurrencyFailure));
+            var usernameTaken = userResult.Errors.Any(error => error.Code is nameof(IdentityErrorDescriber.DuplicateUserName));
 
             var status = hasConflict ? StatusCodes.Status409Conflict : StatusCodes.Status400BadRequest;
+            var message = hasConflict ? (usernameTaken ? "Этот логин уже занят. Введите другой." : "Пользователь был изменен. Обновите карточку и попробуйте снова.")
+                : "Ошибка изменения профиля пользователя.";
 
-            var message = string.Join(Environment.NewLine, userResult.Errors.Select(error => error.Description));
             return Problem(detail: message, statusCode: status);
         }
 
