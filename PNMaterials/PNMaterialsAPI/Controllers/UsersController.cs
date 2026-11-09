@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PNMaterialsContracts;
@@ -43,7 +42,6 @@ public class UsersController : ControllerBase
             var status = usernameTaken ? StatusCodes.Status409Conflict : StatusCodes.Status400BadRequest;
             var message = usernameTaken ? "Этот логин уже занят. Введите другой." 
                 : (shortPassword ? $"Пароль должен содержать не менее {_userManager.Options.Password.RequiredLength} символов." : "Ошибка создания пользователя.");
-            message += (usernameTaken && shortPassword) ? $" Пароль должен содержать не менее {_userManager.Options.Password.RequiredLength} символов." : "";
 
             return Problem(detail: message, statusCode: status);
         }
@@ -149,33 +147,42 @@ public class UsersController : ControllerBase
             return Problem(detail: "Попытка добавить пользователю несуществующую роль.", statusCode: StatusCodes.Status400BadRequest);
 
         var userRoles = await _userManager.GetRolesAsync(user);
-        var addedRoles = dto.Roles.Except(userRoles);
-        var removedRoles = userRoles.Except(dto.Roles);
+        var addedRoles = dto.Roles.Except(userRoles).ToArray();
+        var removedRoles = userRoles.Except(dto.Roles).ToArray();
 
-        IdentityResult addResult = await _userManager.AddToRolesAsync(user, addedRoles);
-
-        if (!addResult.Succeeded)
+        if (addedRoles.Length > 0)
         {
-            var hasConflict = addResult.Errors.Any(error => error.Code is nameof(IdentityErrorDescriber.ConcurrencyFailure)
-            or nameof(IdentityErrorDescriber.UserAlreadyInRole));
-            var status = hasConflict ? StatusCodes.Status409Conflict : StatusCodes.Status400BadRequest;
-            var message = hasConflict ? "Пользователь был изменен. Обновите карточку и попробуйте снова." : "Не удалось назначить выбранные роли.";
+            IdentityResult addResult = await _userManager.AddToRolesAsync(user, addedRoles);
 
-            return Problem(detail: message, statusCode: status);
+            if (!addResult.Succeeded)
+            {
+                var hasConflict = addResult.Errors.Any(error => error.Code is nameof(IdentityErrorDescriber.ConcurrencyFailure)
+                or nameof(IdentityErrorDescriber.UserAlreadyInRole));
+                var status = hasConflict ? StatusCodes.Status409Conflict : StatusCodes.Status400BadRequest;
+                var message = hasConflict ? "Пользователь был изменен. Обновите карточку и попробуйте снова." : "Не удалось назначить выбранные роли.";
+
+                return Problem(detail: message, statusCode: status);
+            }
         }
 
-        IdentityResult removeResult = await _userManager.RemoveFromRolesAsync(user, removedRoles);
-
-        if (!removeResult.Succeeded)
+        if (removedRoles.Length > 0)
         {
-            var hasConflict = removeResult.Errors.Any(error => error.Code is nameof(IdentityErrorDescriber.ConcurrencyFailure)
-            or nameof(IdentityErrorDescriber.UserNotInRole));
-            var status = hasConflict ? StatusCodes.Status409Conflict : StatusCodes.Status400BadRequest;
-            var message = hasConflict ? "Пользователь был изменен. Обновите карточку и попробуйте снова." : "Не удалось снять выбранные роли.";
+            IdentityResult removeResult = await _userManager.RemoveFromRolesAsync(user, removedRoles);
 
-            return Problem(detail: message, statusCode: status);
+            if (!removeResult.Succeeded)
+            {
+                var hasConflict = removeResult.Errors.Any(error => error.Code is nameof(IdentityErrorDescriber.ConcurrencyFailure)
+                or nameof(IdentityErrorDescriber.UserNotInRole));
+                var status = hasConflict ? StatusCodes.Status409Conflict : StatusCodes.Status400BadRequest;
+                var message = hasConflict ? "Пользователь был изменен. Обновите карточку и попробуйте снова." : "Не удалось снять выбранные роли.";
+
+                return Problem(detail: message, statusCode: status);
+            }
         }
 
-        return Ok(dto);
+        return Ok(new RolesDto
+        {
+            Roles = (await _userManager.GetRolesAsync(user)).ToArray()
+        });
     }
 }
