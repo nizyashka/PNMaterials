@@ -143,6 +143,8 @@ public partial class App : Application
 
         services.AddHttpClient<ApiClient>(client => client.BaseAddress = apiBaseAddress)
             .AddHttpMessageHandler<JwtAuthorizationHandler>();
+        services.AddHttpClient<UsersApiClient>(client => client.BaseAddress = apiBaseAddress)
+            .AddHttpMessageHandler<JwtAuthorizationHandler>();
         services.AddHttpClient<AuthApiClient>(client => client.BaseAddress = apiBaseAddress);
 
         services.AddTransient<MaterialsViewModel>();

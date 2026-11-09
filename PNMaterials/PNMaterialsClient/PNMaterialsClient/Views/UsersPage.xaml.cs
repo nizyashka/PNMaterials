@@ -11,4 +11,10 @@ public sealed partial class UsersPage : Page
         this.InitializeComponent();
         ViewModel = App.Services.GetRequiredService<UsersViewModel>();
     }
+
+    protected override async void OnNavigatedTo(NavigationEventArgs e)
+    {
+        base.OnNavigatedTo(e);
+        await ViewModel.LoadAsync();
+    }
 }

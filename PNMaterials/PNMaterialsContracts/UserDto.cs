@@ -13,4 +13,7 @@ public class UserDto
 
     [JsonIgnore]
     public string FullName => $"{LastName} {FirstName} {MiddleName}".Trim();
+
+    [JsonIgnore]
+    public string RolesString => string.Join(", ", Roles);
 }
