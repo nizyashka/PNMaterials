@@ -136,4 +136,46 @@ public class UsersController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpPut("{id:int}/roles")]
+    public async Task<ActionResult<RolesDto>> EditRoles(int id, RolesDto dto)
+    {
+        var user = await _userManager.FindByIdAsync(id.ToString());
+
+        if (user is null)
+            return Problem(detail: "Пользователь не найден.", statusCode: StatusCodes.Status404NotFound);
+
+        if (!dto.Roles.All(x => PNRoles.All.Contains(x)))
+            return Problem(detail: "Попытка добавить пользователю несуществующую роль.", statusCode: StatusCodes.Status400BadRequest);
+
+        var userRoles = await _userManager.GetRolesAsync(user);
+        var addedRoles = dto.Roles.Except(userRoles);
+        var removedRoles = userRoles.Except(dto.Roles);
+
+        IdentityResult addResult = await _userManager.AddToRolesAsync(user, addedRoles);
+
+        if (!addResult.Succeeded)
+        {
+            var hasConflict = addResult.Errors.Any(error => error.Code is nameof(IdentityErrorDescriber.ConcurrencyFailure)
+            or nameof(IdentityErrorDescriber.UserAlreadyInRole));
+            var status = hasConflict ? StatusCodes.Status409Conflict : StatusCodes.Status400BadRequest;
+            var message = hasConflict ? "Пользователь был изменен. Обновите карточку и попробуйте снова." : "Не удалось назначить выбранные роли.";
+
+            return Problem(detail: message, statusCode: status);
+        }
+
+        IdentityResult removeResult = await _userManager.RemoveFromRolesAsync(user, removedRoles);
+
+        if (!removeResult.Succeeded)
+        {
+            var hasConflict = removeResult.Errors.Any(error => error.Code is nameof(IdentityErrorDescriber.ConcurrencyFailure)
+            or nameof(IdentityErrorDescriber.UserNotInRole));
+            var status = hasConflict ? StatusCodes.Status409Conflict : StatusCodes.Status400BadRequest;
+            var message = hasConflict ? "Пользователь был изменен. Обновите карточку и попробуйте снова." : "Не удалось снять выбранные роли.";
+
+            return Problem(detail: message, statusCode: status);
+        }
+
+        return Ok(dto);
+    }
 }
