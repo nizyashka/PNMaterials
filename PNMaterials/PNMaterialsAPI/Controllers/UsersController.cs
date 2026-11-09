@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using PNMaterialsContracts;
 using PNMaterialsInfrastructure.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace PNMaterialsAPI.Controllers;
 
@@ -18,6 +19,29 @@ public class UsersController : ControllerBase
     {
         _userManager = userManager;
         _roleManager = roleManager;
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<UserDto>>> GetAll()
+    {
+        List<UserDto> users = new List<UserDto>();
+
+        var dbUsers = await _userManager.Users.ToListAsync();
+
+        foreach (var user in dbUsers)
+        {
+            users.Add(new UserDto 
+            {
+                Id = user.Id,
+                Username = user.UserName!,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                MiddleName = user.MiddleName,
+                Roles = (await _userManager.GetRolesAsync(user)).ToArray()
+            });
+        }
+
+        return users;
     }
 
     [HttpPost]
