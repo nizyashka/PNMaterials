@@ -34,6 +34,7 @@ try
     })
         .AddSignInManager()
         .AddRoles<IdentityRole<int>>()
+        .AddDefaultTokenProviders()
         .AddEntityFrameworkStores<AppDbContext>();
 
     builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection("Jwt"));

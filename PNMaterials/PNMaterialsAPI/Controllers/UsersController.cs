@@ -111,4 +111,29 @@ public class UsersController : ControllerBase
             MiddleName = user.MiddleName
         });
     }
+
+    [HttpPut("{id:int}/password")]
+    public async Task<ActionResult> EditPassword(int id, PasswordEditDto dto)
+    {
+        var user = await _userManager.FindByIdAsync(id.ToString());
+
+        if (user is null)
+            return Problem(detail: "Пользователь не найден.", statusCode: StatusCodes.Status404NotFound);
+
+        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+        var result = await _userManager.ResetPasswordAsync(user, token, dto.NewPassword);
+
+        if (!result.Succeeded)
+        {
+            var hasConflict = result.Errors.Any(error => error.Code is nameof(IdentityErrorDescriber.ConcurrencyFailure));
+            var shortPassword = result.Errors.Any(error => error.Code is nameof(IdentityErrorDescriber.PasswordTooShort));
+            var status = hasConflict ? StatusCodes.Status409Conflict : StatusCodes.Status400BadRequest;
+            var message = hasConflict ? "Пользователь был изменен. Обновите карточку и попробуйте снова." 
+                : (shortPassword ? $"Пароль должен содержать не менее {_userManager.Options.Password.RequiredLength} символов." : "Ошибка изменения пароля.");
+
+            return Problem(detail: message, statusCode: status);
+        }
+
+        return NoContent();
+    }
 }
