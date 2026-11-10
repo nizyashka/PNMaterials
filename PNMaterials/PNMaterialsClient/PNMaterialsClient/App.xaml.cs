@@ -155,6 +155,7 @@ public partial class App : Application
         services.AddTransient<ReportViewModel>();
         services.AddTransient<LoginViewModel>();
         services.AddTransient<UsersViewModel>();
+        services.AddTransient<ProfileCardViewModel>();
 
         services.AddSingleton<MessagesService>();
         services.AddSingleton<LoginInfoProvider>();

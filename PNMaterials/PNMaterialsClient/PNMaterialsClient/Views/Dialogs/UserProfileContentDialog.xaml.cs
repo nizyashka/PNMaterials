@@ -1,16 +1,27 @@
+using PNMaterialsClient.ViewModels;
 using PNMaterialsContracts;
 
 namespace PNMaterialsClient.Views.Dialogs;
 
 public sealed partial class UserProfileContentDialog : ContentDialog
 {
-    private int _id { get; set; }
-    private ProfileDto _userProfile { get; set; }
+    private readonly ProfileCardViewModel ViewModel;
+    private readonly int _id;
 
-    public UserProfileContentDialog(int id, ProfileDto profileDto)
+    public ICommand ExitCommand { get; }
+
+    public UserProfileContentDialog(int id)
     {
         this.InitializeComponent();
+
         _id = id;
-        _userProfile = profileDto;
+        ViewModel = App.Services.GetRequiredService<ProfileCardViewModel>();
+        ExitCommand = new RelayCommand(Hide);
+        Opened += OnOpened;
+    }
+
+    private async void OnOpened(ContentDialog sender, ContentDialogOpenedEventArgs args)
+    {
+        await ViewModel.LoadAsync(_id);
     }
 }

@@ -24,14 +24,7 @@ public sealed partial class UsersPage : Page
     {
         if (sender is MenuFlyoutItem button && button.DataContext is UserDto user)
         {
-            ProfileDto profile = new ProfileDto 
-            { 
-                Username = user.Username,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                MiddleName = user.MiddleName,
-            };
-            await OpenUserProfileEditDialog(user.Id, profile);
+            await OpenUserProfileEditDialog(user);
         }
     }
 
@@ -47,11 +40,11 @@ public sealed partial class UsersPage : Page
             await OpenUserPasswordEditDialog();
     }
 
-    private async Task OpenUserProfileEditDialog(int id, ProfileDto profileDto)
+    private async Task OpenUserProfileEditDialog(UserDto dto)
     {
         try
         {
-            var dialog = new UserProfileContentDialog(id, profileDto)
+            var dialog = new UserProfileContentDialog(dto.Id)
             {
                 XamlRoot = XamlRoot
             };
@@ -61,7 +54,7 @@ public sealed partial class UsersPage : Page
         }
         catch (Exception ex)
         {
-            ViewModel.ReportError($"Редактирование профиля пользователя {profileDto.Username}", ex);
+            ViewModel.ReportError($"Редактирование профиля пользователя {dto.Username}", ex);
         }
     }
 
