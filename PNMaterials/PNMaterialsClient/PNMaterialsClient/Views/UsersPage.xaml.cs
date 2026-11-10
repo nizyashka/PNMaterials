@@ -31,7 +31,7 @@ public sealed partial class UsersPage : Page
     private async void OnEditUserRolesClick(object sender, RoutedEventArgs e)
     {
         if (sender is MenuFlyoutItem button && button.DataContext is UserDto user)
-            await OpenUserRolesEditDialog();
+            await OpenUserRolesEditDialog(user);
     }
 
     private async void OnEditUserPasswordClick(object sender, RoutedEventArgs e)
@@ -58,11 +58,11 @@ public sealed partial class UsersPage : Page
         }
     }
 
-    private async Task OpenUserRolesEditDialog()
+    private async Task OpenUserRolesEditDialog(UserDto dto)
     {
         try
         {
-            var dialog = new UserRolesContentDialog()
+            var dialog = new UserRolesContentDialog(dto.Id)
             {
                 XamlRoot = XamlRoot
             };

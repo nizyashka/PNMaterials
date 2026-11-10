@@ -1,6 +1,25 @@
 ﻿<ContentDialog x:Class="PNMaterialsClient.Views.Dialogs.UserRolesContentDialog"
                xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-               xmlns:controls="using:PNMaterialsClient.Views.Controls">
+               xmlns:controls="using:PNMaterialsClient.Views.Controls"
+               xmlns:vm="using:PNMaterialsClient.ViewModels">
 
+    <ContentDialog.Resources>
+        <x:Double x:Key="ContentDialogMinWidth">500</x:Double>
+        <x:Double x:Key="ContentDialogMaxWidth">500</x:Double>
+    </ContentDialog.Resources>
+    <controls:EntityCard Header="Роли"
+                         IsEditMode="{x:Bind ViewModel.IsEditMode, Mode=TwoWay}"
+                         SaveCommand="{x:Bind ViewModel.SaveCommand}"
+                         RefreshCommand="{x:Bind ViewModel.RefreshCommand}"
+                         ExitCommand="{x:Bind ExitCommand}">
+        
+        <ItemsControl ItemsSource="{x:Bind ViewModel.Roles, Mode=OneWay}">
+            <ItemsControl.ItemTemplate>
+                <DataTemplate x:DataType="vm:RoleSelectionViewModel">
+                    <CheckBox Content="{x:Bind Name}" IsChecked="{x:Bind IsSelected, Mode=TwoWay}" />
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+    </controls:EntityCard>
 </ContentDialog>
