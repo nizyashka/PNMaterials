@@ -44,6 +44,7 @@ public class AuthController : ControllerBase
         {
             AccessToken = accessToken.TokenString,
             Expiration = accessToken.Expiration,
+            Id = user.Id,
             Username = user.UserName!,
             FullName = $"{user.LastName} {user.FirstName} {user.MiddleName}".Trim(),
             Roles = roles.ToArray()
