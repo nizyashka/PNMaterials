@@ -4,7 +4,7 @@ namespace PNMaterialsContracts;
 
 public class ProfileEditDto
 {
-    [Required(ErrorMessage = "Имя пользователя обязательно.")]
+    [Required(ErrorMessage = "Логни обязателен.")]
     [StringLength(50, ErrorMessage = "Имя пользователя не должно превышать 50 символов.")]
     public string Username { get; set; }
 

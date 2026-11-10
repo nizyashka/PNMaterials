@@ -78,8 +78,8 @@ public class UsersController : ControllerBase
             {
                 var hasConflict = roleResult.Errors.Any(e => e.Code is nameof(IdentityErrorDescriber.ConcurrencyFailure));
                 var status = hasConflict ? StatusCodes.Status409Conflict : StatusCodes.Status400BadRequest;
-                var message = hasConflict ? "Пользователь создан. При назначении роли его данные изменились. Обновите карточку и проверьте назначенные роли."
-                    : $"Пользователь создан, но назначить роль {role} не удалось. Откройте карточку пользователя и проверьте его роли";
+                var message = hasConflict ? "Пользователь создан. При назначении роли его данные изменились."
+                    : $"Пользователь создан, но назначить роль {role} не удалось.";
 
                 return Problem(detail: message, statusCode: status);
             }
@@ -119,7 +119,7 @@ public class UsersController : ControllerBase
             var usernameTaken = userResult.Errors.Any(error => error.Code is nameof(IdentityErrorDescriber.DuplicateUserName));
 
             var status = hasConflict ? StatusCodes.Status409Conflict : StatusCodes.Status400BadRequest;
-            var message = hasConflict ? (usernameTaken ? "Этот логин уже занят. Введите другой." : "Пользователь был изменен. Обновите карточку и попробуйте снова.")
+            var message = hasConflict ? (usernameTaken ? "Этот логин уже занят. Введите другой." : "Данные пользователя устарели.")
                 : "Ошибка изменения профиля пользователя.";
 
             return Problem(detail: message, statusCode: status);
@@ -150,7 +150,7 @@ public class UsersController : ControllerBase
             var hasConflict = result.Errors.Any(error => error.Code is nameof(IdentityErrorDescriber.ConcurrencyFailure));
             var shortPassword = result.Errors.Any(error => error.Code is nameof(IdentityErrorDescriber.PasswordTooShort));
             var status = hasConflict ? StatusCodes.Status409Conflict : StatusCodes.Status400BadRequest;
-            var message = hasConflict ? "Пользователь был изменен. Обновите карточку и попробуйте снова." 
+            var message = hasConflict ? "Данные пользователя устарели."
                 : (shortPassword ? $"Пароль должен содержать не менее {_userManager.Options.Password.RequiredLength} символов." : "Ошибка изменения пароля.");
 
             return Problem(detail: message, statusCode: status);
@@ -183,7 +183,7 @@ public class UsersController : ControllerBase
                 var hasConflict = addResult.Errors.Any(error => error.Code is nameof(IdentityErrorDescriber.ConcurrencyFailure)
                 or nameof(IdentityErrorDescriber.UserAlreadyInRole));
                 var status = hasConflict ? StatusCodes.Status409Conflict : StatusCodes.Status400BadRequest;
-                var message = hasConflict ? "Пользователь был изменен. Обновите карточку и попробуйте снова." : "Не удалось назначить выбранные роли.";
+                var message = hasConflict ? "Данные пользователя устарели." : "Не удалось назначить выбранные роли.";
 
                 return Problem(detail: message, statusCode: status);
             }
@@ -198,7 +198,7 @@ public class UsersController : ControllerBase
                 var hasConflict = removeResult.Errors.Any(error => error.Code is nameof(IdentityErrorDescriber.ConcurrencyFailure)
                 or nameof(IdentityErrorDescriber.UserNotInRole));
                 var status = hasConflict ? StatusCodes.Status409Conflict : StatusCodes.Status400BadRequest;
-                var message = hasConflict ? "Пользователь был изменен. Обновите карточку и попробуйте снова." : "Не удалось снять выбранные роли.";
+                var message = hasConflict ? "Данные пользователя устарели." : "Не удалось снять выбранные роли.";
 
                 return Problem(detail: message, statusCode: status);
             }
