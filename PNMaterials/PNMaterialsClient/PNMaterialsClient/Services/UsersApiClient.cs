@@ -15,33 +15,47 @@ public class UsersApiClient
         _http = http;
     }
 
-    public async Task<List<UserDto>> GetAllUsers()
+    public async Task<List<UserDto>> GetAllUsersAsync()
     {
         var response = await ApiRequestExecutor.SendAsync(_http.GetAsync("api/users"));
         return await ApiRequestExecutor.ReadAsync<List<UserDto>>(response)
             ?? throw new ApiException(ApiErrorKind.InvalidResponse, "Сервер не вернул пользователей.");
     }
 
-    public async Task<UserDto> CreateUser(CreateUserDto dto)
+    public async Task<UserDto> GetUserByIdAsync(int id)
+    {
+        var response = await ApiRequestExecutor.SendAsync(_http.GetAsync($"api/users/{id}"));
+        return await ApiRequestExecutor.ReadAsync<UserDto>(response)
+            ?? throw new ApiException(ApiErrorKind.InvalidResponse, "Сервер не вернул пользователя.");
+    }
+
+    public async Task<UserDto> CreateUserAsync(CreateUserDto dto)
     {
         var response = await ApiRequestExecutor.SendAsync(_http.PostAsJsonAsync("api/users", dto));
         return await ApiRequestExecutor.ReadAsync<UserDto>(response)
             ?? throw new ApiException(ApiErrorKind.InvalidResponse, "Сервер не вернул созданного пользователя.");
     }
 
-    public async Task<ProfileDto> EditProfile(int id, ProfileEditDto dto)
+    public async Task<ProfileDto> EditProfileAsync(int id, ProfileEditDto dto)
     {
         var response = await ApiRequestExecutor.SendAsync(_http.PutAsJsonAsync($"api/users/{id}/profile", dto));
         return await ApiRequestExecutor.ReadAsync<ProfileDto>(response)
             ?? throw new ApiException(ApiErrorKind.InvalidResponse, "Сервер не вернул измененный профиль пользователя.");
     }
 
-    public async Task EditPassword(int id, PasswordEditDto dto)
+    public async Task EditPasswordAsync(int id, PasswordEditDto dto)
     {
         var response = await ApiRequestExecutor.SendAsync(_http.PutAsJsonAsync($"api/users/{id}/password", dto));
     }
 
-    public async Task<RolesDto> EditRoles(int id, RolesDto dto)
+    public async Task<List<string>> GetAllRoles()
+    {
+        var response = await ApiRequestExecutor.SendAsync(_http.GetAsync($"api/users/roles"));
+        return await ApiRequestExecutor.ReadAsync<List<string>>(response)
+            ?? throw new ApiException(ApiErrorKind.InvalidResponse, "Сервер не вернул список ролей.");
+    }
+
+    public async Task<RolesDto> EditRolesAsync(int id, RolesDto dto)
     {
         var response = await ApiRequestExecutor.SendAsync(_http.PutAsJsonAsync($"api/users/{id}/roles", dto));
         return await ApiRequestExecutor.ReadAsync<RolesDto>(response)

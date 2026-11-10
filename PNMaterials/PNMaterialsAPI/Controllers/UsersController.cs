@@ -37,11 +37,30 @@ public class UsersController : ControllerBase
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 MiddleName = user.MiddleName,
-                Roles = (await _userManager.GetRolesAsync(user)).ToArray()
+                Roles = (await _userManager.GetRolesAsync(user)).ToList()
             });
         }
 
         return users;
+    }
+
+    [HttpGet("{id:int}")]
+    public async Task<ActionResult<UserDto>> GetUserById(int id)
+    {
+        var user = await _userManager.FindByIdAsync(id.ToString());
+
+        if (user is null)
+            return Problem(detail: "Пользователь не найден.", statusCode: StatusCodes.Status404NotFound);
+
+        return Ok(new UserDto
+        {
+            Id = user.Id,
+            Username = user.UserName,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            MiddleName = user.MiddleName,
+            Roles = (await _userManager.GetRolesAsync(user)).ToList()
+        });
     }
 
     [HttpPost]
@@ -92,7 +111,7 @@ public class UsersController : ControllerBase
             FirstName = user.FirstName,
             LastName = user.LastName,
             MiddleName = user.MiddleName,
-            Roles = (await _userManager.GetRolesAsync(user)).ToArray()
+            Roles = (await _userManager.GetRolesAsync(user)).ToList()
         });
     }
 
@@ -159,6 +178,12 @@ public class UsersController : ControllerBase
         return NoContent();
     }
 
+    [HttpGet("roles")]
+    public async Task<ActionResult<List<string>>> GetAllRoles()
+    {
+        return PNRoles.All.ToList();
+    }
+
     [HttpPut("{id:int}/roles")]
     public async Task<ActionResult<RolesDto>> EditRoles(int id, RolesDto dto)
     {
@@ -206,7 +231,7 @@ public class UsersController : ControllerBase
 
         return Ok(new RolesDto
         {
-            Roles = (await _userManager.GetRolesAsync(user)).ToArray()
+            Roles = (await _userManager.GetRolesAsync(user)).ToList()
         });
     }
 }

@@ -20,7 +20,7 @@ public class UsersViewModel : ViewModelBase
     {
         await RunAsync("Загрузка всех пользователей.", async () =>
         {
-            var users = await _usersApiClient.GetAllUsers();
+            var users = await _usersApiClient.GetAllUsersAsync();
 
             Users.Clear();
             foreach (var user in users)

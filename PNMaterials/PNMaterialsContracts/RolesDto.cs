@@ -9,5 +9,5 @@ public class RolesDto
 {
     [Required(ErrorMessage = "Выберите хотя бы одну роль.")]
     [MinLength(1, ErrorMessage = "Выберите хотя бы одну роль.")]
-    public string[] Roles { get; set; } = [];
+    public List<string> Roles { get; set; } = [];
 }
