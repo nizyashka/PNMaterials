@@ -1,10 +1,11 @@
 using PNMaterialsClient.ViewModels;
 using PNMaterialsClient.Views.Dialogs;
+using PNMaterialsClient.Views.Interfaces;
 using PNMaterialsContracts;
 
 namespace PNMaterialsClient.Views;
 
-public sealed partial class UsersPage : Page
+public sealed partial class UsersPage : Page, IRefreshablePage
 {
     public UsersViewModel ViewModel { get; }
 
@@ -93,4 +94,10 @@ public sealed partial class UsersPage : Page
             ViewModel.ReportError($"Изменение пароля пользователя", ex);
         }
     }
+
+    public async Task RefreshAsync()
+    {
+        await ViewModel.LoadAsync();
+    }
+
 }

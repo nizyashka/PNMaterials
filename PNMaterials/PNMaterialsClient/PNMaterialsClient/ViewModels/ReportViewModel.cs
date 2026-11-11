@@ -65,7 +65,7 @@ public partial class ReportViewModel : ViewModelBase
     }
 
     [RelayCommand]
-    private async Task SearchAsync()
+    public async Task SearchAsync()
     {
         await RunAsync("Построение отчёта", async () =>
         {

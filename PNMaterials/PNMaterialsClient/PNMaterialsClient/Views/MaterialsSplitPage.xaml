@@ -37,23 +37,6 @@
                               FontFamily="{ThemeResource SymbolThemeFontFamily}"
                               FontSize="14" />
                 </Button>
-
-                <Button Grid.Column="1"
-                        Style="{StaticResource IconButtonStyle}"
-                        Width="Auto"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Center"
-                        ToolTipService.ToolTip="Создать">
-                    <Button.Flyout>
-                        <MenuFlyout>
-                            <MenuFlyoutItem Text="Создать группу" Click="OnCreateGroupClick"/>
-                            <MenuFlyoutItem Text="Создать материал" Click="OnCreateMaterialClick"/>
-                        </MenuFlyout>
-                    </Button.Flyout>
-                    <FontIcon Glyph="&#xE710;"
-                              FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                              FontSize="14" />
-                </Button>
             </Grid>
 
             <ListView Grid.Row="1"

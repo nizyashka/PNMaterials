@@ -3,6 +3,7 @@ using Microsoft.UI;
 using PNMaterialsClient.Navigation;
 using PNMaterialsClient.Services;
 using PNMaterialsClient.Views.Dialogs;
+using PNMaterialsClient.Views.Interfaces;
 using PNMaterialsContracts;
 
 namespace PNMaterialsClient.Views;
@@ -137,6 +138,9 @@ public sealed partial class MainPage : Page
         };
 
         await dialog.ShowAsync();
+
+        if (ContentFrame.Content is IRefreshablePage page)
+            await page.RefreshAsync();
     }
 
     private void RedrawPopup(object? sender, NotifyCollectionChangedEventArgs e)
@@ -158,4 +162,41 @@ public sealed partial class MainPage : Page
     {
         ResizePopup();
     }
+
+    private async void OnCreateGroupClick(object sender, RoutedEventArgs e)
+    {
+        var dialog = new MaterialGroupCardContentDialog(0)
+        {
+            XamlRoot = XamlRoot
+        };
+
+        await dialog.ShowAsync();
+
+        if (ContentFrame.Content is IRefreshablePage page)
+            await page.RefreshAsync();
+    }
+
+    private async void OnCreateMaterialClick(object sender, RoutedEventArgs e)
+    {
+        var dialog = new MaterialCardContentDialog(0)
+        {
+            XamlRoot = XamlRoot
+        };
+
+        await dialog.ShowAsync();
+
+        if (dialog.RequestedMaterialId is { } requestedMaterialId)
+        {
+            var requestDialog = new PurchaseRequestCardContentDialog(0, requestedMaterialId)
+            {
+                XamlRoot = XamlRoot
+            };
+
+            await requestDialog.ShowAsync();
+        }
+
+        if (ContentFrame.Content is IRefreshablePage page)
+            await page.RefreshAsync();
+    }
+
 }

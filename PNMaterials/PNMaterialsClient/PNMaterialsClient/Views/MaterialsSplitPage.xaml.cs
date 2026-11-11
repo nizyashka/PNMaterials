@@ -1,12 +1,13 @@
 using Microsoft.UI.Xaml.Controls.Primitives;
 using PNMaterialsClient.ViewModels;
 using PNMaterialsClient.Views.Dialogs;
+using PNMaterialsClient.Views.Interfaces;
 using PNMaterialsContracts;
 using WinUI.TableView;
 
 namespace PNMaterialsClient.Views;
 
-public sealed partial class MaterialsSplitPage : Page
+public sealed partial class MaterialsSplitPage : Page, IRefreshablePage
 {
     public MaterialGroupsViewModel MaterialGroupsViewModel { get; }
     public MaterialsViewModel MaterialsViewModel { get; }
@@ -35,11 +36,6 @@ public sealed partial class MaterialsSplitPage : Page
             MaterialsViewModel.GroupId = group.Id;
             await MaterialsViewModel.LoadAsync();
         }
-    }
-
-    private async void OnCreateGroupClick(object sender, RoutedEventArgs e)
-    {
-        await OpenGroupCardAsync(0);
     }
 
     private async void OnEditGroupClick(object sender, RoutedEventArgs e)
@@ -78,11 +74,6 @@ public sealed partial class MaterialsSplitPage : Page
     }
 
     //Методы для материалов
-    private async void OnCreateMaterialClick(object sender, RoutedEventArgs e)
-    {
-        await OpenMaterialCardAsync(0);
-    }
-
     private async void OnMaterialClick(object sender, ItemClickEventArgs e)
     {
         if (e.ClickedItem is MaterialDto material)
@@ -116,5 +107,15 @@ public sealed partial class MaterialsSplitPage : Page
         {
             MaterialsViewModel.ReportError($"Открытие карточки материала {id}", ex);
         }
+    }
+
+    public async Task RefreshAsync()
+    {
+        await MaterialGroupsViewModel.LoadAsync();
+
+        GroupsList.SelectedItem = MaterialGroupsViewModel.Groups
+            .FirstOrDefault(g => g.Id == MaterialsViewModel.GroupId);
+
+        await MaterialsViewModel.LoadAsync();
     }
 }

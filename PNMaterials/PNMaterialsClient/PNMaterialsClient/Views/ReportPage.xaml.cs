@@ -1,10 +1,11 @@
 using PNMaterialsClient.ViewModels;
 using PNMaterialsClient.Views.Dialogs;
+using PNMaterialsClient.Views.Interfaces;
 using PNMaterialsContracts;
 
 namespace PNMaterialsClient.Views;
 
-public sealed partial class ReportPage : Page
+public sealed partial class ReportPage : Page, IRefreshablePage
 {
     public ReportViewModel ReportViewModel { get; }
 
@@ -45,5 +46,10 @@ public sealed partial class ReportPage : Page
         {
             ReportViewModel.ReportError($"Открытие карточки заявки {id}", ex);
         }
+    }
+
+    public async Task RefreshAsync()
+    {
+        await ReportViewModel.SearchAsync();
     }
 }

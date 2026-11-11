@@ -29,15 +29,22 @@
                             Spacing="8"
                             VerticalAlignment="Center">
 
-                        <Button x:Name="CreateRequestButton"
-                            Content="Создать заявку"
-                            Style="{StaticResource IconButtonStyle}"
-                            Width="Auto"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Center"
-                            Click="OnCreateRequestClick"
-                            ToolTipService.ToolTip="Создать заявку"
-                            Padding="8" />
+                        <Button x:Name="CreateButton"
+                                Style="{StaticResource IconButtonStyle}"
+                                VerticalAlignment="Center"
+                                ToolTipService.ToolTip="Создать..."
+                                Padding="8">
+                            <Button.Flyout>
+                                <MenuFlyout>
+                                    <MenuFlyoutItem Text="Создать группу" Click="OnCreateGroupClick" />
+                                    <MenuFlyoutItem Text="Создать материал" Click="OnCreateMaterialClick" />
+                                    <MenuFlyoutItem Text="Создать заявку" Click="OnCreateRequestClick" />
+                                </MenuFlyout>
+                            </Button.Flyout>
+                            <FontIcon Glyph="&#xE710;"
+                                      FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                      FontSize="14" />
+                        </Button>
                     </StackPanel>
 
                     <ItemsControl x:Name="MainMenu"
