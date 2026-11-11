@@ -37,7 +37,7 @@ public sealed partial class UsersPage : Page
     private async void OnEditUserPasswordClick(object sender, RoutedEventArgs e)
     {
         if (sender is MenuFlyoutItem button && button.DataContext is UserDto user)
-            await OpenUserPasswordEditDialog();
+            await OpenUserPasswordEditDialog(user);
     }
 
     private async Task OpenUserProfileEditDialog(UserDto dto)
@@ -76,11 +76,11 @@ public sealed partial class UsersPage : Page
         }
     }
 
-    private async Task OpenUserPasswordEditDialog()
+    private async Task OpenUserPasswordEditDialog(UserDto dto)
     {
         try
         {
-            var dialog = new UserPasswordContentDialog()
+            var dialog = new UserPasswordContentDialog(dto.Id)
             {
                 XamlRoot = XamlRoot
             };
