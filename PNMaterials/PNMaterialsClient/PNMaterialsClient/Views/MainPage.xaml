@@ -39,6 +39,7 @@
                                     <MenuFlyoutItem Text="Создать группу" Click="OnCreateGroupClick" />
                                     <MenuFlyoutItem Text="Создать материал" Click="OnCreateMaterialClick" />
                                     <MenuFlyoutItem Text="Создать заявку" Click="OnCreateRequestClick" />
+                                    <MenuFlyoutItem Text="Создать пользователя" Click="OnCreateUserClick" />
                                 </MenuFlyout>
                             </Button.Flyout>
                             <FontIcon Glyph="&#xE710;"

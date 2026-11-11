@@ -2,6 +2,7 @@ using System.Collections.Specialized;
 using Microsoft.UI;
 using PNMaterialsClient.Navigation;
 using PNMaterialsClient.Services;
+using PNMaterialsClient.ViewModels;
 using PNMaterialsClient.Views.Dialogs;
 using PNMaterialsClient.Views.Interfaces;
 using PNMaterialsContracts;
@@ -199,4 +200,16 @@ public sealed partial class MainPage : Page
             await page.RefreshAsync();
     }
 
+    private async void OnCreateUserClick(object sender, RoutedEventArgs e)
+    {
+        var dialog = new UserCardContentDialog(0)
+        {
+            XamlRoot = XamlRoot
+        };
+
+        await dialog.ShowAsync();
+
+        if (ContentFrame.Content is IRefreshablePage page)
+            await page.RefreshAsync();
+    }
 }

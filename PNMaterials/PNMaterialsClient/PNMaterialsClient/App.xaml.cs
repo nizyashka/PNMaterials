@@ -158,6 +158,7 @@ public partial class App : Application
         services.AddTransient<ProfileCardViewModel>();
         services.AddTransient<RolesCardViewModel>();
         services.AddTransient<PasswordCardViewModel>();
+        services.AddTransient<UserCardViewModel>();
 
         services.AddSingleton<MessagesService>();
         services.AddSingleton<LoginInfoProvider>();

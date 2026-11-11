@@ -100,4 +100,28 @@ public sealed partial class UsersPage : Page, IRefreshablePage
         await ViewModel.LoadAsync();
     }
 
+    private async void OnUserClick(object sender, ItemClickEventArgs e)
+    {
+        if (e.ClickedItem is UserDto user)
+            await OpenMaterialCardAsync(user.Id);
+    }
+
+    private async Task OpenMaterialCardAsync(int id)
+    {
+        try
+        {
+            var dialog = new UserCardContentDialog(id)
+            {
+                XamlRoot = XamlRoot
+            };
+
+            await dialog.ShowAsync();
+
+            await ViewModel.LoadAsync();
+        }
+        catch (Exception ex)
+        {
+            ViewModel.ReportError($"Открытие карточки пользователя {id}", ex);
+        }
+    }
 }

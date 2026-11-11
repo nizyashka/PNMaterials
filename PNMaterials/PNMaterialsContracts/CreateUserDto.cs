@@ -4,8 +4,8 @@ namespace PNMaterialsContracts;
 
 public class CreateUserDto
 {
-    [Required(ErrorMessage = "Имя пользователя обязательно.")]
-    [StringLength(50, ErrorMessage = "Имя пользователя не должно превышать 50 символов.")]
+    [Required(ErrorMessage = "Логин обязателен.")]
+    [StringLength(50, ErrorMessage = "Логин не должен превышать 50 символов.")]
     public string Username { get; set; }
 
     [Required(ErrorMessage = "Пароль обязателен.")]

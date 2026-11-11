@@ -8,7 +8,8 @@
       xmlns:tv="using:WinUI.TableView">
 
     <tv:TableView Style="{StaticResource EntityTableStyle}"
-                  ItemsSource="{x:Bind ViewModel.Users}">
+                  ItemsSource="{x:Bind ViewModel.Users}"
+                  ItemClick="OnUserClick">
         <tv:TableView.Columns>
             <tv:TableViewTextColumn Header="Логин" Binding="{Binding Username}" Width="*" />
             <tv:TableViewTextColumn Header="Полное имя" Binding="{Binding FullName}" Width="*" />
