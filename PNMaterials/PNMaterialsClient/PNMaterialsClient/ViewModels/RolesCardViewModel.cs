@@ -37,6 +37,8 @@ public partial class RolesCardViewModel : ViewModelBase
             {
                 Roles.Add(new RoleSelectionViewModel { Name = role, IsSelected = user.Roles.Contains(role) });
             }
+
+            MessagesService.ShowInfo("Данные перечитаны из базы.");
         });
     }
 
@@ -53,12 +55,10 @@ public partial class RolesCardViewModel : ViewModelBase
         {
             RolesDto roles = new RolesDto { Roles = Roles.Where(r => r.IsSelected).Select(r => r.Name).ToList() };
             RolesDto newRoles = await _usersApiClient.EditRolesAsync(_id, roles);
-            List<string> allRoles = await _usersApiClient.GetAllRoles();
 
-            Roles.Clear();
-            foreach (var role in allRoles)
+            foreach (var role in Roles)
             {
-                Roles.Add(new RoleSelectionViewModel { Name = role, IsSelected = newRoles.Roles.Contains(role) });
+                role.IsSelected = newRoles.Roles.Contains(role.Name);
             }
 
             IsEditMode = false;

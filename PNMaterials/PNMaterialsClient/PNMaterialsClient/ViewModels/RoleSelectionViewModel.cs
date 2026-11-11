@@ -1,7 +1,9 @@
 namespace PNMaterialsClient.ViewModels;
 
-public class RoleSelectionViewModel
+public partial class RoleSelectionViewModel : ObservableObject
 {
     public string Name { get; set; }
-    public bool IsSelected { get; set; }
+
+    [ObservableProperty]
+    private bool _isSelected;
 }
