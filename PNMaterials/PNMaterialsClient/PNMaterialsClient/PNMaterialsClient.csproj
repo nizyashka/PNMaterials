@@ -42,6 +42,7 @@
         </None>
     </ItemGroup>
     <ItemGroup>
+      <PackageReference Include="CommunityToolkit.WinUI.Controls.Primitives" />
       <PackageReference Include="CommunityToolkit.WinUI.Controls.Sizers" />
       <PackageReference Include="Microsoft.Extensions.Http" />
       <PackageReference Include="Microsoft.Extensions.Logging.Debug" />
