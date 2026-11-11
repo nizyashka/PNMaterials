@@ -3,6 +3,7 @@ using Microsoft.UI;
 using PNMaterialsClient.Navigation;
 using PNMaterialsClient.Services;
 using PNMaterialsClient.Views.Dialogs;
+using PNMaterialsContracts;
 
 namespace PNMaterialsClient.Views;
 
@@ -26,17 +27,19 @@ public sealed partial class MainPage : Page
                 new NavPage { Title = "Отчет по заявкам на закупку", PageType = typeof(ReportPage) },
             ]
         },
-        new NavPage { Title = "Пользователи", PageType = typeof(UsersPage) }
+        new NavPage { Title = "Пользователи", PageType = typeof(UsersPage), RequiredRole = PNRoles.Admin }
     ];
 
     private readonly Dictionary<Type, Button> _sectionByPage = [];
 
     private MessagesService MessagesService { get; }
+    private LoginInfoProvider LoginInfoProvider { get; }
 
     public MainPage()
     {
         this.InitializeComponent();
         MessagesService = App.Services.GetRequiredService<MessagesService>();
+        LoginInfoProvider = App.Services.GetRequiredService<LoginInfoProvider>();
         BuildMenu();
         ContentFrame.Navigated += OnContentFrameNavigated;
         ContentFrame.Navigate(typeof(MaterialsSplitPage));
@@ -96,6 +99,12 @@ public sealed partial class MainPage : Page
         if (sender is FrameworkElement { Tag: NavPage page }
             && ContentFrame.CurrentSourcePageType != page.PageType)
         {
+            if (!string.IsNullOrWhiteSpace(page.RequiredRole) && !LoginInfoProvider.Roles.Contains(page.RequiredRole))
+            {
+                MessagesService.ShowWarning("У вас недостаточно прав для этого действия.");
+                return;
+            }
+
             ContentFrame.Navigate(page.PageType);
         }
     }

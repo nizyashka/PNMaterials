@@ -47,7 +47,7 @@ public partial class LoginViewModel : ViewModelBase
         {
             LoginDto loginDto = new LoginDto { Username = Username!, Password = Password! };
             var result = await _authApiClient.Login(loginDto);
-            _loginInfoProvider.SetLoginInfo(result.Id, result.AccessToken, result.Username, loginDto.Password);
+            _loginInfoProvider.SetLoginInfo(result.Id, result.AccessToken, result.Username, loginDto.Password, result.Roles);
             loggedIn = true;
             onSuccessfulLogin();
         });

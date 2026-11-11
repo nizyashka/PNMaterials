@@ -17,4 +17,5 @@ public sealed class NavFolder : NavItem
 public sealed class NavPage : NavItem
 {
     public required Type PageType { get; init; }
+    public string RequiredRole { get; init; } = string.Empty;
 }

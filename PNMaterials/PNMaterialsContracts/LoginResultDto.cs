@@ -7,5 +7,5 @@ public class LoginResultDto
     public int Id { get; set; }
     public string Username { get; set; } = string.Empty;
     public string FullName { get; set; } = string.Empty;
-    public string[] Roles { get; set; } = [];
+    public List<string> Roles { get; set; } = [];
 }

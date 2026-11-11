@@ -2,49 +2,33 @@ namespace PNMaterialsClient.Services;
 
 public sealed class LoginInfoProvider
 {
-    private int? _id;
-    private string? _accessToken;
-    private string? _username;
-    private string? _password;
+    public int? Id { get; private set; }
+    public string? AccessToken { get; private set; }
+    public string? Username { get; private set; }
+    public string? Password { get; private set; }
+    public List<string>? Roles { get; private set; }
 
-    public int? Id => _id;
-    public string? AccessToken => _accessToken;
-    public string? Username => _username;
-    public string? Password => _password;
-
-    public void SetLoginInfo(int id, string accessToken, string login, string password)
+    public void SetLoginInfo(int id, string accessToken, string username, string password, List<string> roles)
     {
-        _id = id;
-        Interlocked.Exchange(ref _accessToken, accessToken);
-        Interlocked.Exchange(ref _username, login);
-        Interlocked.Exchange(ref _password, password);
+        Id = id;
+        AccessToken = accessToken;
+        Username = username;
+        Password = password;
+        Roles = roles;
     }
 
-    public void ClearLoginInfo()
+    public void SetAccessToken(string accessToken)
     {
-        _id = null;
-        Interlocked.Exchange(ref _accessToken, null);
-        Interlocked.Exchange(ref _username, null);
-        Interlocked.Exchange(ref _password, null);
+        AccessToken = accessToken;
     }
 
-    public void SetAccessToken(string? token)
+    public void SetUsername(string username)
     {
-        Interlocked.Exchange(ref _accessToken, token);
+        Username = username;
     }
 
-    public void ClearAccessToken()
+    public void SetPassword(string password)
     {
-        Interlocked.Exchange(ref _accessToken, null);
-    }
-
-    public void SetUsername(string? username)
-    {
-        Interlocked.Exchange(ref _username, username);
-    }
-
-    public void SetPassword(string? password)
-    {
-        Interlocked.Exchange(ref _password, password);
+        Password = password;
     }
 }

@@ -47,7 +47,7 @@ public class AuthController : ControllerBase
             Id = user.Id,
             Username = user.UserName!,
             FullName = $"{user.LastName} {user.FirstName} {user.MiddleName}".Trim(),
-            Roles = roles.ToArray()
+            Roles = roles.ToList()
         });
     }    
 }
