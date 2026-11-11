@@ -10,6 +10,7 @@ public sealed partial class EntityCard : UserControl
         this.InitializeComponent();
         UpdateEditButtons();
         UpdateArchiveButtons();
+        UpdateRefreshButton();
     }
 
     public static readonly DependencyProperty HeaderProperty =
@@ -84,7 +85,7 @@ public sealed partial class EntityCard : UserControl
 
     public static readonly DependencyProperty RefreshCommandProperty =
         DependencyProperty.Register(nameof(RefreshCommand), typeof(ICommand), typeof(EntityCard),
-            new PropertyMetadata(null));
+            new PropertyMetadata(null, OnRefreshCommandChanged));
 
     public ICommand? RefreshCommand
     {
@@ -117,12 +118,20 @@ public sealed partial class EntityCard : UserControl
     private static void OnArchiveCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         => ((EntityCard)d).UpdateArchiveButtons();
 
+    private static void OnRefreshCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        => ((EntityCard)d).UpdateRefreshButton();
+
     private void UpdateArchiveButtons()
     {
         ArchiveIcon.Glyph = IsArchived ? "\uE7A7" : "\uE74D";
         ToolTipService.SetToolTip(ArchiveButton, IsArchived ? "Восстановить из архива" : "Архивировать");
         ArchiveButton.Visibility = ArchiveCommand is null ? Visibility.Collapsed : Visibility.Visible;
         EditButton.IsEnabled = !IsArchived;
+    }
+
+    private void UpdateRefreshButton()
+    {
+        RefreshButton.Visibility = RefreshCommand is null ? Visibility.Collapsed : Visibility.Visible;
     }
 
     private void OnToggleEdit(object sender, RoutedEventArgs e)

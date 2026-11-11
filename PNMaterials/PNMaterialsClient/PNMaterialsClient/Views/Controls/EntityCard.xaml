@@ -16,7 +16,8 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0"
+            <Button x:Name="RefreshButton"
+                    Grid.Column="0"
                     Style="{StaticResource IconButtonStyle}"
                     Command="{x:Bind RefreshCommand, Mode=OneWay}"
                     ToolTipService.ToolTip="Обновить">
