@@ -1,9 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PNMaterialsContracts;
 using PNMaterialsInfrastructure.Identity;
-using Microsoft.EntityFrameworkCore;
+using System.Net.NetworkInformation;
 
 namespace PNMaterialsAPI.Controllers;
 
@@ -198,6 +199,12 @@ public class UsersController : ControllerBase
         var userRoles = await _userManager.GetRolesAsync(user);
         var addedRoles = dto.Roles.Except(userRoles).ToArray();
         var removedRoles = userRoles.Except(dto.Roles).ToArray();
+
+        if (removedRoles.Contains(PNRoles.Admin))
+        {
+            if ((await _userManager.GetUsersInRoleAsync(PNRoles.Admin)).Count() == 1)
+                return Problem(detail: $"Нельзя убрать роль {PNRoles.Admin} у последнего администратора.", statusCode: StatusCodes.Status400BadRequest);
+        }
 
         if (addedRoles.Length > 0)
         {
