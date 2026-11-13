@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PNMaterialsContracts;
 using PNMaterialsInfrastructure.Identity;
-using System.Net.NetworkInformation;
 
 namespace PNMaterialsAPI.Controllers;
 
@@ -20,6 +19,36 @@ public class UsersController : ControllerBase
     {
         _userManager = userManager;
         _roleManager = roleManager;
+    }
+
+    private ActionResult? EnsureSuccess(IdentityResult result, string operation)
+    {
+        if (result.Succeeded)
+            return null;
+
+        var errors = result.Errors.ToArray();
+
+        if (errors.Any(e => e.Code is nameof(IdentityErrorDescriber.ConcurrencyFailure)))
+            return Problem("Данные пользователя устарели.", statusCode: StatusCodes.Status409Conflict);
+
+        if (errors.Any(e => e.Code is nameof(IdentityErrorDescriber.UserAlreadyInRole)))
+            return Problem("У пользователя уже есть такая роль.", statusCode: StatusCodes.Status409Conflict);
+
+        if (errors.Any(e => e.Code is nameof(IdentityErrorDescriber.UserNotInRole)))
+            return Problem("У пользователя нет такой роли.", statusCode: StatusCodes.Status409Conflict);
+
+        if (errors.Any(e => e.Code is nameof(IdentityErrorDescriber.DuplicateUserName)))
+            return Problem("Этот логин уже занят. Введите другой.", statusCode: StatusCodes.Status409Conflict);
+
+        if (errors.Any(e => e.Code is nameof(IdentityErrorDescriber.InvalidUserName)))
+            return Problem("Логин пуст или содержит недопустимые символы.", statusCode: StatusCodes.Status400BadRequest);
+
+        if (errors.Any(e => e.Code is nameof(IdentityErrorDescriber.PasswordTooShort)))
+            return Problem($"Пароль должен содержать не менее {_userManager.Options.Password.RequiredLength} символов.", statusCode: StatusCodes.Status400BadRequest);
+
+        var details = string.Join("; ", errors.Select(e => $"{e.Code}: {e.Description}"));
+
+        throw new InvalidOperationException($"{operation}: {details}");
     }
 
     [HttpGet]
@@ -77,32 +106,18 @@ public class UsersController : ControllerBase
             LastName = dto.LastName.Trim(),
             MiddleName = dto.MiddleName?.Trim()
         };
-        var userResult = await _userManager.CreateAsync(user, dto.Password);
 
-        if (!userResult.Succeeded)
-        {
-            var usernameTaken = userResult.Errors.Any(error => error.Code is nameof(IdentityErrorDescriber.DuplicateUserName));
-            var shortPassword = userResult.Errors.Any(error => error.Code is nameof(IdentityErrorDescriber.PasswordTooShort));
-            var status = usernameTaken ? StatusCodes.Status409Conflict : StatusCodes.Status400BadRequest;
-            var message = usernameTaken ? "Этот логин уже занят. Введите другой." 
-                : (shortPassword ? $"Пароль должен содержать не менее {_userManager.Options.Password.RequiredLength} символов." : "Ошибка создания пользователя.");
+        var userResult = EnsureSuccess(await _userManager.CreateAsync(user, dto.Password), "Создание пользователя");
 
-            return Problem(detail: message, statusCode: status);
-        }
+        if (userResult != null)
+            return userResult;
 
         foreach (string role in dto.Roles)
         {
-            var roleResult = await _userManager.AddToRoleAsync(user, role);
+            var roleResult = EnsureSuccess(await _userManager.AddToRoleAsync(user, role), "Добавление роли пользователю");
 
-            if (!roleResult.Succeeded)
-            {
-                var hasConflict = roleResult.Errors.Any(e => e.Code is nameof(IdentityErrorDescriber.ConcurrencyFailure));
-                var status = hasConflict ? StatusCodes.Status409Conflict : StatusCodes.Status400BadRequest;
-                var message = hasConflict ? "Пользователь создан. При назначении роли его данные изменились."
-                    : $"Пользователь создан, но назначить роль {role} не удалось.";
-
-                return Problem(detail: message, statusCode: status);
-            }
+            if (roleResult != null)
+                return roleResult;
         }
 
         return Ok(new UserDto
@@ -129,21 +144,10 @@ public class UsersController : ControllerBase
         user.LastName = dto.LastName.Trim();
         user.MiddleName = dto.MiddleName?.Trim();
 
-        var userResult = await _userManager.UpdateAsync(user);
+        var userResult = EnsureSuccess(await _userManager.UpdateAsync(user), "Изменение профиля пользователя");
 
-        if (!userResult.Succeeded)
-        {
-            var hasConflict = userResult.Errors.Any(error =>
-                error.Code is nameof(IdentityErrorDescriber.DuplicateUserName)
-                           or nameof(IdentityErrorDescriber.ConcurrencyFailure));
-            var usernameTaken = userResult.Errors.Any(error => error.Code is nameof(IdentityErrorDescriber.DuplicateUserName));
-
-            var status = hasConflict ? StatusCodes.Status409Conflict : StatusCodes.Status400BadRequest;
-            var message = hasConflict ? (usernameTaken ? "Этот логин уже занят. Введите другой." : "Данные пользователя устарели.")
-                : "Ошибка изменения профиля пользователя.";
-
-            return Problem(detail: message, statusCode: status);
-        }
+        if (userResult != null)
+            return userResult;
 
         return Ok(new ProfileDto 
         {
@@ -163,18 +167,10 @@ public class UsersController : ControllerBase
             return Problem(detail: "Пользователь не найден.", statusCode: StatusCodes.Status404NotFound);
 
         var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-        var result = await _userManager.ResetPasswordAsync(user, token, dto.NewPassword);
+        var result = EnsureSuccess(await _userManager.ResetPasswordAsync(user, token, dto.NewPassword), "Изменение пароля пользователя");
 
-        if (!result.Succeeded)
-        {
-            var hasConflict = result.Errors.Any(error => error.Code is nameof(IdentityErrorDescriber.ConcurrencyFailure));
-            var shortPassword = result.Errors.Any(error => error.Code is nameof(IdentityErrorDescriber.PasswordTooShort));
-            var status = hasConflict ? StatusCodes.Status409Conflict : StatusCodes.Status400BadRequest;
-            var message = hasConflict ? "Данные пользователя устарели."
-                : (shortPassword ? $"Пароль должен содержать не менее {_userManager.Options.Password.RequiredLength} символов." : "Ошибка изменения пароля.");
-
-            return Problem(detail: message, statusCode: status);
-        }
+        if (result != null)
+            return result;
 
         return NoContent();
     }
@@ -208,32 +204,18 @@ public class UsersController : ControllerBase
 
         if (addedRoles.Length > 0)
         {
-            IdentityResult addResult = await _userManager.AddToRolesAsync(user, addedRoles);
+            var addResult = EnsureSuccess(await _userManager.AddToRolesAsync(user, addedRoles), "Добавление новых ролей пользователю");
 
-            if (!addResult.Succeeded)
-            {
-                var hasConflict = addResult.Errors.Any(error => error.Code is nameof(IdentityErrorDescriber.ConcurrencyFailure)
-                or nameof(IdentityErrorDescriber.UserAlreadyInRole));
-                var status = hasConflict ? StatusCodes.Status409Conflict : StatusCodes.Status400BadRequest;
-                var message = hasConflict ? "Данные пользователя устарели." : "Не удалось назначить выбранные роли.";
-
-                return Problem(detail: message, statusCode: status);
-            }
+            if (addResult != null)
+                return addResult;
         }
 
         if (removedRoles.Length > 0)
         {
-            IdentityResult removeResult = await _userManager.RemoveFromRolesAsync(user, removedRoles);
+            var removeResult = EnsureSuccess(await _userManager.RemoveFromRolesAsync(user, removedRoles), "Снятие ролей у пользователя");
 
-            if (!removeResult.Succeeded)
-            {
-                var hasConflict = removeResult.Errors.Any(error => error.Code is nameof(IdentityErrorDescriber.ConcurrencyFailure)
-                or nameof(IdentityErrorDescriber.UserNotInRole));
-                var status = hasConflict ? StatusCodes.Status409Conflict : StatusCodes.Status400BadRequest;
-                var message = hasConflict ? "Данные пользователя устарели." : "Не удалось снять выбранные роли.";
-
-                return Problem(detail: message, statusCode: status);
-            }
+            if (removeResult != null)
+                return removeResult;
         }
 
         return Ok(new RolesDto
@@ -241,4 +223,5 @@ public class UsersController : ControllerBase
             Roles = (await _userManager.GetRolesAsync(user)).ToList()
         });
     }
+
 }
