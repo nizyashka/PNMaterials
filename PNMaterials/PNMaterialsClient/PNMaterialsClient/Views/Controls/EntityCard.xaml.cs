@@ -33,6 +33,16 @@ public sealed partial class EntityCard : UserControl
         set => SetValue(IsEditModeProperty, value);
     }
 
+    public static readonly DependencyProperty ShowEditButtonProperty =
+        DependencyProperty.Register(nameof(ShowEditButton), typeof(bool), typeof(EntityCard),
+            new PropertyMetadata(true, OnIsEditModeChanged));
+
+    public bool ShowEditButton
+    {
+        get => (bool)GetValue(ShowEditButtonProperty);
+        set => SetValue(ShowEditButtonProperty, value);
+    }
+
     public static readonly DependencyProperty IsArchivedProperty =
         DependencyProperty.Register(nameof(IsArchived), typeof(bool), typeof(EntityCard),
             new PropertyMetadata(false, OnIsArchivedStatusChanged));
@@ -108,7 +118,7 @@ public sealed partial class EntityCard : UserControl
 
     private void UpdateEditButtons()
     {
-        EditButton.Visibility = IsEditMode ? Visibility.Collapsed : Visibility.Visible;
+        EditButton.Visibility = !ShowEditButton || IsEditMode ? Visibility.Collapsed : Visibility.Visible;
         SaveButton.Visibility = IsEditMode ? Visibility.Visible : Visibility.Collapsed;
     }
 

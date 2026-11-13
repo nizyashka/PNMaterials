@@ -12,18 +12,25 @@ public partial class UserCardViewModel : ViewModelBase
     private readonly UsersApiClient _usersApiClient;
 
     [ObservableProperty]
+    public int _id;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     public string _username;
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     public string _firstName;
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     public string _lastName;
 
     [ObservableProperty]
     public string _middleName;
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     public string _password;
 
     [ObservableProperty]
@@ -40,13 +47,17 @@ public partial class UserCardViewModel : ViewModelBase
 
     public async Task LoadAsync(int id)
     {
-        await RunAsync($"Загрузка пользователя {id}", async () => 
+        Id = id;
+
+        await RunAsync($"Загрузка пользователя {id}", async () =>
         {
             List<string> allRoles = await _usersApiClient.GetAllRoles();
 
             if (id == 0)
             {
                 IsEditMode = true;
+                Roles.Clear();
+
                 foreach (string role in allRoles)
                 {
                     Roles.Add(new RoleSelectionViewModel { Name = role, IsSelected = false });
@@ -64,6 +75,8 @@ public partial class UserCardViewModel : ViewModelBase
             LastName = user.LastName;
             MiddleName = user.MiddleName ?? "";
 
+            Roles.Clear();
+
             foreach (var role in allRoles)
             {
                 Roles.Add(new RoleSelectionViewModel { Name = role, IsSelected = user.Roles.Contains(role) });
@@ -73,15 +86,68 @@ public partial class UserCardViewModel : ViewModelBase
         });
     }
 
-    [RelayCommand]
+    private bool CanSave() =>
+        (!string.IsNullOrWhiteSpace(Username)
+        && !string.IsNullOrWhiteSpace(FirstName)
+        && !string.IsNullOrWhiteSpace(LastName)
+        && !string.IsNullOrWhiteSpace(Password));
+
+    [RelayCommand(CanExecute = nameof(CanSave))]
     private async Task SaveAsync()
     {
+        CreateUserDto newUser = new CreateUserDto
+        {
+            Username = Username,
+            FirstName = FirstName,
+            LastName = LastName,
+            MiddleName = MiddleName,
+            Password = Password,
+            Roles = Roles.Where(r => r.IsSelected).Select(r => r.Name).ToList()
+        };
 
+        await RunAsync("Создание нового пользователя.", async () => 
+        { 
+            UserDto createdUser = await _usersApiClient.CreateUserAsync(newUser);
+
+            MessagesService.ShowSuccess("Пользователь успешно создан.");
+
+            IsEditMode = false;
+            Id = createdUser.Id;
+            Username = createdUser.Username;
+            FirstName = createdUser.FirstName;
+            LastName = createdUser.LastName;
+            MiddleName = createdUser.MiddleName ?? "";
+
+            foreach (var role in Roles)
+            {
+                role.IsSelected = createdUser.Roles.Contains(role.Name);
+            }
+        });
     }
 
     [RelayCommand]
     private async Task RefreshAsync()
     {
+        if (Id != 0)
+        {
+            await LoadAsync(Id);
+            return;
+        }
 
+        var selectedRoles = Roles.Where(r => r.IsSelected).Select(r => r.Name).ToList();
+
+        await RunAsync("Обновление ролей.", async () =>
+        {
+            List<string> allRoles = await _usersApiClient.GetAllRoles();
+
+            Roles.Clear();
+
+            foreach (string role in allRoles)
+            {
+                Roles.Add(new RoleSelectionViewModel { Name = role, IsSelected = selectedRoles.Contains(role) });
+            }
+
+            MessagesService.ShowSuccess("Список ролей успешно обновлен.");
+        });
     }
 }

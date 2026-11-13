@@ -12,25 +12,26 @@
 
     <controls:EntityCard Header="{x:Bind ViewModel.Header, Mode=OneWay}"
                          IsEditMode="{x:Bind ViewModel.IsEditMode, Mode=TwoWay}"
+                         ShowEditButton="False"
                          SaveCommand="{x:Bind ViewModel.SaveCommand}"
                          RefreshCommand="{x:Bind ViewModel.RefreshCommand}"
                          ExitCommand="{x:Bind ExitCommand}">
 
         <StackPanel Spacing="16">
             <TextBox Header="Логин *"
-                     Text="{x:Bind ViewModel.Username, Mode=TwoWay}"
+                     Text="{x:Bind ViewModel.Username, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      IsEnabled="{x:Bind ViewModel.IsEditMode, Mode=OneWay}"
                      MaxLength="50"
                      controls:TextBoxCounter.CharCounter="True" />
 
             <TextBox Header="Имя *"
-                     Text="{x:Bind ViewModel.FirstName, Mode=TwoWay}"
+                     Text="{x:Bind ViewModel.FirstName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      IsEnabled="{x:Bind ViewModel.IsEditMode, Mode=OneWay}"
                      MaxLength="50"
                      controls:TextBoxCounter.CharCounter="True" />
 
             <TextBox Header="Фамилия *"
-                     Text="{x:Bind ViewModel.LastName, Mode=TwoWay}"
+                     Text="{x:Bind ViewModel.LastName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      IsEnabled="{x:Bind ViewModel.IsEditMode, Mode=OneWay}"
                      MaxLength="50"
                      controls:TextBoxCounter.CharCounter="True" />
@@ -43,8 +44,10 @@
 
             <TextBox x:Name="PasswordTextBox"
                      Header="Пароль *"
-                     Text="{x:Bind ViewModel.Password, Mode=TwoWay}"
+                     Text="{x:Bind ViewModel.Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                      IsEnabled="{x:Bind ViewModel.IsEditMode, Mode=OneWay}" />
+
+            <TextBlock Text="Роли" HorizontalAlignment="Left" FontSize="14" Foreground="White" />
 
             <ItemsControl ItemsSource="{x:Bind ViewModel.Roles, Mode=OneWay}"
                           IsEnabled="{x:Bind ViewModel.IsEditMode, Mode=OneWay}">
