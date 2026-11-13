@@ -20,8 +20,6 @@ public sealed partial class UserCardContentDialog : ContentDialog
 
     private async void OnOpened(ContentDialog sender, ContentDialogOpenedEventArgs args)
     {
-        PasswordTextBox.Visibility = _id == 0 ? Visibility.Visible : Visibility.Collapsed;
-
         await ViewModel.LoadAsync(_id);
     }
 }

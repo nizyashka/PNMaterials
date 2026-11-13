@@ -90,39 +90,75 @@ public partial class UserCardViewModel : ViewModelBase
         (!string.IsNullOrWhiteSpace(Username)
         && !string.IsNullOrWhiteSpace(FirstName)
         && !string.IsNullOrWhiteSpace(LastName)
-        && !string.IsNullOrWhiteSpace(Password));
+        && (Id == 0 ? !string.IsNullOrWhiteSpace(Password) : true));
 
     [RelayCommand(CanExecute = nameof(CanSave))]
     private async Task SaveAsync()
     {
-        CreateUserDto newUser = new CreateUserDto
+        if (Id == 0)
         {
-            Username = Username,
-            FirstName = FirstName,
-            LastName = LastName,
-            MiddleName = MiddleName,
-            Password = Password,
-            Roles = Roles.Where(r => r.IsSelected).Select(r => r.Name).ToList()
-        };
-
-        await RunAsync("Создание нового пользователя.", async () => 
-        { 
-            UserDto createdUser = await _usersApiClient.CreateUserAsync(newUser);
-
-            MessagesService.ShowSuccess("Пользователь успешно создан.");
-
-            IsEditMode = false;
-            Id = createdUser.Id;
-            Username = createdUser.Username;
-            FirstName = createdUser.FirstName;
-            LastName = createdUser.LastName;
-            MiddleName = createdUser.MiddleName ?? "";
-
-            foreach (var role in Roles)
+            CreateUserDto newUser = new CreateUserDto
             {
-                role.IsSelected = createdUser.Roles.Contains(role.Name);
-            }
-        });
+                Username = Username,
+                FirstName = FirstName,
+                LastName = LastName,
+                MiddleName = MiddleName,
+                Password = Password,
+                Roles = Roles.Where(r => r.IsSelected).Select(r => r.Name).ToList()
+            };
+
+            await RunAsync("Создание нового пользователя.", async () => 
+            { 
+                UserDto createdUser = await _usersApiClient.CreateUserAsync(newUser);
+
+                MessagesService.ShowSuccess("Пользователь успешно создан.");
+
+                IsEditMode = false;
+
+                Id = createdUser.Id;
+                Username = createdUser.Username;
+                FirstName = createdUser.FirstName;
+                LastName = createdUser.LastName;
+                MiddleName = createdUser.MiddleName ?? "";
+
+                foreach (var role in Roles)
+                {
+                    role.IsSelected = createdUser.Roles.Contains(role.Name);
+                }
+            });
+        }
+        else
+        {
+            UserEditDto editedUser = new UserEditDto
+            {
+                Username = Username,
+                FirstName = FirstName,
+                LastName = LastName,
+                MiddleName = MiddleName,
+                Password = Password,
+                Roles = Roles.Where(r => r.IsSelected).Select(r => r.Name).ToList()
+            };
+
+            await RunAsync("Изменение пользователя.", async () =>
+            {
+                UserDto updatedUser = await _usersApiClient.EditUserAsync(Id, editedUser);
+
+                MessagesService.ShowSuccess("Пользователь успешно изменен.");
+
+                IsEditMode = false;
+
+                Id = updatedUser.Id;
+                Username = updatedUser.Username;
+                FirstName = updatedUser.FirstName;
+                LastName = updatedUser.LastName;
+                MiddleName = updatedUser.MiddleName ?? "";
+
+                foreach (var role in Roles)
+                {
+                    role.IsSelected = updatedUser.Roles.Contains(role.Name);
+                }
+            });
+        }
     }
 
     [RelayCommand]

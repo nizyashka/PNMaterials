@@ -22,7 +22,5 @@ public class CreateUserDto
     [StringLength(50, ErrorMessage = "Отчество не должно превышать 50 символов.")]
     public string? MiddleName { get; set; }
 
-    [Required(ErrorMessage = "Выберите хотя бы одну роль.")]
-    [MinLength(1, ErrorMessage = "Выберите хотя бы одну роль.")]
     public List<string> Roles { get; set; }
 }

@@ -142,9 +142,11 @@ public class UsersController : ControllerBase
         return Ok(userDto);
     }
 
-    [HttpPut("{id:int}/profile")]
-    public async Task<ActionResult<ProfileDto>> EditProfile(int id, ProfileEditDto dto)
+    [HttpPut("{id:int}")]
+    public async Task<ActionResult<UserDto>> EditUser(int id, UserEditDto dto)
     {
+        await using var transaction = await _db.Database.BeginTransactionAsync();
+
         var user = await _userManager.FindByIdAsync(id.ToString());
 
         if (user is null)
@@ -160,45 +162,14 @@ public class UsersController : ControllerBase
         if (userResult != null)
             return userResult;
 
-        return Ok(new ProfileDto 
+        if (!string.IsNullOrWhiteSpace(dto.Password))
         {
-            Username = user.UserName,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            MiddleName = user.MiddleName
-        });
-    }
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var result = EnsureSuccess(await _userManager.ResetPasswordAsync(user, token, dto.Password), "Изменение пароля пользователя");
 
-    [HttpPut("{id:int}/password")]
-    public async Task<ActionResult> EditPassword(int id, PasswordEditDto dto)
-    {
-        var user = await _userManager.FindByIdAsync(id.ToString());
-
-        if (user is null)
-            return Problem(detail: "Пользователь не найден.", statusCode: StatusCodes.Status404NotFound);
-
-        var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-        var result = EnsureSuccess(await _userManager.ResetPasswordAsync(user, token, dto.NewPassword), "Изменение пароля пользователя");
-
-        if (result != null)
-            return result;
-
-        return NoContent();
-    }
-
-    [HttpGet("roles")]
-    public async Task<ActionResult<List<string>>> GetAllRoles()
-    {
-        return PNRoles.All.ToList();
-    }
-
-    [HttpPut("{id:int}/roles")]
-    public async Task<ActionResult<RolesDto>> EditRoles(int id, RolesDto dto)
-    {
-        var user = await _userManager.FindByIdAsync(id.ToString());
-
-        if (user is null)
-            return Problem(detail: "Пользователь не найден.", statusCode: StatusCodes.Status404NotFound);
+            if (result != null)
+                return result;
+        }
 
         if (!dto.Roles.All(x => PNRoles.All.Contains(x)))
             return Problem(detail: "Попытка добавить пользователю несуществующую роль.", statusCode: StatusCodes.Status400BadRequest);
@@ -229,10 +200,19 @@ public class UsersController : ControllerBase
                 return removeResult;
         }
 
-        return Ok(new RolesDto
+        UserDto userDto = new UserDto
         {
+            Id = id,
+            Username = dto.Username.Trim(),
+            FirstName = dto.FirstName.Trim(),
+            LastName = dto.LastName.Trim(),
+            MiddleName = dto.MiddleName?.Trim(),
             Roles = (await _userManager.GetRolesAsync(user)).ToList()
-        });
+        };
+
+        await transaction.CommitAsync();
+
+        return Ok(userDto);
     }
 
     [HttpPut("{id:int}/block")]
@@ -280,5 +260,11 @@ public class UsersController : ControllerBase
             return result;
 
         return NoContent();
+    }
+
+    [HttpGet("roles")]
+    public async Task<ActionResult<List<string>>> GetAllRoles()
+    {
+        return PNRoles.All.ToList();
     }
 }
