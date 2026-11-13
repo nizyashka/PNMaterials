@@ -31,4 +31,9 @@ public sealed class LoginInfoProvider
     {
         Password = password;
     }
+
+    public void SetRoles(List<string> roles)
+    {
+        Roles = roles;
+    }
 }

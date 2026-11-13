@@ -8,8 +8,7 @@ namespace PNMaterialsClient.ViewModels;
 
 public partial class LoginViewModel : ViewModelBase
 {
-    private AuthApiClient _authApiClient;
-    private LoginInfoProvider _loginInfoProvider;
+    private AuthService _authService;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(LogInCommand))]
@@ -22,14 +21,9 @@ public partial class LoginViewModel : ViewModelBase
     private Action? OnSuccessfulLogin { get; set; }
     private Action? OnFailedLogin { get; set; }
 
-    public LoginViewModel(
-        AuthApiClient authApiClient, 
-        LoginInfoProvider loginInfoProvider, 
-        ILogger<LoginViewModel> logger) 
-        : base(logger)
+    public LoginViewModel(AuthService authService, ILogger<LoginViewModel> logger) : base(logger)
     {
-        _authApiClient = authApiClient;
-        _loginInfoProvider = loginInfoProvider;
+        _authService = authService;
     }
 
     [RelayCommand(CanExecute = nameof(TextBoxesAreFilled))]
@@ -45,9 +39,7 @@ public partial class LoginViewModel : ViewModelBase
 
         await RunAsync("Попытка аутентификации.", async () =>
         {
-            LoginDto loginDto = new LoginDto { Username = Username!, Password = Password! };
-            var result = await _authApiClient.Login(loginDto);
-            _loginInfoProvider.SetLoginInfo(result.Id, result.AccessToken, result.Username, loginDto.Password, result.Roles);
+            await _authService.Login(Username!, Password!);
             loggedIn = true;
             onSuccessfulLogin();
         });

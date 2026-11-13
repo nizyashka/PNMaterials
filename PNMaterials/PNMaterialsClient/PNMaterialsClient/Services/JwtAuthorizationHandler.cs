@@ -9,32 +9,28 @@ namespace PNMaterialsClient.Services;
 
 public class JwtAuthorizationHandler : DelegatingHandler
 {
-    private LoginInfoProvider _loginProvider { get; }
-    private AuthApiClient _authApiClient { get; }
+    private readonly AuthService _authService;
+    private readonly LoginInfoProvider _loginInfoProvider;
 
-    public JwtAuthorizationHandler(LoginInfoProvider loginProvider, AuthApiClient authApiClient)
+    public JwtAuthorizationHandler(LoginInfoProvider loginInfoProvider, AuthService authService)
     {
-        _loginProvider = loginProvider;
-        _authApiClient = authApiClient;
+        _loginInfoProvider = loginInfoProvider;
+        _authService = authService;
     }
 
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        if (!string.IsNullOrWhiteSpace(_loginProvider.AccessToken))
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _loginProvider.AccessToken);
+        if (!string.IsNullOrWhiteSpace(_loginInfoProvider.AccessToken))
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _loginInfoProvider.AccessToken);
 
         var result = await base.SendAsync(request, cancellationToken);
 
         if (result.StatusCode == HttpStatusCode.Unauthorized)
         {
-            if (string.IsNullOrWhiteSpace(_loginProvider.Username) || string.IsNullOrWhiteSpace(_loginProvider.Password))
-                throw new ApiException(ApiErrorKind.Unauthorized, "Не выполнен вход в приложение.");
-
             try
             {
-                var loginResult = await _authApiClient.Login(new LoginDto { Username = _loginProvider.Username, Password = _loginProvider.Password });
-                _loginProvider.SetAccessToken(loginResult.AccessToken);
-                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _loginProvider.AccessToken);
+                await _authService.Relogin();
+                request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", _loginInfoProvider.AccessToken);
                 result = await base.SendAsync(request, cancellationToken);
             }
             catch (ApiException ex) when (ex.Kind is ApiErrorKind.Unauthorized)
