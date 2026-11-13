@@ -67,6 +67,7 @@ public class UsersController : ControllerBase
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 MiddleName = user.MiddleName,
+                IsBlocked = user.IsBlocked,
                 Roles = (await _userManager.GetRolesAsync(user)).ToList()
             });
         }
@@ -89,6 +90,7 @@ public class UsersController : ControllerBase
             FirstName = user.FirstName,
             LastName = user.LastName,
             MiddleName = user.MiddleName,
+            IsBlocked = user.IsBlocked,
             Roles = (await _userManager.GetRolesAsync(user)).ToList()
         });
     }
@@ -224,4 +226,50 @@ public class UsersController : ControllerBase
         });
     }
 
+    [HttpPut("{id:int}/block")]
+    public async Task<ActionResult> BlockUser(int id)
+    {
+        var user = await _userManager.FindByIdAsync(id.ToString());
+
+        if (user is null)
+            return Problem(detail: "Пользователь не найден.", statusCode: StatusCodes.Status404NotFound);
+
+        var userRoles = await _userManager.GetRolesAsync(user);
+
+        if (userRoles.Contains(PNRoles.Admin))
+            return Problem(detail: $"Нельзя заблокировать пользователя с ролью {PNRoles.Admin}.", statusCode: StatusCodes.Status400BadRequest);
+
+        if (user.IsBlocked)
+            return NoContent();
+
+        user.IsBlocked = true;
+
+        var result = EnsureSuccess(await _userManager.UpdateAsync(user), "Блокировка пользователя");
+
+        if (result != null)
+            return result;
+
+        return NoContent();
+    }
+
+    [HttpPut("{id:int}/unblock")]
+    public async Task<ActionResult> UnblockUser(int id)
+    {
+        var user = await _userManager.FindByIdAsync(id.ToString());
+
+        if (user is null)
+            return Problem(detail: "Пользователь не найден.", statusCode: StatusCodes.Status404NotFound);
+
+        if (!user.IsBlocked)
+            return NoContent();
+
+        user.IsBlocked = false;
+
+        var result = EnsureSuccess(await _userManager.UpdateAsync(user), "Снятие блокировки у пользователя");
+
+        if (result != null)
+            return result;
+
+        return NoContent();
+    }
 }

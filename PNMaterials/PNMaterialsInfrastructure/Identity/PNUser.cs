@@ -7,4 +7,5 @@ public class PNUser : IdentityUser<int>
     public string FirstName { get; set; } = string.Empty;
     public string LastName { get; set; } = string.Empty;
     public string? MiddleName { get; set; }
+    public bool IsBlocked { get; set; } = false;
 }

@@ -61,4 +61,14 @@ public class UsersApiClient
         return await ApiRequestExecutor.ReadAsync<RolesDto>(response)
             ?? throw new ApiException(ApiErrorKind.InvalidResponse, "Сервер не вернул список измененных ролей пользователя.");
     }
+
+    public async Task BlockUser(int id)
+    {
+        var response = await ApiRequestExecutor.SendAsync(_http.PutAsync($"api/users/{id}/block", null));
+    }
+
+    public async Task UnblockUser(int id)
+    {
+        var response = await ApiRequestExecutor.SendAsync(_http.PutAsync($"api/users/{id}/unblock", null));
+    }
 }
