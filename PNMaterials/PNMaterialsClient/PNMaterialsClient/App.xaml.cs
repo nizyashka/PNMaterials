@@ -147,6 +147,7 @@ public partial class App : Application
             .AddHttpMessageHandler<JwtAuthorizationHandler>();
         services.AddHttpClient<AuthApiClient>(client => client.BaseAddress = apiBaseAddress);
 
+        services.AddTransient<MainViewModel>();
         services.AddTransient<MaterialsViewModel>();
         services.AddTransient<MaterialGroupsViewModel>();
         services.AddTransient<MaterialCardViewModel>();

@@ -1,4 +1,5 @@
 using System.Collections.Specialized;
+using System.ComponentModel;
 using Microsoft.UI;
 using PNMaterialsClient.Navigation;
 using PNMaterialsClient.Services;
@@ -34,14 +35,14 @@ public sealed partial class MainPage : Page
 
     private readonly Dictionary<Type, Button> _sectionByPage = [];
 
-    private MessagesService MessagesService { get; }
-    private LoginInfoProvider LoginInfoProvider { get; }
+    private readonly MessagesService MessagesService;
+    private readonly MainViewModel ViewModel;
 
     public MainPage()
     {
         this.InitializeComponent();
+        ViewModel = App.Services.GetRequiredService<MainViewModel>();
         MessagesService = App.Services.GetRequiredService<MessagesService>();
-        LoginInfoProvider = App.Services.GetRequiredService<LoginInfoProvider>();
         BuildMenu();
         ContentFrame.Navigated += OnContentFrameNavigated;
         ContentFrame.Navigate(typeof(MaterialsSplitPage));
@@ -96,16 +97,12 @@ public sealed partial class MainPage : Page
         }
     }
 
-    private void OnMenuItemClick(object sender, RoutedEventArgs e)
+    private async void OnMenuItemClick(object sender, RoutedEventArgs e)
     {
-        if (sender is FrameworkElement { Tag: NavPage page }
-            && ContentFrame.CurrentSourcePageType != page.PageType)
+        if (sender is FrameworkElement { Tag: NavPage page } && ContentFrame.CurrentSourcePageType != page.PageType)
         {
-            if (!string.IsNullOrWhiteSpace(page.RequiredRole) && !LoginInfoProvider.Roles.Contains(page.RequiredRole))
-            {
-                MessagesService.ShowWarning("У вас недостаточно прав для этого действия.");
+            if (!await ViewModel.CanAccess(page.RequiredRole))
                 return;
-            }
 
             ContentFrame.Navigate(page.PageType);
         }
@@ -202,6 +199,9 @@ public sealed partial class MainPage : Page
 
     private async void OnCreateUserClick(object sender, RoutedEventArgs e)
     {
+        if (!await ViewModel.CanAccess(PNRoles.Admin))
+            return;
+
         var dialog = new UserCardContentDialog(0)
         {
             XamlRoot = XamlRoot
