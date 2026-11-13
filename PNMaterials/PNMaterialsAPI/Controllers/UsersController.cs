@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PNMaterialsContracts;
+using PNMaterialsInfrastructure;
 using PNMaterialsInfrastructure.Identity;
 
 namespace PNMaterialsAPI.Controllers;
@@ -12,11 +13,13 @@ namespace PNMaterialsAPI.Controllers;
 [Authorize(Roles = PNRoles.Admin)]
 public class UsersController : ControllerBase
 {
+    private readonly AppDbContext _db;
     private readonly UserManager<PNUser> _userManager;
     private readonly RoleManager<IdentityRole<int>> _roleManager;
 
-    public UsersController(UserManager<PNUser> userManager, RoleManager<IdentityRole<int>> roleManager)
+    public UsersController(AppDbContext db, UserManager<PNUser> userManager, RoleManager<IdentityRole<int>> roleManager)
     {
+        _db = db;
         _userManager = userManager;
         _roleManager = roleManager;
     }
@@ -109,6 +112,8 @@ public class UsersController : ControllerBase
             MiddleName = dto.MiddleName?.Trim()
         };
 
+        await using var transaction = await _db.Database.BeginTransactionAsync();
+
         var userResult = EnsureSuccess(await _userManager.CreateAsync(user, dto.Password), "Создание пользователя");
 
         if (userResult != null)
@@ -122,7 +127,7 @@ public class UsersController : ControllerBase
                 return roleResult;
         }
 
-        return Ok(new UserDto
+        UserDto userDto = new UserDto
         {
             Id = user.Id,
             Username = user.UserName,
@@ -130,7 +135,11 @@ public class UsersController : ControllerBase
             LastName = user.LastName,
             MiddleName = user.MiddleName,
             Roles = (await _userManager.GetRolesAsync(user)).ToList()
-        });
+        };
+
+        await transaction.CommitAsync();
+
+        return Ok(userDto);
     }
 
     [HttpPut("{id:int}/profile")]
