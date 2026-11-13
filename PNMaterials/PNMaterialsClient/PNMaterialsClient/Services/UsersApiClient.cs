@@ -50,12 +50,12 @@ public class UsersApiClient
             ?? throw new ApiException(ApiErrorKind.InvalidResponse, "Сервер не вернул список ролей.");
     }
 
-    public async Task BlockUser(int id)
+    public async Task BlockUserAsync(int id)
     {
         var response = await ApiRequestExecutor.SendAsync(_http.PutAsync($"api/users/{id}/block", null));
     }
 
-    public async Task UnblockUser(int id)
+    public async Task UnblockUserAsync(int id)
     {
         var response = await ApiRequestExecutor.SendAsync(_http.PutAsync($"api/users/{id}/unblock", null));
     }

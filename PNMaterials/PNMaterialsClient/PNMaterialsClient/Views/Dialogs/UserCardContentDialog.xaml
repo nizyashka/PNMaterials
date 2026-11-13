@@ -12,7 +12,9 @@
 
     <controls:EntityCard Header="{x:Bind ViewModel.Header, Mode=OneWay}"
                          IsEditMode="{x:Bind ViewModel.IsEditMode, Mode=TwoWay}"
+                         IsArchived="{x:Bind ViewModel.IsBlocked, Mode=OneWay}"
                          SaveCommand="{x:Bind ViewModel.SaveCommand}"
+                         ArchiveCommand="{x:Bind ViewModel.ArchiveCommand}"
                          RefreshCommand="{x:Bind ViewModel.RefreshCommand}"
                          ExitCommand="{x:Bind ExitCommand}">
 

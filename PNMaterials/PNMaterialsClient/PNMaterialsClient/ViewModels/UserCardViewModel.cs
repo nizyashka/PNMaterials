@@ -12,6 +12,7 @@ public partial class UserCardViewModel : ViewModelBase
     private readonly UsersApiClient _usersApiClient;
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(ArchiveCommand))]
     public int _id;
 
     [ObservableProperty]
@@ -32,6 +33,9 @@ public partial class UserCardViewModel : ViewModelBase
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     public string _password;
+
+    [ObservableProperty]
+    public bool _isBlocked;
 
     [ObservableProperty]
     public bool _isEditMode;
@@ -74,6 +78,7 @@ public partial class UserCardViewModel : ViewModelBase
             FirstName = user.FirstName;
             LastName = user.LastName;
             MiddleName = user.MiddleName ?? "";
+            IsBlocked = user.IsBlocked;
 
             Roles.Clear();
 
@@ -120,6 +125,7 @@ public partial class UserCardViewModel : ViewModelBase
                 FirstName = createdUser.FirstName;
                 LastName = createdUser.LastName;
                 MiddleName = createdUser.MiddleName ?? "";
+                IsBlocked = createdUser.IsBlocked;
 
                 foreach (var role in Roles)
                 {
@@ -152,6 +158,7 @@ public partial class UserCardViewModel : ViewModelBase
                 FirstName = updatedUser.FirstName;
                 LastName = updatedUser.LastName;
                 MiddleName = updatedUser.MiddleName ?? "";
+                IsBlocked= updatedUser.IsBlocked;
 
                 foreach (var role in Roles)
                 {
@@ -184,6 +191,24 @@ public partial class UserCardViewModel : ViewModelBase
             }
 
             MessagesService.ShowSuccess("Список ролей успешно обновлен.");
+        });
+    }
+
+    private bool CanArchive() => Id != 0;
+
+    [RelayCommand(CanExecute = nameof(CanArchive))]
+    public async Task ArchiveAsync()
+    {
+        await RunAsync(IsBlocked ? "Снятие блокировки пользователя." : "Блокировка пользователя", async () =>
+        {
+            if (IsBlocked)
+                await _usersApiClient.UnblockUserAsync(Id);
+            else
+                await _usersApiClient.BlockUserAsync(Id);
+
+            IsBlocked = !IsBlocked;
+
+            MessagesService.ShowSuccess(IsBlocked ? "Пользователь успешно заблокирован." : "Пользователь успешно разблокирован.");
         });
     }
 }
