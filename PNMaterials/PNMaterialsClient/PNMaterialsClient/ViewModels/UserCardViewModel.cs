@@ -4,12 +4,14 @@ using System.Collections.ObjectModel;
 using System.Text;
 using PNMaterialsClient.Services;
 using PNMaterialsContracts;
+using Windows.System;
 
 namespace PNMaterialsClient.ViewModels;
 
 public partial class UserCardViewModel : ViewModelBase
 {
     private readonly UsersApiClient _usersApiClient;
+    private readonly LoginInfoProvider _loginInfoProvider;
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(ArchiveCommand))]
@@ -44,9 +46,10 @@ public partial class UserCardViewModel : ViewModelBase
 
     public ObservableCollection<RoleSelectionViewModel> Roles { get; set; } = new();
 
-    public UserCardViewModel(ILogger<UserCardViewModel> logger, UsersApiClient usersApiClient) : base(logger)
+    public UserCardViewModel(ILogger<UserCardViewModel> logger, UsersApiClient usersApiClient, LoginInfoProvider loginInfoProvider) : base(logger)
     {
         _usersApiClient = usersApiClient;
+        _loginInfoProvider = loginInfoProvider;
     }
 
     public async Task LoadAsync(int id)
@@ -80,6 +83,7 @@ public partial class UserCardViewModel : ViewModelBase
             MiddleName = user.MiddleName ?? "";
             IsBlocked = user.IsBlocked;
 
+            Password = string.Empty;
             Roles.Clear();
 
             foreach (var role in allRoles)
@@ -119,6 +123,7 @@ public partial class UserCardViewModel : ViewModelBase
                 MessagesService.ShowSuccess("Пользователь успешно создан.");
 
                 IsEditMode = false;
+                Password = string.Empty;
 
                 Id = createdUser.Id;
                 Username = createdUser.Username;
@@ -151,7 +156,17 @@ public partial class UserCardViewModel : ViewModelBase
 
                 MessagesService.ShowSuccess("Пользователь успешно изменен.");
 
+                if (Id == _loginInfoProvider.Id)
+                {
+                    if (!string.IsNullOrWhiteSpace(editedUser.Password))
+                        _loginInfoProvider.SetPassword(editedUser.Password);
+
+                    _loginInfoProvider.SetUsername(updatedUser.Username);
+                    _loginInfoProvider.SetRoles(updatedUser.Roles);
+                }
+
                 IsEditMode = false;
+                Password = string.Empty;
 
                 Id = updatedUser.Id;
                 Username = updatedUser.Username;

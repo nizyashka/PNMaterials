@@ -207,6 +207,7 @@ public class UsersController : ControllerBase
             FirstName = dto.FirstName.Trim(),
             LastName = dto.LastName.Trim(),
             MiddleName = dto.MiddleName?.Trim(),
+            IsBlocked = user.IsBlocked,
             Roles = (await _userManager.GetRolesAsync(user)).ToList()
         };
 
