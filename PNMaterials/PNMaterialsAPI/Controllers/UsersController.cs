@@ -180,7 +180,7 @@ public class UsersController : ControllerBase
 
         if (removedRoles.Contains(PNRoles.Admin))
         {
-            if ((await _userManager.GetUsersInRoleAsync(PNRoles.Admin)).Count() == 1)
+            if (!(await _userManager.GetUsersInRoleAsync(PNRoles.Admin)).Any(u => u.Id != user.Id && !u.IsBlocked))
                 return Problem(detail: $"Нельзя убрать роль {PNRoles.Admin} у последнего администратора.", statusCode: StatusCodes.Status400BadRequest);
         }
 
