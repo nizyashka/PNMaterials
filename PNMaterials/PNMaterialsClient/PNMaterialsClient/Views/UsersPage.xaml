@@ -10,6 +10,15 @@
     <tv:TableView Style="{StaticResource EntityTableStyle}"
                   ItemsSource="{x:Bind ViewModel.Users}"
                   ItemClick="OnUserClick">
+        <tv:TableView.ConditionalCellStyles>
+            <tv:TableViewConditionalCellStyle Predicate="{x:Bind IsBlockedUser}">
+                <tv:TableViewConditionalCellStyle.Style>
+                    <Style TargetType="tv:TableViewCell">
+                        <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+                    </Style>
+                </tv:TableViewConditionalCellStyle.Style>
+            </tv:TableViewConditionalCellStyle>
+        </tv:TableView.ConditionalCellStyles>
         <tv:TableView.Columns>
             <tv:TableViewTextColumn Header="Логин" Binding="{Binding Username}" Width="*" />
             <tv:TableViewTextColumn Header="Полное имя" Binding="{Binding FullName}" Width="*" />

@@ -43,8 +43,8 @@ public sealed partial class MaterialsSplitPage : Page, IRefreshablePage
         if (!MaterialGroupsViewModel.IsAuthorized(PNRoles.ReadAndWrite))
             return;
 
-        if (MaterialsViewModel.GroupId is { } groupId)
-            await OpenGroupCardAsync(groupId);
+        if (sender is Button button && button.DataContext is MaterialGroupDto group)
+            await OpenGroupCardAsync(group.Id);
     }
 
     private async void OnIncludeArchivedClick(object sender, RoutedEventArgs e)

@@ -2,12 +2,16 @@ using PNMaterialsClient.ViewModels;
 using PNMaterialsClient.Views.Dialogs;
 using PNMaterialsClient.Views.Interfaces;
 using PNMaterialsContracts;
+using WinUI.TableView;
 
 namespace PNMaterialsClient.Views;
 
 public sealed partial class UsersPage : Page, IRefreshablePage
 {
     public UsersViewModel ViewModel { get; }
+
+    public Predicate<TableViewConditionalCellStyleContext> IsBlockedUser { get; } =
+        context => context.DataItem is UserDto { IsBlocked: true };
 
     public UsersPage()
     {
