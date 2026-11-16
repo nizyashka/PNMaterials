@@ -118,6 +118,9 @@ public class MaterialsController : ControllerBase
         if (material is null)
             return NotFound();
 
+        if (material.IsArchived)
+            return Problem("Материал архивирован. Для редактирования восстановите его из архива", statusCode: StatusCodes.Status409Conflict);
+
         var error = await ValidateReferencesAsync(dto);
         if (error is not null)
             return Problem(detail: error, statusCode: StatusCodes.Status400BadRequest);
