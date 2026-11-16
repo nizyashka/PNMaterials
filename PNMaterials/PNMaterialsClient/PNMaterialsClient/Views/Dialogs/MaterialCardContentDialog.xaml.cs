@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using PNMaterialsClient.ViewModels;
+using PNMaterialsContracts;
 
 namespace PNMaterialsClient.Views.Dialogs;
 
@@ -27,6 +28,9 @@ public sealed partial class MaterialCardContentDialog : ContentDialog
 
     private void OnCreateRequestClick(object sender, RoutedEventArgs e)
     {
+        if (!ViewModel.IsAuthorized(PNRoles.ReadAndWrite))
+            return;
+
         RequestedMaterialId = ViewModel.Id;
         Hide();
     }

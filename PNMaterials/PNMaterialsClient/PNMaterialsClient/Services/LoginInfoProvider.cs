@@ -6,7 +6,7 @@ public sealed class LoginInfoProvider
     public string? AccessToken { get; private set; }
     public string? Username { get; private set; }
     public string? Password { get; private set; }
-    public List<string>? Roles { get; private set; }
+    public List<string> Roles { get; private set; } = new List<string>();
 
     public void SetLoginInfo(int id, string accessToken, string username, string password, List<string> roles)
     {

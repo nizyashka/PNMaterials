@@ -31,4 +31,6 @@ public class AuthService
 
         await Login(_loginInfoProvider.Username, _loginInfoProvider.Password);
     }
+
+    public bool IsAuthorized(string requiredRole) => string.IsNullOrWhiteSpace(requiredRole) || _loginInfoProvider.Roles.Contains(requiredRole);
 }

@@ -8,8 +8,7 @@ public partial class ReportViewModel : ViewModelBase
 {
     private readonly ApiClient _api;
 
-    public ReportViewModel(ApiClient api, ILogger<ReportViewModel> logger)
-        : base(logger)
+    public ReportViewModel(ApiClient api, ILogger<ReportViewModel> logger, AuthService authService) : base(logger, authService)
     {
         _api = api;
     }

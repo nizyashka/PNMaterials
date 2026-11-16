@@ -12,8 +12,7 @@ public partial class MaterialGroupsViewModel : ViewModelBase
 
     public ObservableCollection<MaterialGroupDto> Groups { get; } = new();
 
-    public MaterialGroupsViewModel(ApiClient api, ILogger<MaterialGroupsViewModel> logger)
-        : base(logger)
+    public MaterialGroupsViewModel(ApiClient api, ILogger<MaterialGroupsViewModel> logger, AuthService authService) : base(logger, authService)
     {
         _api = api;
     }

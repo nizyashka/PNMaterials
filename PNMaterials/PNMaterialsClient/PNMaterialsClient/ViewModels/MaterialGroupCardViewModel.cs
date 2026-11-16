@@ -7,8 +7,7 @@ public partial class MaterialGroupCardViewModel : ViewModelBase
 {
     private readonly ApiClient _api;
 
-    public MaterialGroupCardViewModel(ApiClient api, ILogger<MaterialGroupCardViewModel> logger)
-        : base(logger)
+    public MaterialGroupCardViewModel(ApiClient api, ILogger<MaterialGroupCardViewModel> logger, AuthService authService) : base(logger, authService)
     {
         _api = api;
     }
@@ -59,6 +58,13 @@ public partial class MaterialGroupCardViewModel : ViewModelBase
             IsEditMode = false;
             MessagesService.ShowInfo("Данные перечитаны из базы.");
         });
+    }
+
+    [RelayCommand]
+    private void Edit()
+    {
+        if (IsAuthorized(PNRoles.ReadAndWrite))
+            IsEditMode = true;
     }
 
     [RelayCommand]

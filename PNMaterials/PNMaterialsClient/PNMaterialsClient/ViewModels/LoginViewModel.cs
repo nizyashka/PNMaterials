@@ -8,8 +8,6 @@ namespace PNMaterialsClient.ViewModels;
 
 public partial class LoginViewModel : ViewModelBase
 {
-    private AuthService _authService;
-
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(LogInCommand))]
     private string _username = string.Empty;
@@ -20,9 +18,9 @@ public partial class LoginViewModel : ViewModelBase
 
     private Action? OnSuccessfulLogin { get; set; }
 
-    public LoginViewModel(AuthService authService, ILogger<LoginViewModel> logger) : base(logger)
+    public LoginViewModel(AuthService authService, ILogger<LoginViewModel> logger) : base(logger, authService)
     {
-        _authService = authService;
+        
     }
 
     [RelayCommand(CanExecute = nameof(TextBoxesAreFilled))]

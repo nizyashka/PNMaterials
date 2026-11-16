@@ -11,6 +11,7 @@
     <controls:EntityCard Header="{x:Bind ViewModel.Header, Mode=OneWay}"
                          IsEditMode="{x:Bind ViewModel.IsEditMode, Mode=TwoWay}"
                          IsArchived="{x:Bind ViewModel.IsArchived, Mode=OneWay}"
+                         EditCommand="{x:Bind ViewModel.EditCommand}"
                          SaveCommand="{x:Bind ViewModel.SaveCommand}"
                          ArchiveCommand="{x:Bind ViewModel.ToggleArchiveCommand}"
                          RefreshCommand="{x:Bind ViewModel.RefreshCommand}"

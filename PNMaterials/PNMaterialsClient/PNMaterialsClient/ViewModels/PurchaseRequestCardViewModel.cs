@@ -8,8 +8,7 @@ public partial class PurchaseRequestCardViewModel : ViewModelBase
 {
     private readonly ApiClient _api;
 
-    public PurchaseRequestCardViewModel(ApiClient api, ILogger<PurchaseRequestCardViewModel> logger)
-        : base(logger)
+    public PurchaseRequestCardViewModel(ApiClient api, ILogger<PurchaseRequestCardViewModel> logger, AuthService authService) : base(logger, authService)
     {
         _api = api;
     }
@@ -163,6 +162,9 @@ public partial class PurchaseRequestCardViewModel : ViewModelBase
 
     private async Task ChangeStatusAsync(int statusId)
     {
+        if (!IsAuthorized(PNRoles.ReadAndWrite))
+            return;
+
         await RunAsync($"Смена статуса заявки {Id}", async () =>
         {
             var updated = await _api.ChangeRequestStatusAsync(Id, statusId);
@@ -173,6 +175,13 @@ public partial class PurchaseRequestCardViewModel : ViewModelBase
 
     [RelayCommand]
     private void AddItem() => Items.Add(CreateItem());
+
+    [RelayCommand]
+    private void Edit()
+    {
+        if (IsAuthorized(PNRoles.ReadAndWrite))
+            IsEditMode = true;
+    }
 
     [RelayCommand]
     private async Task SaveAsync()

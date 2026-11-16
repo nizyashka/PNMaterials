@@ -11,7 +11,7 @@ public class UsersViewModel : ViewModelBase
 
     public ObservableCollection<UserDto> Users { get; } = new();
 
-    public UsersViewModel(UsersApiClient usersApiClient, ILogger<UsersViewModel> logger) : base(logger)
+    public UsersViewModel(UsersApiClient usersApiClient, ILogger<UsersViewModel> logger, AuthService authService) : base(logger, authService)
     {
         _usersApiClient = usersApiClient;
     }

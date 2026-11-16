@@ -40,6 +40,9 @@ public sealed partial class MaterialsSplitPage : Page, IRefreshablePage
 
     private async void OnEditGroupClick(object sender, RoutedEventArgs e)
     {
+        if (!MaterialGroupsViewModel.IsAuthorized(PNRoles.ReadAndWrite))
+            return;
+
         if (MaterialsViewModel.GroupId is { } groupId)
             await OpenGroupCardAsync(groupId);
     }

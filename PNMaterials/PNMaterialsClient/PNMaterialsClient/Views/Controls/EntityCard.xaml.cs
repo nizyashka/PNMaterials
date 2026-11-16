@@ -63,6 +63,16 @@ public sealed partial class EntityCard : UserControl
         set => SetValue(ExtraButtonsProperty, value);
     }
 
+    public static readonly DependencyProperty EditCommandProperty =
+        DependencyProperty.Register(nameof(EditCommand), typeof(ICommand), typeof(EntityCard),
+            new PropertyMetadata(null));
+
+    public ICommand? EditCommand
+    {
+        get => (ICommand?)GetValue(EditCommandProperty);
+        set => SetValue(EditCommandProperty, value);
+    }
+
     public static readonly DependencyProperty SaveCommandProperty =
         DependencyProperty.Register(nameof(SaveCommand), typeof(ICommand), typeof(EntityCard),
             new PropertyMetadata(null));
@@ -133,7 +143,4 @@ public sealed partial class EntityCard : UserControl
     {
         RefreshButton.Visibility = RefreshCommand is null ? Visibility.Collapsed : Visibility.Visible;
     }
-
-    private void OnToggleEdit(object sender, RoutedEventArgs e)
-        => IsEditMode = true;
 }

@@ -70,7 +70,7 @@
                 Grid.Column="2"
                 HorizontalAlignment="Right"
                 Style="{StaticResource IconButtonStyle}"
-                Click="OnToggleEdit"
+                Command="{x:Bind EditCommand, Mode=OneWay}"
                 ToolTipService.ToolTip="Редактировать">
                 <FontIcon Glyph="&#xE70F;"
                       FontFamily="{ThemeResource SymbolThemeFontFamily}"

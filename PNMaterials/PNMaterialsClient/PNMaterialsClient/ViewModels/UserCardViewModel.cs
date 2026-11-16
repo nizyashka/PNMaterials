@@ -46,7 +46,7 @@ public partial class UserCardViewModel : ViewModelBase
 
     public ObservableCollection<RoleSelectionViewModel> Roles { get; set; } = new();
 
-    public UserCardViewModel(ILogger<UserCardViewModel> logger, UsersApiClient usersApiClient, LoginInfoProvider loginInfoProvider) : base(logger)
+    public UserCardViewModel(ILogger<UserCardViewModel> logger, UsersApiClient usersApiClient, LoginInfoProvider loginInfoProvider, AuthService authService) : base(logger, authService)
     {
         _usersApiClient = usersApiClient;
         _loginInfoProvider = loginInfoProvider;
@@ -100,6 +100,13 @@ public partial class UserCardViewModel : ViewModelBase
         && !string.IsNullOrWhiteSpace(FirstName)
         && !string.IsNullOrWhiteSpace(LastName)
         && (Id == 0 ? !string.IsNullOrWhiteSpace(Password) : true));
+
+    [RelayCommand]
+    private void Edit()
+    {
+        if (IsAuthorized(PNRoles.Admin))
+            IsEditMode = true;
+    }
 
     [RelayCommand(CanExecute = nameof(CanSave))]
     private async Task SaveAsync()

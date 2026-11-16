@@ -89,7 +89,7 @@ public sealed partial class MainPage : Page
     {
         if (sender is FrameworkElement { Tag: NavPage page } && ContentFrame.CurrentSourcePageType != page.PageType)
         {
-            if (!await ViewModel.CanAccess(page.RequiredRole))
+            if (!ViewModel.IsAuthorized(page.RequiredRole))
                 return;
 
             ContentFrame.Navigate(page.PageType);
@@ -118,6 +118,9 @@ public sealed partial class MainPage : Page
 
     private async void OnCreateRequestClick(object sender, RoutedEventArgs e)
     {
+        if (!ViewModel.IsAuthorized(PNRoles.ReadAndWrite))
+            return;
+
         var dialog = new PurchaseRequestCardContentDialog(0)
         {
             XamlRoot = XamlRoot
@@ -131,6 +134,9 @@ public sealed partial class MainPage : Page
 
     private async void OnCreateGroupClick(object sender, RoutedEventArgs e)
     {
+        if (!ViewModel.IsAuthorized(PNRoles.ReadAndWrite))
+            return;
+
         var dialog = new MaterialGroupCardContentDialog(0)
         {
             XamlRoot = XamlRoot
@@ -144,6 +150,9 @@ public sealed partial class MainPage : Page
 
     private async void OnCreateMaterialClick(object sender, RoutedEventArgs e)
     {
+        if (!ViewModel.IsAuthorized(PNRoles.ReadAndWrite))
+            return;
+
         var dialog = new MaterialCardContentDialog(0)
         {
             XamlRoot = XamlRoot
@@ -167,7 +176,7 @@ public sealed partial class MainPage : Page
 
     private async void OnCreateUserClick(object sender, RoutedEventArgs e)
     {
-        if (!await ViewModel.CanAccess(PNRoles.Admin))
+        if (!ViewModel.IsAuthorized(PNRoles.Admin))
             return;
 
         var dialog = new UserCardContentDialog(0)

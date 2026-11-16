@@ -8,8 +8,7 @@ public partial class MaterialCardViewModel : ViewModelBase
 {
     private readonly ApiClient _api;
 
-    public MaterialCardViewModel(ApiClient api, ILogger<MaterialCardViewModel> logger)
-        : base(logger)
+    public MaterialCardViewModel(ApiClient api, ILogger<MaterialCardViewModel> logger, AuthService authService) : base(logger, authService)
     {
         _api = api;
     }
@@ -106,6 +105,13 @@ public partial class MaterialCardViewModel : ViewModelBase
     }
 
     [RelayCommand]
+    private void Edit()
+    {
+        if (IsAuthorized(PNRoles.ReadAndWrite))
+            IsEditMode = true;
+    }
+
+    [RelayCommand]
     private async Task SaveAsync()
     {
         var dto = new MaterialEditDto
@@ -122,7 +128,6 @@ public partial class MaterialCardViewModel : ViewModelBase
             foreach (var error in errors)
             {
                 MessagesService.ShowWarning(error);
-                //MessagesService.ShowWarning(string.Join(Environment.NewLine, errors));
             }
             return;
         }
@@ -171,6 +176,9 @@ public partial class MaterialCardViewModel : ViewModelBase
     [RelayCommand(CanExecute = nameof(CanArchive))]
     private async Task ToggleArchiveAsync()
     {
+        if (!IsAuthorized(PNRoles.ReadAndWrite))
+            return;
+
         await RunAsync(IsArchived ? "Восстановление материала" : "Архивирование материала", async () =>
         {
             var result = IsArchived ? await _api.RestoreMaterialAsync(Id) : await _api.ArchiveMaterialAsync(Id);

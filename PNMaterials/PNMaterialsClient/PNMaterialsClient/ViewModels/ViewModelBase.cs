@@ -6,11 +6,13 @@ public abstract partial class ViewModelBase : ObservableObject
 {
     protected ILogger Logger { get; }
     protected MessagesService MessagesService { get; }
+    protected readonly AuthService _authService;
 
-    protected ViewModelBase(ILogger logger)
+    protected ViewModelBase(ILogger logger, AuthService authService)
     {
         Logger = logger;
         MessagesService = App.Services.GetRequiredService<MessagesService>();
+        _authService = authService;
     }
 
     protected async Task RunAsync(string operation, Func<Task> action)
@@ -42,5 +44,15 @@ public abstract partial class ViewModelBase : ObservableObject
     {
         Logger.LogError(exception, "{Operation}: непредвиденная ошибка", operation);
         MessagesService.ShowError("Непредвиденная ошибка. Подробности записаны в журнал.");
+    }
+
+    public bool IsAuthorized(string requiredRole)
+    {
+        bool result = _authService.IsAuthorized(requiredRole);
+
+        if (!result)
+            MessagesService.ShowWarning("У вас недостаточно прав для этого действия.");
+
+        return result;
     }
 }

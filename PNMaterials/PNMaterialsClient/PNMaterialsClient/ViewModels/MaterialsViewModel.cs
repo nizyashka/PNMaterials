@@ -18,8 +18,7 @@ public partial class MaterialsViewModel : ViewModelBase
 
     public ObservableCollection<MaterialDto> Materials { get; } = new();
 
-    public MaterialsViewModel(ApiClient api, ILogger<MaterialsViewModel> logger)
-        : base(logger)
+    public MaterialsViewModel(ApiClient api, ILogger<MaterialsViewModel> logger, AuthService authService) : base(logger, authService)
     {
         _api = api;
     }
