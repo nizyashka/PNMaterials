@@ -22,8 +22,7 @@ public class ReportsController : ControllerBase
 
     // Отчёт по заявкам на закупку
     [HttpPost("purchase-requests")]
-    public async Task<ActionResult<IEnumerable<PurchaseRequestReportRowDto>>> PurchaseRequests(
-        PurchaseRequestReportFilterDto filter)
+    public async Task<ActionResult<IEnumerable<PurchaseRequestReportRowDto>>> PurchaseRequests(PurchaseRequestReportFilterDto filter)
     {
         IQueryable<PurchaseRequest> query = _db.PurchaseRequests.AsNoTracking();
 

@@ -58,6 +58,7 @@ public class MaterialGroupsController : ControllerBase
 
     // Создать
     [HttpPost]
+    [Authorize(Roles = PNRoles.ReadAndWrite)]
     public async Task<ActionResult<MaterialGroupDto>> Create(MaterialGroupEditDto dto)
     {
         var name = dto.Name.Trim();
@@ -85,6 +86,7 @@ public class MaterialGroupsController : ControllerBase
 
     // Изменить
     [HttpPut("{id:int}")]
+    [Authorize(Roles = PNRoles.ReadAndWrite)]
     public async Task<IActionResult> Update(int id, MaterialGroupEditDto dto)
     {
         var group = await _db.MaterialGroups.FindAsync(id);
@@ -104,6 +106,7 @@ public class MaterialGroupsController : ControllerBase
 
     // Удалить
     [HttpDelete("{id:int}")]
+    [Authorize(Roles = PNRoles.ReadAndWrite)]
     public async Task<IActionResult> Delete(int id)
     {
         var group = await _db.MaterialGroups.FindAsync(id);

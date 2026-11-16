@@ -47,6 +47,7 @@ public class PurchaseRequestsController : ControllerBase
 
     // Создать заявку
     [HttpPost]
+    [Authorize(Roles = PNRoles.ReadAndWrite)]
     public async Task<ActionResult<PurchaseRequestDto>> Create(PurchaseRequestEditDto dto)
     {
         var deliveryDate = dto.DeliveryDate?.Date ?? DateTime.Today.AddMonths(1);
@@ -81,6 +82,7 @@ public class PurchaseRequestsController : ControllerBase
 
     // Изменить заявку (дата поставки и состав позиций)
     [HttpPut("{id:int}")]
+    [Authorize(Roles = PNRoles.ReadAndWrite)]
     public async Task<IActionResult> Update(int id, PurchaseRequestEditDto dto)
     {
         var request = await _db.PurchaseRequests
@@ -117,6 +119,7 @@ public class PurchaseRequestsController : ControllerBase
 
     // Сменить статус
     [HttpPost("{id:int}/status")]
+    [Authorize(Roles = PNRoles.ReadAndWrite)]
     public async Task<ActionResult<PurchaseRequestDto>> ChangeStatus(int id, RequestStatusChangeDto dto)
     {
         var request = await _db.PurchaseRequests.FindAsync(id);

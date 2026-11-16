@@ -82,6 +82,7 @@ public class MaterialsController : ControllerBase
 
     // Создать
     [HttpPost]
+    [Authorize(Roles = PNRoles.ReadAndWrite)]
     public async Task<ActionResult<MaterialDto>> Create(MaterialEditDto dto)
     {
         var error = await ValidateReferencesAsync(dto);
@@ -110,6 +111,7 @@ public class MaterialsController : ControllerBase
 
     // Изменить
     [HttpPut("{id:int}")]
+    [Authorize(Roles = PNRoles.ReadAndWrite)]
     public async Task<IActionResult> Update(int id, MaterialEditDto dto)
     {
         var material = await _db.Materials.FindAsync(id);
@@ -135,6 +137,7 @@ public class MaterialsController : ControllerBase
 
     //Поместить материал в архив
     [HttpPost("{id:int}/archive")]
+    [Authorize(Roles = PNRoles.ReadAndWrite)]
     public async Task<ActionResult<MaterialDto>> Archive(int id)
     {
         var material = await _db.Materials.FindAsync(id);
@@ -154,6 +157,7 @@ public class MaterialsController : ControllerBase
 
     //Восстановить материал из архива
     [HttpPost("{id:int}/restore")]
+    [Authorize(Roles = PNRoles.ReadAndWrite)]
     public async Task<ActionResult<MaterialDto>> Restore(int id)
     {
         var material = await _db.Materials.FindAsync(id);
@@ -169,6 +173,7 @@ public class MaterialsController : ControllerBase
 
     // Удалить
     [HttpDelete("{id:int}")]
+    [Authorize(Roles = PNRoles.ReadAndWrite)]
     public async Task<IActionResult> Delete(int id)
     {
         var material = await _db.Materials.FindAsync(id);
