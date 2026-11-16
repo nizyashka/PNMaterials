@@ -147,7 +147,7 @@ public partial class PurchaseRequestCardViewModel : ViewModelBase
 
             StatusActions.Add(new StatusActionViewModel(
                 ActionText(request.Status.Code, target.Code),
-                new AsyncRelayCommand(() => ChangeStatusAsync(targetId))));
+                new AsyncRelayCommand(() => ChangeStatusAsync(targetId), canExecute: () => !IsEditMode)));
         }
     }
 
@@ -269,5 +269,8 @@ public partial class PurchaseRequestCardViewModel : ViewModelBase
     {
         foreach (var item in Items)
             item.IsEditMode = value;
+
+        foreach (var action in StatusActions)
+            action.Command.NotifyCanExecuteChanged();
     }
 }

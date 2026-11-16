@@ -40,6 +40,7 @@ public partial class UserCardViewModel : ViewModelBase
     public bool _isBlocked;
 
     [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(ArchiveCommand))]
     public bool _isEditMode;
 
     public string Header => "Пользователь";
@@ -216,7 +217,7 @@ public partial class UserCardViewModel : ViewModelBase
         });
     }
 
-    private bool CanArchive() => Id != 0;
+    private bool CanArchive() => Id != 0 && !IsEditMode;
 
     [RelayCommand(CanExecute = nameof(CanArchive))]
     public async Task ArchiveAsync()
