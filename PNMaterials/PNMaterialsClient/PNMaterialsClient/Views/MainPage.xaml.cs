@@ -34,27 +34,15 @@ public sealed partial class MainPage : Page
     ];
 
     private readonly Dictionary<Type, Button> _sectionByPage = [];
-
-    private readonly MessagesService MessagesService;
     private readonly MainViewModel ViewModel;
 
     public MainPage()
     {
         this.InitializeComponent();
         ViewModel = App.Services.GetRequiredService<MainViewModel>();
-        MessagesService = App.Services.GetRequiredService<MessagesService>();
         BuildMenu();
         ContentFrame.Navigated += OnContentFrameNavigated;
         ContentFrame.Navigate(typeof(MaterialsSplitPage));
-        Loaded += OnLoaded;
-    }
-
-    private void OnLoaded(object sender, RoutedEventArgs e)
-    {
-        XamlRoot?.Changed += OnXamlRootChanged;
-        MessagesService.Messages.CollectionChanged += RedrawPopup;
-        ResizePopup();
-        InfoPopup.IsOpen = true;
     }
 
     private void BuildMenu()
@@ -139,26 +127,6 @@ public sealed partial class MainPage : Page
 
         if (ContentFrame.Content is IRefreshablePage page)
             await page.RefreshAsync();
-    }
-
-    private void RedrawPopup(object? sender, NotifyCollectionChangedEventArgs e)
-    {
-        if (e.Action == NotifyCollectionChangedAction.Add)
-        {
-            InfoPopup.IsOpen = false;
-            InfoPopup.IsOpen = true;
-        }
-    }
-
-    private void ResizePopup()
-    {
-        PopupGrid.Width = XamlRoot?.Size.Width ?? 0;
-        PopupGrid.Height = XamlRoot?.Size.Height ?? 0;
-    }
-
-    private void OnXamlRootChanged(XamlRoot sender, XamlRootChangedEventArgs args)
-    {
-        ResizePopup();
     }
 
     private async void OnCreateGroupClick(object sender, RoutedEventArgs e)

@@ -19,7 +19,6 @@ public partial class LoginViewModel : ViewModelBase
     private string _password = string.Empty;
 
     private Action? OnSuccessfulLogin { get; set; }
-    private Action? OnFailedLogin { get; set; }
 
     public LoginViewModel(AuthService authService, ILogger<LoginViewModel> logger) : base(logger)
     {
@@ -32,26 +31,16 @@ public partial class LoginViewModel : ViewModelBase
         var onSuccessfulLogin = OnSuccessfulLogin 
             ?? throw new InvalidOperationException("Обработчик успешного входа не задан.");
 
-        var onFailedLogin = OnFailedLogin
-            ?? throw new InvalidOperationException("Обработчик неудачного входа не задан.");
-
-        bool loggedIn = false;
-
         await RunAsync("Попытка аутентификации.", async () =>
         {
             await _authService.Login(Username!, Password!);
-            loggedIn = true;
             onSuccessfulLogin();
         });
-
-        if (!loggedIn)
-            onFailedLogin();
     }
 
-    public void Bind(Action onSuccessfulLogin, Action onFailedLogin)
+    public void Bind(Action onSuccessfulLogin)
     {
         OnSuccessfulLogin = onSuccessfulLogin;
-        OnFailedLogin = onFailedLogin;
     }
 
     private bool TextBoxesAreFilled() => !string.IsNullOrWhiteSpace(Password) && !string.IsNullOrWhiteSpace(Username);
