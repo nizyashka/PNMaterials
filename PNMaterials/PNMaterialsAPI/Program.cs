@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using PNMaterialsAPI.ErrorHandling;
 using PNMaterialsAPI.Identity;
+using PNMaterialsAPI.Middleware;
 using PNMaterialsInfrastructure;
 using PNMaterialsInfrastructure.Identity;
 using PNMaterialsInfrastructure.Services;
@@ -104,6 +105,7 @@ try
     app.UseHttpsRedirection();
 
     app.UseAuthentication();
+    app.UseMiddleware<UserBlockMiddleware>();
     app.UseAuthorization();
 
     app.MapControllers();
