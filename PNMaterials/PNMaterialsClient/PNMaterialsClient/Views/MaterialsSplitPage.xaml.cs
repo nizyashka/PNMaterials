@@ -61,10 +61,13 @@ public sealed partial class MaterialsSplitPage : Page, IRefreshablePage
     {
         try
         {
-            var dialog = new MaterialGroupCardContentDialog(id)
+            var dialog = new MaterialGroupCardContentDialog()
             {
                 XamlRoot = XamlRoot
             };
+
+            if (!await dialog.ViewModel.LoadAsync(id))
+                return;
 
             await dialog.ShowAsync();
             await MaterialGroupsViewModel.LoadAsync();
@@ -87,21 +90,25 @@ public sealed partial class MaterialsSplitPage : Page, IRefreshablePage
     {
         try
         {
-            var dialog = new MaterialCardContentDialog(id)
+            var dialog = new MaterialCardContentDialog()
             {
                 XamlRoot = XamlRoot
             };
+
+            if (!await dialog.ViewModel.LoadAsync(id))
+                return;
 
             await dialog.ShowAsync();
 
             if (dialog.RequestedMaterialId is { } requestedMaterialId)
             {
-                var requestDialog = new PurchaseRequestCardContentDialog(0, requestedMaterialId)
+                var requestDialog = new PurchaseRequestCardContentDialog()
                 {
                     XamlRoot = XamlRoot
                 };
 
-                await requestDialog.ShowAsync();
+                if (await requestDialog.ViewModel.LoadAsync(0, requestedMaterialId))
+                    await requestDialog.ShowAsync();
             }
 
             await MaterialsViewModel.LoadAsync();

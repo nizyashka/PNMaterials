@@ -121,10 +121,13 @@ public sealed partial class MainPage : Page
         if (!ViewModel.IsAuthorized(PNRoles.ReadAndWrite))
             return;
 
-        var dialog = new PurchaseRequestCardContentDialog(0)
+        var dialog = new PurchaseRequestCardContentDialog()
         {
             XamlRoot = XamlRoot
         };
+
+        if (!await dialog.ViewModel.LoadAsync(0))
+            return;
 
         await dialog.ShowAsync();
 
@@ -137,10 +140,13 @@ public sealed partial class MainPage : Page
         if (!ViewModel.IsAuthorized(PNRoles.ReadAndWrite))
             return;
 
-        var dialog = new MaterialGroupCardContentDialog(0)
+        var dialog = new MaterialGroupCardContentDialog()
         {
             XamlRoot = XamlRoot
         };
+
+        if (!await dialog.ViewModel.LoadAsync(0))
+            return;
 
         await dialog.ShowAsync();
 
@@ -153,21 +159,25 @@ public sealed partial class MainPage : Page
         if (!ViewModel.IsAuthorized(PNRoles.ReadAndWrite))
             return;
 
-        var dialog = new MaterialCardContentDialog(0)
+        var dialog = new MaterialCardContentDialog()
         {
             XamlRoot = XamlRoot
         };
+
+        if (!await dialog.ViewModel.LoadAsync(0))
+            return;
 
         await dialog.ShowAsync();
 
         if (dialog.RequestedMaterialId is { } requestedMaterialId)
         {
-            var requestDialog = new PurchaseRequestCardContentDialog(0, requestedMaterialId)
+            var requestDialog = new PurchaseRequestCardContentDialog()
             {
                 XamlRoot = XamlRoot
             };
 
-            await requestDialog.ShowAsync();
+            if (await requestDialog.ViewModel.LoadAsync(0, requestedMaterialId))
+                await requestDialog.ShowAsync();
         }
 
         if (ContentFrame.Content is IRefreshablePage page)
@@ -179,10 +189,13 @@ public sealed partial class MainPage : Page
         if (!ViewModel.IsAuthorized(PNRoles.Admin))
             return;
 
-        var dialog = new UserCardContentDialog(0)
+        var dialog = new UserCardContentDialog()
         {
             XamlRoot = XamlRoot
         };
+
+        if (!await dialog.ViewModel.LoadAsync(0))
+            return;
 
         await dialog.ShowAsync();
 

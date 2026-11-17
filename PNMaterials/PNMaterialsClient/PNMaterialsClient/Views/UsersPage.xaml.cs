@@ -40,10 +40,13 @@ public sealed partial class UsersPage : Page, IRefreshablePage
     {
         try
         {
-            var dialog = new UserCardContentDialog(id)
+            var dialog = new UserCardContentDialog()
             {
                 XamlRoot = XamlRoot
             };
+
+            if (!await dialog.ViewModel.LoadAsync(id))
+                return;
 
             await dialog.ShowAsync();
 

@@ -34,10 +34,13 @@ public sealed partial class ReportPage : Page, IRefreshablePage
     {
         try
         {
-            var dialog = new PurchaseRequestCardContentDialog(id)
+            var dialog = new PurchaseRequestCardContentDialog()
             {
                 XamlRoot = XamlRoot
             };
+
+            if (!await dialog.ViewModel.LoadAsync(id))
+                return;
 
             await dialog.ShowAsync();
             await ReportViewModel.SearchCommand.ExecuteAsync(null);
