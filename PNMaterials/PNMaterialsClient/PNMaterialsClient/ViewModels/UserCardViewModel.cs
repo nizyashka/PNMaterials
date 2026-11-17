@@ -53,8 +53,9 @@ public partial class UserCardViewModel : ViewModelBase
         _loginInfoProvider = loginInfoProvider;
     }
 
-    public async Task LoadAsync(int id)
+    public async Task<bool> LoadAsync(int id)
     {
+        bool loaded = false;
         Id = id;
 
         await RunAsync($"Загрузка пользователя {id}", async () =>
@@ -70,6 +71,8 @@ public partial class UserCardViewModel : ViewModelBase
                 {
                     Roles.Add(new RoleSelectionViewModel { Name = role, IsSelected = false });
                 }
+
+                loaded = true;
 
                 return;
             }
@@ -92,8 +95,11 @@ public partial class UserCardViewModel : ViewModelBase
                 Roles.Add(new RoleSelectionViewModel { Name = role, IsSelected = user.Roles.Contains(role) });
             }
 
+            loaded = true;
             MessagesService.ShowInfo("Данные о пользователе загружены из базы.");
         });
+
+        return loaded;
     }
 
     private bool CanSave() =>

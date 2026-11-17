@@ -31,15 +31,17 @@ public partial class MaterialGroupCardViewModel : ViewModelBase
         ? "Новая группа материалов"
         : $"{Id} — {Name}";
 
-    public async Task LoadAsync(int id)
+    public async Task<bool> LoadAsync(int id)
     {
+        bool loaded = false;
+
         if (id == 0)
         {
             Id = 0;
             Name = string.Empty;
             Description = string.Empty;
             IsEditMode = true;
-            return;
+            return true;
         }
 
         await RunAsync($"Загрузка группы {id}", async () =>
@@ -57,7 +59,11 @@ public partial class MaterialGroupCardViewModel : ViewModelBase
             Description = group.Description ?? string.Empty;
             IsEditMode = false;
             MessagesService.ShowInfo("Данные перечитаны из базы.");
+
+            loaded = true;
         });
+
+        return loaded;
     }
 
     [RelayCommand]

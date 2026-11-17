@@ -41,8 +41,10 @@ public partial class PurchaseRequestCardViewModel : ViewModelBase
         ? "Новая заявка"
         : $"{Number} — заявка на закупку";
 
-    public async Task LoadAsync(int id, int? materialId = null)
+    public async Task<bool> LoadAsync(int id, int? materialId = null)
     {
+        bool loaded = false;
+
         await RunAsync($"Загрузка заявки {id}", async () =>
         {
             await LoadMaterialsAsync();
@@ -64,6 +66,8 @@ public partial class PurchaseRequestCardViewModel : ViewModelBase
                 if (materialId.HasValue)
                     PrefillMaterial(materialId.Value);
 
+                loaded = true;
+
                 return;
             }
 
@@ -77,8 +81,12 @@ public partial class PurchaseRequestCardViewModel : ViewModelBase
 
             Apply(request);
             IsEditMode = false;
+
+            loaded = true;
             MessagesService.ShowInfo("Данные перечитаны из базы.");
         });
+
+        return loaded;
     }
 
     private async Task LoadMaterialsAsync()

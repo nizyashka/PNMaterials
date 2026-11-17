@@ -55,8 +55,10 @@ public partial class MaterialCardViewModel : ViewModelBase
         ? "Новый материал"
         : $"{Code} — {Name}{(IsArchived ? " (в архиве)" : string.Empty)}";
 
-    public async Task LoadAsync(int id)
+    public async Task<bool> LoadAsync(int id)
     {
+        bool loaded = false;
+
         await RunAsync($"Загрузка материала {id}", async () =>
         {
             await LoadReferencesAsync();
@@ -70,6 +72,9 @@ public partial class MaterialCardViewModel : ViewModelBase
                 SelectedUnit = null;
                 SelectedGroup = null;
                 IsEditMode = true;
+
+                loaded = true;
+
                 return;
             }
 
@@ -89,8 +94,12 @@ public partial class MaterialCardViewModel : ViewModelBase
             SelectedUnit = Units.FirstOrDefault(u => u.Id == material.UnitId);
             SelectedGroup = Groups.FirstOrDefault(g => g.Id == material.GroupId);
             IsEditMode = false;
+
+            loaded = true;
             MessagesService.ShowInfo("Данные перечитаны из базы.");
         });
+
+        return loaded;
     }
 
     private async Task LoadReferencesAsync()
