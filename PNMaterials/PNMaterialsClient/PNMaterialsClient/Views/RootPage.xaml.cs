@@ -9,11 +9,13 @@ namespace PNMaterialsClient.Views;
 public sealed partial class RootPage : Page
 {
     private readonly MessagesService MessagesService;
+    private readonly LoadingService LoadingService;
 
     public RootPage()
     {
         this.InitializeComponent();
         MessagesService = App.Services.GetRequiredService<MessagesService>();
+        LoadingService = App.Services.GetRequiredService<LoadingService>();
         Loaded += OnLoaded;
         Unloaded += OnUnloaded;
     }
@@ -22,6 +24,7 @@ public sealed partial class RootPage : Page
     {
         XamlRoot?.Changed += OnXamlRootChanged;
         MessagesService.Messages.CollectionChanged += RedrawPopup;
+        
         ResizePopup();
         InfoPopup.IsOpen = true;
 
@@ -48,6 +51,9 @@ public sealed partial class RootPage : Page
     {
         PopupGrid.Width = XamlRoot?.Size.Width ?? 0;
         PopupGrid.Height = XamlRoot?.Size.Height ?? 0;
+
+        ProgressGrid.Width = XamlRoot?.Size.Width ?? 0;
+        ProgressGrid.Height = XamlRoot?.Size.Height ?? 0;
     }
 
     private void OnXamlRootChanged(XamlRoot sender, XamlRootChangedEventArgs args)

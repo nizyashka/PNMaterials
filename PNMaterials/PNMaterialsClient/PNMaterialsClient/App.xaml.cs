@@ -160,6 +160,7 @@ public partial class App : Application
         services.AddTransient<AuthService>();
 
         services.AddSingleton<MessagesService>();
+        services.AddSingleton<LoadingService>();
         services.AddSingleton<LoginInfoProvider>();
 
         Services = services.BuildServiceProvider(new ServiceProviderOptions

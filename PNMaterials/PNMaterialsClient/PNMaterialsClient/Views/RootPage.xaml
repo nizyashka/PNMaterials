@@ -29,5 +29,21 @@
                 </ItemsControl>
             </Grid>
         </Popup>
+
+        <Popup x:Name="ProgressPopup" IsOpen="{x:Bind LoadingService.IsBusy, Mode=OneWay}">
+            <Grid x:Name="ProgressGrid">
+                <Border HorizontalAlignment="Center"
+        VerticalAlignment="Center"
+        Background="{StaticResource PanelBrush}"
+        BorderBrush="{StaticResource PanelBorderBrush}"
+        BorderThickness="1"
+        CornerRadius="12"
+        Padding="20">
+                    <ProgressRing Width="32"
+                                  Height="32"
+                                  IsActive="True" />
+                </Border>
+            </Grid>
+        </Popup>
     </Grid>
 </Page>
