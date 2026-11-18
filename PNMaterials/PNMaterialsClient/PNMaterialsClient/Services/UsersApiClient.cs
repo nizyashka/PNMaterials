@@ -50,13 +50,17 @@ public class UsersApiClient
             ?? throw new ApiException(ApiErrorKind.InvalidResponse, "Сервер не вернул список ролей.");
     }
 
-    public async Task BlockUserAsync(int id)
+    public async Task<UserDto> BlockUserAsync(int id)
     {
         var response = await ApiRequestExecutor.SendAsync(_http.PutAsync($"api/users/{id}/block", null));
+        return await ApiRequestExecutor.ReadAsync<UserDto>(response)
+           ?? throw new ApiException(ApiErrorKind.InvalidResponse, "Сервер не вернул заблокированного пользователя.");
     }
 
-    public async Task UnblockUserAsync(int id)
+    public async Task<UserDto> UnblockUserAsync(int id)
     {
         var response = await ApiRequestExecutor.SendAsync(_http.PutAsync($"api/users/{id}/unblock", null));
+        return await ApiRequestExecutor.ReadAsync<UserDto>(response)
+           ?? throw new ApiException(ApiErrorKind.InvalidResponse, "Сервер не вернул разблокированного пользователя.");
     }
 }

@@ -133,7 +133,7 @@ public class MaterialsController : ControllerBase
     // Изменить
     [HttpPut("{id:int}")]
     [Authorize(Roles = PNRoles.ReadAndWrite)]
-    public async Task<IActionResult> Update(int id, MaterialEditDto dto)
+    public async Task<ActionResult<MaterialDto>> Update(int id, MaterialEditDto dto)
     {
         var material = await _db.Materials.FindAsync(id);
         if (material is null)
@@ -143,7 +143,10 @@ public class MaterialsController : ControllerBase
             return Problem("Материал архивирован. Для редактирования восстановите его из архива", statusCode: StatusCodes.Status409Conflict);
 
         if ((dto.Name.Trim(), dto.Description, dto.UnitId, dto.GroupId) == (material.Name, material.Description, material.UnitId, material.GroupId))
-            return NoContent();
+        {
+            var unchangedDto = await ToDto(_db.Materials.Where(m => m.Id == material.Id)).SingleAsync();
+            return Ok(unchangedDto);
+        }
 
         var error = await ValidateReferencesAsync(dto);
         if (error is not null)
@@ -163,7 +166,9 @@ public class MaterialsController : ControllerBase
         material.Audit = material.Audit with { EditedByUserId = userId, EditedAt = DateTime.Now };
 
         await _db.SaveChangesAsync();
-        return NoContent();
+        var materialDto = await ToDto(_db.Materials.Where(m => m.Id == material.Id)).SingleAsync();
+
+        return Ok(materialDto);
     }
 
     //Поместить материал в архив

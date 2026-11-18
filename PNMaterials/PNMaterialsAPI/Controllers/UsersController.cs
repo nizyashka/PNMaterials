@@ -239,7 +239,7 @@ public class UsersController : ControllerBase
     }
 
     [HttpPut("{id:int}/block")]
-    public async Task<ActionResult> BlockUser(int id)
+    public async Task<ActionResult<UserDto>> BlockUser(int id)
     {
         var user = await _userManager.FindByIdAsync(id.ToString());
 
@@ -247,7 +247,10 @@ public class UsersController : ControllerBase
             return Problem(detail: "Пользователь не найден.", statusCode: StatusCodes.Status404NotFound);
 
         if (user.IsBlocked)
-            return NoContent();
+        {
+            UserDto unchangedUserDto = await ToDto(user);
+            return Ok(unchangedUserDto);
+        }
 
         var userRoles = await _userManager.GetRolesAsync(user);
 
@@ -265,11 +268,13 @@ public class UsersController : ControllerBase
         if (result != null)
             return result;
 
-        return NoContent();
+        UserDto userDto = await ToDto(user);
+
+        return Ok(userDto);
     }
 
     [HttpPut("{id:int}/unblock")]
-    public async Task<ActionResult> UnblockUser(int id)
+    public async Task<ActionResult<UserDto>> UnblockUser(int id)
     {
         var user = await _userManager.FindByIdAsync(id.ToString());
 
@@ -277,7 +282,10 @@ public class UsersController : ControllerBase
             return Problem(detail: "Пользователь не найден.", statusCode: StatusCodes.Status404NotFound);
 
         if (!user.IsBlocked)
-            return NoContent();
+        {
+            UserDto unchangedUserDto = await ToDto(user);
+            return Ok(unchangedUserDto);
+        }
 
         if (!int.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out int userId))
             return Problem(detail: "Ошибка получения Id пользователя, пытавшегося разблокировать пользователя.", statusCode: StatusCodes.Status500InternalServerError);
@@ -290,7 +298,9 @@ public class UsersController : ControllerBase
         if (result != null)
             return result;
 
-        return NoContent();
+        UserDto userDto = await ToDto(user);
+
+        return Ok(userDto);
     }
 
     [HttpGet("roles")]

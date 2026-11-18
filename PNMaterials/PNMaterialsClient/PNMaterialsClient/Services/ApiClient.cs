@@ -38,9 +38,11 @@ public class ApiClient
                ?? throw new ApiException(ApiErrorKind.InvalidResponse, "Сервер не вернул созданную группу.");
     }
 
-    public async Task UpdateMaterialGroupAsync(int id, MaterialGroupEditDto dto)
+    public async Task<MaterialGroupDto> UpdateMaterialGroupAsync(int id, MaterialGroupEditDto dto)
     {
-        await ApiRequestExecutor.SendAsync(_http.PutAsJsonAsync($"api/materialgroups/{id}", dto));
+        var response = await ApiRequestExecutor.SendAsync(_http.PutAsJsonAsync($"api/materialgroups/{id}", dto));
+        return await ApiRequestExecutor.ReadAsync<MaterialGroupDto>(response)
+               ?? throw new ApiException(ApiErrorKind.InvalidResponse, "Сервер не вернул измененную группу.");
     }
 
     public async Task<List<UnitDto>> GetUnitsAsync()
@@ -76,9 +78,11 @@ public class ApiClient
                ?? throw new ApiException(ApiErrorKind.InvalidResponse, "Сервер не вернул созданный материал.");
     }
 
-    public async Task UpdateMaterialAsync(int id, MaterialEditDto dto)
+    public async Task<MaterialDto> UpdateMaterialAsync(int id, MaterialEditDto dto)
     {
-        await ApiRequestExecutor.SendAsync(_http.PutAsJsonAsync($"api/materials/{id}", dto));
+        var response = await ApiRequestExecutor.SendAsync(_http.PutAsJsonAsync($"api/materials/{id}", dto));
+        return await ApiRequestExecutor.ReadAsync<MaterialDto>(response)
+            ?? throw new ApiException(ApiErrorKind.InvalidResponse, "Сервер не вернул измененный материал.");
     }
 
     public async Task<MaterialDto> ArchiveMaterialAsync(int id)

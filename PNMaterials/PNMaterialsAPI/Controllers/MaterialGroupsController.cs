@@ -102,7 +102,7 @@ public class MaterialGroupsController : ControllerBase
     // Изменить
     [HttpPut("{id:int}")]
     [Authorize(Roles = PNRoles.ReadAndWrite)]
-    public async Task<IActionResult> Update(int id, MaterialGroupEditDto dto)
+    public async Task<ActionResult<MaterialGroupDto>> Update(int id, MaterialGroupEditDto dto)
     {
         var group = await _db.MaterialGroups.FindAsync(id);
         if (group is null)
@@ -110,7 +110,10 @@ public class MaterialGroupsController : ControllerBase
 
         var name = dto.Name.Trim();
         if ((name, dto.Description) == (group.Name, group.Description))
-            return NoContent();
+        {
+            var unchangedGroup = await ToDto(_db.MaterialGroups.Where(g => g.Id == group.Id)).SingleAsync();
+            return Ok(unchangedGroup);
+        }
 
         if (await _db.MaterialGroups.AnyAsync(g => g.Name == name && g.Id != id))
             return Problem(detail: "Группа материалов с таким именем уже существует.", statusCode: StatusCodes.Status409Conflict);
@@ -123,7 +126,8 @@ public class MaterialGroupsController : ControllerBase
         group.Audit = group.Audit with { EditedByUserId = userId, EditedAt = DateTime.Now };
 
         await _db.SaveChangesAsync();
+        var result = await ToDto(_db.MaterialGroups.Where(g => g.Id == group.Id)).SingleAsync();
 
-        return NoContent();
+        return Ok(result);
     }
 }
