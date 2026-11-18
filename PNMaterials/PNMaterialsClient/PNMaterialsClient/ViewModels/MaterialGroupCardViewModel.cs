@@ -27,6 +27,9 @@ public partial class MaterialGroupCardViewModel : ViewModelBase
     [ObservableProperty]
     private bool _isEditMode;
 
+    [ObservableProperty]
+    private AuditInfoDto? _auditInfo;
+
     public string Header => Id == 0
         ? "Новая группа материалов"
         : $"{Id} — {Name}";
@@ -58,6 +61,7 @@ public partial class MaterialGroupCardViewModel : ViewModelBase
             Name = group.Name;
             Description = group.Description ?? string.Empty;
             IsEditMode = false;
+            AuditInfo = group.Audit;
             MessagesService.ShowInfo("Данные перечитаны из базы.");
 
             loaded = true;
@@ -95,11 +99,13 @@ public partial class MaterialGroupCardViewModel : ViewModelBase
             {
                 var created = await _api.CreateMaterialGroupAsync(dto);
                 Id = created.Id;
+                AuditInfo = created.Audit;
                 MessagesService.ShowSuccess("Группа создана.");
             }
             else
             {
-                await _api.UpdateMaterialGroupAsync(Id, dto);
+                var edited = await _api.UpdateMaterialGroupAsync(Id, dto);
+                AuditInfo = edited.Audit;
                 MessagesService.ShowSuccess("Изменения сохранены.");
             }
 

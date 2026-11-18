@@ -33,6 +33,9 @@ public partial class PurchaseRequestCardViewModel : ViewModelBase
     [ObservableProperty]
     private bool _isEditMode;
 
+    [ObservableProperty]
+    private AuditInfoDto? _auditInfo;
+
     public ObservableCollection<MaterialDto> Materials { get; } = new();
     public ObservableCollection<RequestItemViewModel> Items { get; } = new();
     public ObservableCollection<StatusActionViewModel> StatusActions { get; } = new();
@@ -103,6 +106,7 @@ public partial class PurchaseRequestCardViewModel : ViewModelBase
         CreatedAt = request.CreatedAt.ToString("dd.MM.yyyy HH:mm");
         DeliveryDate = request.DeliveryDate;
         StatusText = request.Status.Title;
+        AuditInfo = request.Audit;
 
         Items.Clear();
         foreach (var source in request.Items)

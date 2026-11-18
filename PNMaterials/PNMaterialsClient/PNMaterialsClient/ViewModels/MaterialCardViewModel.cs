@@ -48,6 +48,9 @@ public partial class MaterialCardViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(CanCreateRequest))]
     private bool _isArchived;
 
+    [ObservableProperty]
+    private AuditInfoDto? _auditInfo;
+
     public ObservableCollection<UnitDto> Units { get; } = new();
     public ObservableCollection<MaterialGroupDto> Groups { get; } = new();
 
@@ -72,6 +75,7 @@ public partial class MaterialCardViewModel : ViewModelBase
                 SelectedUnit = null;
                 SelectedGroup = null;
                 IsEditMode = true;
+                AuditInfo = null;
 
                 loaded = true;
 
@@ -94,6 +98,7 @@ public partial class MaterialCardViewModel : ViewModelBase
             SelectedUnit = Units.FirstOrDefault(u => u.Id == material.UnitId);
             SelectedGroup = Groups.FirstOrDefault(g => g.Id == material.GroupId);
             IsEditMode = false;
+            AuditInfo = material.Audit;
 
             loaded = true;
             MessagesService.ShowInfo("Данные перечитаны из базы.");
@@ -148,11 +153,13 @@ public partial class MaterialCardViewModel : ViewModelBase
                 var created = await _api.CreateMaterialAsync(dto);
                 Id = created.Id;
                 Code = created.Code;
+                AuditInfo = created.Audit;
                 MessagesService.ShowSuccess($"Материал создан, код {created.Code}.");
             }
             else
             {
-                await _api.UpdateMaterialAsync(Id, dto);
+                var updated = await _api.UpdateMaterialAsync(Id, dto);
+                AuditInfo = updated.Audit;
                 MessagesService.ShowSuccess("Изменения сохранены.");
             }
 
@@ -192,6 +199,7 @@ public partial class MaterialCardViewModel : ViewModelBase
         {
             var result = IsArchived ? await _api.RestoreMaterialAsync(Id) : await _api.ArchiveMaterialAsync(Id);
             IsArchived = result.IsArchived;
+            AuditInfo = result.Audit;
             MessagesService.ShowSuccess(IsArchived ? "Материал перемещен в архив." : "Материал восстановлен из архива.");
         });
     }

@@ -43,6 +43,9 @@ public partial class UserCardViewModel : ViewModelBase
     [NotifyCanExecuteChangedFor(nameof(ArchiveCommand))]
     public bool _isEditMode;
 
+    [ObservableProperty]
+    private AuditInfoDto? _auditInfo;
+
     public string Header => "Пользователь";
 
     public ObservableCollection<RoleSelectionViewModel> Roles { get; set; } = new();
@@ -86,6 +89,7 @@ public partial class UserCardViewModel : ViewModelBase
             LastName = user.LastName;
             MiddleName = user.MiddleName ?? "";
             IsBlocked = user.IsBlocked;
+            AuditInfo = user.Audit;
 
             Password = string.Empty;
             Roles.Clear();
@@ -145,6 +149,7 @@ public partial class UserCardViewModel : ViewModelBase
                 LastName = createdUser.LastName;
                 MiddleName = createdUser.MiddleName ?? "";
                 IsBlocked = createdUser.IsBlocked;
+                AuditInfo = createdUser.Audit;
 
                 foreach (var role in Roles)
                 {
@@ -188,6 +193,7 @@ public partial class UserCardViewModel : ViewModelBase
                 LastName = updatedUser.LastName;
                 MiddleName = updatedUser.MiddleName ?? "";
                 IsBlocked= updatedUser.IsBlocked;
+                AuditInfo = updatedUser.Audit;
 
                 foreach (var role in Roles)
                 {
@@ -230,12 +236,15 @@ public partial class UserCardViewModel : ViewModelBase
     {
         await RunAsync(IsBlocked ? "Снятие блокировки пользователя." : "Блокировка пользователя", async () =>
         {
-            if (IsBlocked)
-                await _usersApiClient.UnblockUserAsync(Id);
-            else
-                await _usersApiClient.BlockUserAsync(Id);
+            UserDto user;
 
-            IsBlocked = !IsBlocked;
+            if (IsBlocked)
+                user = await _usersApiClient.UnblockUserAsync(Id);
+            else
+                user = await _usersApiClient.BlockUserAsync(Id);
+
+            IsBlocked = user.IsBlocked;
+            AuditInfo = user.Audit;
 
             MessagesService.ShowSuccess(IsBlocked ? "Пользователь успешно заблокирован." : "Пользователь успешно разблокирован.");
         });
