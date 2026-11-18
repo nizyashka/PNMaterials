@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
+using System.Xml.Linq;
+using LibVLCSharp.Shared;
 using PNMaterialsClient.Services;
 using PNMaterialsContracts;
 using Windows.System;
@@ -14,10 +16,12 @@ public partial class UserCardViewModel : ViewModelBase
     private readonly LoginInfoProvider _loginInfoProvider;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Header))]
     [NotifyCanExecuteChangedFor(nameof(ArchiveCommand))]
     public int _id;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Header))]
     [NotifyCanExecuteChangedFor(nameof(SaveCommand))]
     public string _username;
 
@@ -37,6 +41,7 @@ public partial class UserCardViewModel : ViewModelBase
     public string _password;
 
     [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Header))]
     public bool _isBlocked;
 
     [ObservableProperty]
@@ -46,7 +51,9 @@ public partial class UserCardViewModel : ViewModelBase
     [ObservableProperty]
     private AuditInfoDto? _auditInfo;
 
-    public string Header => "Пользователь";
+    public string Header => Id == 0
+        ? "Новый пользователь"
+        : $"Пользователь {Username}{(IsBlocked ? " (в архиве)" : string.Empty)}";
 
     public ObservableCollection<RoleSelectionViewModel> Roles { get; set; } = new();
 

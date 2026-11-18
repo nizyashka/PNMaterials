@@ -29,11 +29,13 @@
                 </Button>
 
                 <TextBlock Grid.Column="1"
-                       Text="{x:Bind Header, Mode=OneWay}"
-                       FontSize="22"
-                       FontWeight="SemiBold"
-                       TextWrapping="Wrap"
-                       HorizontalAlignment="Center" />
+                           Text="{x:Bind Header, Mode=OneWay}"
+                           MaxLines="2"
+                           TextWrapping="WrapWholeWords"
+                           TextTrimming="CharacterEllipsis"
+                           FontSize="22"
+                           FontWeight="SemiBold"
+                           HorizontalAlignment="Center" />
 
                 <Button Grid.Column="2"
                     Style="{StaticResource IconButtonStyle}"
