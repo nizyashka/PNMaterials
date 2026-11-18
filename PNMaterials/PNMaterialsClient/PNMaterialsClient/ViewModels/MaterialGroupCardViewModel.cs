@@ -62,7 +62,6 @@ public partial class MaterialGroupCardViewModel : ViewModelBase
             Description = group.Description ?? string.Empty;
             IsEditMode = false;
             AuditInfo = group.Audit;
-            MessagesService.ShowInfo("Данные перечитаны из базы.");
 
             loaded = true;
         });

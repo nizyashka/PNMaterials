@@ -86,7 +86,6 @@ public partial class PurchaseRequestCardViewModel : ViewModelBase
             IsEditMode = false;
 
             loaded = true;
-            MessagesService.ShowInfo("Данные перечитаны из базы.");
         });
 
         return loaded;

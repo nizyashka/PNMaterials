@@ -26,8 +26,6 @@ public partial class MaterialGroupsViewModel : ViewModelBase
             Groups.Clear();
             foreach (var g in groups)
                 Groups.Add(g);
-
-            MessagesService.ShowInfo($"Загружено групп: {Groups.Count}");
         });
     }
 }

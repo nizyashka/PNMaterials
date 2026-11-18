@@ -40,8 +40,6 @@ public partial class MaterialsViewModel : ViewModelBase
             Materials.Clear();
             foreach (var m in materials)
                 Materials.Add(m);
-
-            MessagesService.ShowInfo($"Загружено материалов: {Materials.Count}");
         });
     }
 }

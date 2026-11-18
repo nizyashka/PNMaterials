@@ -101,7 +101,6 @@ public partial class MaterialCardViewModel : ViewModelBase
             AuditInfo = material.Audit;
 
             loaded = true;
-            MessagesService.ShowInfo("Данные перечитаны из базы.");
         });
 
         return loaded;

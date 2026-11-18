@@ -27,8 +27,6 @@ public class UsersViewModel : ViewModelBase
             {
                 Users.Add(user);
             }
-
-            MessagesService.ShowInfo($"Загружено {Users.Count()} пользователей.");
         });
     }
 }

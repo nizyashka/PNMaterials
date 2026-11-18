@@ -100,7 +100,6 @@ public partial class UserCardViewModel : ViewModelBase
             }
 
             loaded = true;
-            MessagesService.ShowInfo("Данные о пользователе загружены из базы.");
         });
 
         return loaded;

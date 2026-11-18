@@ -87,8 +87,6 @@ public partial class ReportViewModel : ViewModelBase
 
             if (Rows.Count == 0)
                 MessagesService.ShowInfo("Заявок по заданным критериям не найдено.");
-            else
-                MessagesService.ShowInfo($"Найдено заявок: {Rows.Count}");
         });
     }
 
