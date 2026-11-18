@@ -29,13 +29,13 @@ public class AuthController : ControllerBase
         if (user is null)
             return Problem(detail: "Неверный логин или пароль.", statusCode: StatusCodes.Status401Unauthorized);
 
-        if (user.IsBlocked)
-            return Problem(detail: "Пользователь заблокирован.", statusCode: StatusCodes.Status403Forbidden);
-
         var signInResult = await _signInManager.CheckPasswordSignInAsync(user, dto.Password, lockoutOnFailure: false);
 
         if (!signInResult.Succeeded)
             return Problem(detail: "Неверный логин или пароль.", statusCode: StatusCodes.Status401Unauthorized);
+
+        if (user.IsBlocked)
+            return Problem(detail: "Пользователь заблокирован.", statusCode: StatusCodes.Status403Forbidden);
 
         var roles = await _userManager.GetRolesAsync(user);
         var accessToken = _tokenService.CreateToken(user, roles);
