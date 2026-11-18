@@ -9,6 +9,9 @@ public sealed partial class ReportPage : Page, IRefreshablePage
 {
     public ReportViewModel ReportViewModel { get; }
 
+    private Visibility ShowBeforeReportSearch(bool hasReportResult)
+        => hasReportResult ? Visibility.Collapsed : Visibility.Visible;
+
     public ReportPage()
     {
         this.InitializeComponent();

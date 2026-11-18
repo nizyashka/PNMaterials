@@ -124,7 +124,15 @@
             </Border>
         </Grid>
 
-        <Grid Grid.Column="1" RowSpacing="8">
+        <TextBlock Grid.Column="1"
+                   Text="Для просмотра заявок с выбранными параметрами нажмите поиск."
+                   FontSize="24"
+                   FontWeight="SemiBold"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Visibility="{x:Bind ShowBeforeReportSearch(ReportViewModel.HasReportResult), Mode=OneWay}" />
+
+        <Grid Grid.Column="1" RowSpacing="8" Visibility="{x:Bind ReportViewModel.HasReportResult, Mode=OneWay}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />

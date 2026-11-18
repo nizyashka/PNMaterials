@@ -15,6 +15,9 @@ public sealed partial class MaterialsSplitPage : Page, IRefreshablePage
     public Predicate<TableViewConditionalCellStyleContext> IsArchivedMaterial { get; } =
         context => context.DataItem is MaterialDto { IsArchived: true };
 
+    private Visibility ShowWhenNoGroupSelected(bool isGroupSelected)
+        => isGroupSelected ? Visibility.Collapsed : Visibility.Visible;
+
     public MaterialsSplitPage()
     {
         this.InitializeComponent();

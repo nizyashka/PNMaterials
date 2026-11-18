@@ -32,6 +32,9 @@ public partial class ReportViewModel : ViewModelBase
     [NotifyPropertyChangedFor(nameof(StatusesSummary))]
     private bool _statusNotEqual;
 
+    [ObservableProperty]
+    private bool _hasReportResult;
+
     public ObservableCollection<StatusFilterViewModel> Statuses { get; } = new();
     public ObservableCollection<PurchaseRequestReportRowDto> Rows { get; } = new();
 
@@ -80,6 +83,8 @@ public partial class ReportViewModel : ViewModelBase
             };
 
             var rows = await _api.GetPurchaseRequestReportAsync(filter);
+
+            HasReportResult = true;
 
             Rows.Clear();
             foreach (var row in rows)
