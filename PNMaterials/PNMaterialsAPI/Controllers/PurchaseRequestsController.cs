@@ -6,6 +6,7 @@ using PNMaterialsDomain;
 using PNMaterialsDomain.Entities;
 using PNMaterialsInfrastructure;
 using PNMaterialsInfrastructure.Services;
+using System.Security.Claims;
 
 namespace PNMaterialsAPI.Controllers;
 
@@ -59,6 +60,9 @@ public class PurchaseRequestsController : ControllerBase
         if (error is not null)
             return Problem(detail: error, statusCode: StatusCodes.Status400BadRequest);
 
+        if (!int.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out int id))
+            return Problem(detail: "Ошибка получения Id пользователя, пытавшегося создать заявку.", statusCode: StatusCodes.Status500InternalServerError);
+
         var request = new PurchaseRequest
         {
             Number = await _numberGenerator.NextAsync(),
@@ -70,7 +74,12 @@ public class PurchaseRequestsController : ControllerBase
                 MaterialId = i.MaterialId,
                 Quantity = i.Quantity,
                 PositionText = i.PositionText
-            }).ToList()
+            }).ToList(),
+            Audit = new AuditInfo
+            {
+                CreatedByUserId = id,
+                CreatedAt = DateTime.Now
+            }
         };
 
         _db.PurchaseRequests.Add(request);
@@ -92,7 +101,25 @@ public class PurchaseRequestsController : ControllerBase
         if (request is null)
             return NotFound();
 
-        var deliveryDate = dto.DeliveryDate?.Date ?? request.DeliveryDate;
+        var deliveryDate = dto.DeliveryDate?.Date ?? request.DeliveryDate.Date;
+
+        var currentItems = request.Items
+            .Select(i => (i.MaterialId, i.Quantity, i.PositionText))
+            .OrderBy(i => i.MaterialId)
+            .ThenBy(i => i.Quantity)
+            .ThenBy(i => i.PositionText, StringComparer.Ordinal);
+
+        var incomingItems = dto.Items
+            .Select(i => (i.MaterialId, i.Quantity, i.PositionText))
+            .OrderBy(i => i.MaterialId)
+            .ThenBy(i => i.Quantity)
+            .ThenBy(i => i.PositionText, StringComparer.Ordinal);
+
+        var itemsChanged = !currentItems.SequenceEqual(incomingItems);
+
+        if (deliveryDate == request.DeliveryDate.Date && !itemsChanged)
+            return NoContent();
+
         if (deliveryDate < DateTime.Today)
             return Problem(detail: "Дата поставки не может быть в прошлом.", statusCode: StatusCodes.Status400BadRequest);
 
@@ -100,18 +127,26 @@ public class PurchaseRequestsController : ControllerBase
         if (error is not null)
             return Problem(detail: error, statusCode: StatusCodes.Status400BadRequest);
 
+        if (!int.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out int userId))
+            return Problem(detail: "Ошибка получения Id пользователя, пытавшегося создать заявку.", statusCode: StatusCodes.Status500InternalServerError);
+
         request.DeliveryDate = deliveryDate;
 
-        request.Items.Clear();
-        foreach (var i in dto.Items)
+        if (itemsChanged)
         {
-            request.Items.Add(new PurchaseRequestItem
+            request.Items.Clear();
+            foreach (var i in dto.Items)
             {
-                MaterialId = i.MaterialId,
-                Quantity = i.Quantity,
-                PositionText = i.PositionText
-            });
+                request.Items.Add(new PurchaseRequestItem
+                {
+                    MaterialId = i.MaterialId,
+                    Quantity = i.Quantity,
+                    PositionText = i.PositionText
+                });
+            }
         }
+
+        request.Audit = request.Audit with { EditedByUserId = userId, EditedAt = DateTime.Now };
 
         await _db.SaveChangesAsync();
         return NoContent();
@@ -136,7 +171,12 @@ public class PurchaseRequestsController : ControllerBase
                         $"{RequestStatusInfo.GetCode(target)} не разрешён.",
                 statusCode: StatusCodes.Status409Conflict);
 
+        if (!int.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out int userId))
+            return Problem(detail: "Ошибка получения Id пользователя, пытавшегося создать заявку.", statusCode: StatusCodes.Status500InternalServerError);
+
         request.Status = target;
+        request.Audit = request.Audit with { EditedByUserId = userId, EditedAt = DateTime.Now };
+
         await _db.SaveChangesAsync();
 
         var updated = await QueryWithIncludes().FirstAsync(r => r.Id == id);
@@ -188,7 +228,7 @@ public class PurchaseRequestsController : ControllerBase
         return null;
     }
 
-    private static PurchaseRequestDto ToDto(PurchaseRequest r) => new()
+    private PurchaseRequestDto ToDto(PurchaseRequest r) => new()
     {
         Id = r.Id,
         Number = r.Number,
@@ -207,7 +247,24 @@ public class PurchaseRequestsController : ControllerBase
             UnitName = i.Material.Unit.Name,
             Quantity = i.Quantity,
             PositionText = i.PositionText
-        }).ToList()
+        }).ToList(),
+        Audit = new AuditInfoDto
+        {
+
+            CreatedByDisplayName = r.Audit.CreatedByUserId == null ? "Система" : _db.Users
+                    .Where(u => u.Id == r.Audit.CreatedByUserId)
+                    .Select(u => u.LastName + " " + u.FirstName)
+                    .FirstOrDefault() ?? "Пользователь не найден",
+
+            CreatedAt = r.Audit.CreatedAt,
+
+            EditedByDisplayName = _db.Users
+                    .Where(u => u.Id == r.Audit.EditedByUserId)
+                    .Select(u => u.LastName + " " + u.FirstName)
+                    .FirstOrDefault(),
+
+            EditedAt = r.Audit.EditedAt
+        }
     };
 
     private static RequestStatusDto ToStatusDto(RequestStatus status) => new()

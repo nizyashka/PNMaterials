@@ -11,4 +11,6 @@ public class PurchaseRequestDto
     public List<RequestStatusDto> AllowedTransitions { get; set; } = new();
 
     public List<PurchaseRequestItemDto> Items { get; set; } = new();
+
+    public AuditInfoDto Audit { get; set; }
 }
