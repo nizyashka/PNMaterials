@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using PNMaterialsContracts;
 using PNMaterialsInfrastructure.Identity;
+using PNMaterialsDomain.Entities;
 
 namespace PNMaterialsAPI.Identity;
 
@@ -32,7 +33,8 @@ public class IdentitySeeder(
         {
             UserName = admin.Username,
             FirstName = admin.FirstName,
-            LastName = admin.LastName
+            LastName = admin.LastName,
+            Audit = new AuditInfo { CreatedAt = DateTime.Now, CreatedByUserId = null }
         };
 
         EnsureSuccess(await userManager.CreateAsync(user, admin.Password), "Создание нового администратора.");
