@@ -7,9 +7,11 @@
     <ContentDialog.Resources>
         <x:Double x:Key="ContentDialogMinWidth">1100</x:Double>
         <x:Double x:Key="ContentDialogMaxWidth">1100</x:Double>
+        <x:Double x:Key="ContentDialogMaxHeight">1000</x:Double>
     </ContentDialog.Resources>
 
     <controls:EntityCard Header="{x:Bind ViewModel.Header, Mode=OneWay}"
+                         AuditInfo="{x:Bind ViewModel.AuditInfo, Mode=OneWay}"
                          IsEditMode="{x:Bind ViewModel.IsEditMode, Mode=TwoWay}"
                          EditCommand="{x:Bind ViewModel.EditCommand}"
                          SaveCommand="{x:Bind ViewModel.SaveCommand}"
@@ -95,21 +97,20 @@
                 <TextBlock Grid.Column="4" Text="Текст к позиции" />
             </Grid>
 
-            <ScrollViewer Grid.Row="3">
-                <ItemsControl ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate x:DataType="vm:RequestItemViewModel">
-                            <Grid ColumnSpacing="8" Padding="0,4">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="125" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="90" />
-                                    <ColumnDefinition Width="110" />
-                                    <ColumnDefinition Width="300" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
+            <ItemsControl Grid.Row="3" ItemsSource="{x:Bind ViewModel.Items, Mode=OneWay}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:RequestItemViewModel">
+                        <Grid ColumnSpacing="8" Padding="0,4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="125" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="90" />
+                                <ColumnDefinition Width="110" />
+                                <ColumnDefinition Width="300" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
 
-                                <ComboBox Grid.Column="0"
+                            <ComboBox Grid.Column="0"
                                           ItemsSource="{x:Bind Materials}"
                                           SelectedItem="{x:Bind Material, Mode=TwoWay}"
                                           DisplayMemberPath="Code"
@@ -117,18 +118,18 @@
                                           HorizontalAlignment="Stretch"
                                           VerticalAlignment="Top" />
 
-                                <TextBlock Grid.Column="1"
+                            <TextBlock Grid.Column="1"
                                            Text="{x:Bind MaterialName, Mode=OneWay}"
                                            VerticalAlignment="Top"
                                            Padding="0, 6"
                                            TextTrimming="CharacterEllipsis" />
 
-                                <TextBlock Grid.Column="2"
+                            <TextBlock Grid.Column="2"
                                            Text="{x:Bind UnitName, Mode=OneWay}"
                                            Padding="0, 6"
                                            VerticalAlignment="Top"  />
 
-                                <NumberBox Grid.Column="3"
+                            <NumberBox Grid.Column="3"
                                            Value="{x:Bind Quantity, Mode=TwoWay}"
                                            Minimum="0.01" Maximum="999999.99"
                                            SmallChange="1"
@@ -136,28 +137,27 @@
                                            IsEnabled="{x:Bind IsEditMode, Mode=OneWay}"
                                            VerticalAlignment="Top" />
 
-                                <TextBox Grid.Column="4"
+                            <TextBox Grid.Column="4"
                                          Text="{x:Bind PositionText, Mode=TwoWay}"
                                          MaxLength="200"
                                          IsEnabled="{x:Bind IsEditMode, Mode=OneWay}"
                                          controls:TextBoxCounter.CharCounter="True"
                                          VerticalAlignment="Top" />
 
-                                <Button Grid.Column="5"
+                            <Button Grid.Column="5"
                                         Style="{StaticResource IconButtonStyle}"
                                         Command="{x:Bind RemoveCommand}"
                                         IsEnabled="{x:Bind IsEditMode, Mode=OneWay}"
                                         ToolTipService.ToolTip="Убрать"
                                         VerticalAlignment="Top">
-                                    <FontIcon Glyph="&#xE711;"
+                                <FontIcon Glyph="&#xE711;"
                                               FontFamily="{ThemeResource SymbolThemeFontFamily}"
                                               FontSize="14" />
-                                </Button>
-                            </Grid>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </ScrollViewer>
+                            </Button>
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </Grid>
     </controls:EntityCard>
 </ContentDialog>

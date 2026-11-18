@@ -6,9 +6,11 @@
     <ContentDialog.Resources>
         <x:Double x:Key="ContentDialogMinWidth">500</x:Double>
         <x:Double x:Key="ContentDialogMaxWidth">500</x:Double>
+        <x:Double x:Key="ContentDialogMaxHeight">1000</x:Double>
     </ContentDialog.Resources>
 
     <controls:EntityCard Header="{x:Bind ViewModel.Header, Mode=OneWay}"
+                         AuditInfo="{x:Bind ViewModel.AuditInfo, Mode=OneWay}"
                          IsEditMode="{x:Bind ViewModel.IsEditMode, Mode=TwoWay}"
                          EditCommand="{x:Bind ViewModel.EditCommand}"
                          SaveCommand="{x:Bind ViewModel.SaveCommand}"

@@ -3,91 +3,111 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="using:PNMaterialsClient.Views.Controls">
 
-    <Grid RowSpacing="16">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
+    <ScrollViewer HorizontalScrollMode="Disabled" VerticalScrollBarVisibility="Hidden">
+        <Grid RowSpacing="16">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0" ColumnSpacing="16">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <Button x:Name="RefreshButton"
+            <Grid Grid.Row="0" ColumnSpacing="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <Button x:Name="RefreshButton"
                     Grid.Column="0"
                     Style="{StaticResource IconButtonStyle}"
                     Command="{x:Bind RefreshCommand, Mode=OneWay}"
                     ToolTipService.ToolTip="Обновить">
-                <FontIcon Glyph="&#xE72C;"
+                    <FontIcon Glyph="&#xE72C;"
                           FontFamily="{ThemeResource SymbolThemeFontFamily}"
                           FontSize="14" />
-            </Button>
+                </Button>
 
-            <TextBlock Grid.Column="1"
+                <TextBlock Grid.Column="1"
                        Text="{x:Bind Header, Mode=OneWay}"
                        FontSize="22"
                        FontWeight="SemiBold"
                        TextWrapping="Wrap"
                        HorizontalAlignment="Center" />
 
-            <Button Grid.Column="2"
+                <Button Grid.Column="2"
                     Style="{StaticResource IconButtonStyle}"
                     Command="{x:Bind ExitCommand, Mode=OneWay}"
                     ToolTipService.ToolTip="Закрыть">
-                <FontIcon Glyph="&#xE711;"
+                    <FontIcon Glyph="&#xE711;"
                                   FontFamily="{ThemeResource SymbolThemeFontFamily}"
                                   FontSize="14" />
-            </Button>
-        </Grid>
-        
-        <ContentPresenter Grid.Row="1" Content="{x:Bind Body, Mode=OneWay}" />
+                </Button>
+            </Grid>
 
-        <Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
+            <Grid Grid.Row="1" ColumnSpacing="8">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
 
-            <Button x:Name="ArchiveButton"
+                <StackPanel x:Name="CreatedStack" Grid.Column="0" Orientation="Vertical" Spacing="4" HorizontalAlignment="Stretch">
+                    <TextBox Text="{x:Bind AuditInfo.CreatedByDisplayName, Mode=OneWay}" Header="Создано" IsEnabled="False" />
+                    <TextBox Text="{x:Bind AuditInfo.CreatedAt, Mode=OneWay}" IsEnabled="False" />
+                </StackPanel>
+
+                <StackPanel x:Name="EditedStack" Grid.Column="1" Orientation="Vertical" Spacing="4" HorizontalAlignment="Stretch">
+                    <TextBox Text="{x:Bind AuditInfo.EditedByDisplayName, Mode=OneWay}" Header="Изменено" IsEnabled="False" />
+                    <TextBox Text="{x:Bind AuditInfo.EditedAt, Mode=OneWay}" IsEnabled="False" />
+                </StackPanel>
+            </Grid>
+
+            <ContentPresenter Grid.Row="2" Content="{x:Bind Body, Mode=OneWay}" />
+
+            <Grid Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Button x:Name="ArchiveButton"
                     Grid.Column="0"
                     Command="{x:Bind ArchiveCommand, Mode=OneWay}"
                     HorizontalAlignment="Left"
                     Style="{StaticResource IconButtonStyle}"
                     ToolTipService.ToolTip="Архивировать">
-                <FontIcon x:Name="ArchiveIcon"
+                    <FontIcon x:Name="ArchiveIcon"
                           Glyph="&#xE74D;"
                           FontFamily="{ThemeResource SymbolThemeFontFamily}"
                           FontSize="14" />
-            </Button>
+                </Button>
 
-            <ContentPresenter Grid.Column="1" Content="{x:Bind ExtraButtons, Mode=OneWay}" HorizontalAlignment="Center" />
+                <ContentPresenter Grid.Column="1" Content="{x:Bind ExtraButtons, Mode=OneWay}" HorizontalAlignment="Center" />
 
-            <Button x:Name="EditButton"
+                <Button x:Name="EditButton"
                 Grid.Column="2"
                 HorizontalAlignment="Right"
                 Style="{StaticResource IconButtonStyle}"
                 Command="{x:Bind EditCommand, Mode=OneWay}"
                 ToolTipService.ToolTip="Редактировать">
-                <FontIcon Glyph="&#xE70F;"
+                    <FontIcon Glyph="&#xE70F;"
                       FontFamily="{ThemeResource SymbolThemeFontFamily}"
                       FontSize="14" />
-            </Button>
+                </Button>
 
-            <Button x:Name="SaveButton"
+                <Button x:Name="SaveButton"
                 Grid.Column="2"
                  HorizontalAlignment="Right"
         Style="{StaticResource IconButtonStyle}"
         Command="{x:Bind SaveCommand, Mode=OneWay}"
         ToolTipService.ToolTip="Сохранить">
-                <FontIcon Glyph="&#xE8FB;"
+                    <FontIcon Glyph="&#xE8FB;"
               FontFamily="{ThemeResource SymbolThemeFontFamily}"
               FontSize="14" />
-            </Button>
+                </Button>
 
+            </Grid>
         </Grid>
-    </Grid>
+    </ScrollViewer>
 </UserControl>

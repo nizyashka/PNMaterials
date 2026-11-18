@@ -1,4 +1,5 @@
 using Microsoft.UI.Xaml.Markup;
+using PNMaterialsContracts;
 
 namespace PNMaterialsClient.Views.Controls;
 
@@ -11,6 +12,7 @@ public sealed partial class EntityCard : UserControl
         UpdateEditButtons();
         UpdateArchiveButtons();
         UpdateRefreshButton();
+        UpdateAuditStacks();
     }
 
     public static readonly DependencyProperty HeaderProperty =
@@ -21,6 +23,16 @@ public sealed partial class EntityCard : UserControl
     {
         get => (string)GetValue(HeaderProperty);
         set => SetValue(HeaderProperty, value);
+    }
+
+    public static readonly DependencyProperty AuditInfoProperty =
+        DependencyProperty.Register(nameof(AuditInfo), typeof(AuditInfoDto), typeof(EntityCard),
+            new PropertyMetadata(null, OnAuditChanged));
+
+    public AuditInfoDto? AuditInfo
+    {
+        get => (AuditInfoDto?)GetValue(AuditInfoProperty);
+        set => SetValue(AuditInfoProperty, value);
     }
 
     public static readonly DependencyProperty IsEditModeProperty =
@@ -131,6 +143,9 @@ public sealed partial class EntityCard : UserControl
     private static void OnRefreshCommandChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         => ((EntityCard)d).UpdateRefreshButton();
 
+    private static void OnAuditChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        => ((EntityCard)d).UpdateAuditStacks();
+
     private void UpdateArchiveButtons()
     {
         ArchiveIcon.Glyph = IsArchived ? "\uE7A7" : "\uE74D";
@@ -142,5 +157,19 @@ public sealed partial class EntityCard : UserControl
     private void UpdateRefreshButton()
     {
         RefreshButton.Visibility = RefreshCommand is null ? Visibility.Collapsed : Visibility.Visible;
+    }
+
+    private void UpdateAuditStacks()
+    {
+        if (AuditInfo != null)
+        {
+            CreatedStack.Visibility = Visibility.Visible;
+            EditedStack.Visibility = (AuditInfo.EditedByDisplayName != null || AuditInfo.EditedAt != null) ? Visibility.Visible : Visibility.Collapsed;
+        }
+        else
+        {
+            CreatedStack.Visibility = Visibility.Collapsed;
+            EditedStack.Visibility = Visibility.Collapsed;
+        }
     }
 }
