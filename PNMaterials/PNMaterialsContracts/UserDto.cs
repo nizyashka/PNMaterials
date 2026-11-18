@@ -17,4 +17,6 @@ public class UserDto
 
     [JsonIgnore]
     public string RolesString => string.Join(", ", Roles);
+
+    public AuditInfoDto Audit { get; set; }
 }

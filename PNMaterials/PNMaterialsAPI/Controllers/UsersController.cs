@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 using PNMaterialsContracts;
 using PNMaterialsInfrastructure;
 using PNMaterialsInfrastructure.Identity;
+using System.Security.Claims;
+using PNMaterialsDomain.Entities;
 
 namespace PNMaterialsAPI.Controllers;
 
@@ -54,6 +56,34 @@ public class UsersController : ControllerBase
         throw new InvalidOperationException($"{operation}: {details}");
     }
 
+    private async Task<UserDto> ToDto(PNUser user)
+        => new UserDto
+        {
+            Id = user.Id,
+            Username = user.UserName!,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
+            MiddleName = user.MiddleName,
+            IsBlocked = user.IsBlocked,
+            Roles = (await _userManager.GetRolesAsync(user)).ToList(),
+            Audit = new AuditInfoDto
+            {
+                CreatedByDisplayName = user.Audit.CreatedByUserId == null ? "Система" : _db.Users
+                    .Where(u => u.Id == user.Audit.CreatedByUserId)
+                    .Select(u => u.LastName + " " + u.FirstName)
+                    .FirstOrDefault() ?? "Пользователь не найден",
+
+                CreatedAt = user.Audit.CreatedAt,
+
+                EditedByDisplayName = _db.Users
+                    .Where(u => u.Id == user.Audit.EditedByUserId)
+                    .Select(u => u.LastName + " " + u.FirstName)
+                    .FirstOrDefault(),
+
+                EditedAt = user.Audit.EditedAt
+            }
+        };
+
     [HttpGet]
     public async Task<ActionResult<IEnumerable<UserDto>>> GetAll()
     {
@@ -63,16 +93,7 @@ public class UsersController : ControllerBase
 
         foreach (var user in dbUsers)
         {
-            users.Add(new UserDto 
-            {
-                Id = user.Id,
-                Username = user.UserName!,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                MiddleName = user.MiddleName,
-                IsBlocked = user.IsBlocked,
-                Roles = (await _userManager.GetRolesAsync(user)).ToList()
-            });
+            users.Add(await ToDto(user));
         }
 
         return users;
@@ -86,16 +107,9 @@ public class UsersController : ControllerBase
         if (user is null)
             return Problem(detail: "Пользователь не найден.", statusCode: StatusCodes.Status404NotFound);
 
-        return Ok(new UserDto
-        {
-            Id = user.Id,
-            Username = user.UserName,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            MiddleName = user.MiddleName,
-            IsBlocked = user.IsBlocked,
-            Roles = (await _userManager.GetRolesAsync(user)).ToList()
-        });
+        UserDto userDto = await ToDto(user);
+
+        return Ok(userDto);
     }
 
     [HttpPost]
@@ -104,12 +118,16 @@ public class UsersController : ControllerBase
         if (!dto.Roles.All(x => PNRoles.All.Contains(x)))
             return Problem(detail: "Попытка добавить пользователю несуществующую роль.", statusCode: StatusCodes.Status400BadRequest);
 
+        if (!int.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out int userId))
+            return Problem(detail: "Ошибка получения Id пользователя, пытавшегося создать пользователя.", statusCode: StatusCodes.Status500InternalServerError);
+
         PNUser user = new PNUser
         {
             UserName = dto.Username.Trim(),
             FirstName = dto.FirstName.Trim(),
             LastName = dto.LastName.Trim(),
-            MiddleName = dto.MiddleName?.Trim()
+            MiddleName = dto.MiddleName?.Trim(),
+            Audit = new AuditInfo { CreatedByUserId = userId, CreatedAt = DateTime.Now }
         };
 
         await using var transaction = await _db.Database.BeginTransactionAsync();
@@ -127,15 +145,7 @@ public class UsersController : ControllerBase
                 return roleResult;
         }
 
-        UserDto userDto = new UserDto
-        {
-            Id = user.Id,
-            Username = user.UserName,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            MiddleName = user.MiddleName,
-            Roles = (await _userManager.GetRolesAsync(user)).ToList()
-        };
+        UserDto userDto = await ToDto(user);
 
         await transaction.CommitAsync();
 
@@ -152,10 +162,38 @@ public class UsersController : ControllerBase
         if (user is null)
             return Problem(detail: "Пользователь не найден.", statusCode: StatusCodes.Status404NotFound);
 
-        user.UserName = dto.Username.Trim();
-        user.FirstName = dto.FirstName.Trim();
-        user.LastName = dto.LastName.Trim();
-        user.MiddleName = dto.MiddleName?.Trim();
+        if (!dto.Roles.All(role => PNRoles.All.Contains(role)))
+            return Problem(detail: "Попытка добавить пользователю несуществующую роль.",
+                statusCode: StatusCodes.Status400BadRequest);
+
+        var userRoles = await _userManager.GetRolesAsync(user);
+        var addedRoles = dto.Roles.Except(userRoles).ToArray();
+        var removedRoles = userRoles.Except(dto.Roles).ToArray();
+
+        var username = dto.Username.Trim();
+        var firstName = dto.FirstName.Trim();
+        var lastName = dto.LastName.Trim();
+        var middleName = string.IsNullOrWhiteSpace(dto.MiddleName) ? null : dto.MiddleName.Trim();
+
+        var profileChanged = user.UserName != username
+            || user.FirstName != firstName
+            || user.LastName != lastName
+            || (user.MiddleName ?? "") != (middleName ?? "");
+
+        var rolesChanged = addedRoles.Length > 0 || removedRoles.Length > 0;
+
+        if (!profileChanged && !rolesChanged && string.IsNullOrWhiteSpace(dto.Password))
+            return Ok(await ToDto(user));
+
+        if (!int.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out int userId))
+            return Problem(detail: "Ошибка получения Id пользователя, пытавшегося изменить пользователя.", statusCode: StatusCodes.Status500InternalServerError);
+
+        user.UserName = username;
+        user.FirstName = firstName;
+        user.LastName = lastName;
+        user.MiddleName = middleName;
+
+        user.Audit = user.Audit with { EditedByUserId = userId, EditedAt = DateTime.Now };
 
         var userResult = EnsureSuccess(await _userManager.UpdateAsync(user), "Изменение профиля пользователя");
 
@@ -170,13 +208,6 @@ public class UsersController : ControllerBase
             if (result != null)
                 return result;
         }
-
-        if (!dto.Roles.All(x => PNRoles.All.Contains(x)))
-            return Problem(detail: "Попытка добавить пользователю несуществующую роль.", statusCode: StatusCodes.Status400BadRequest);
-
-        var userRoles = await _userManager.GetRolesAsync(user);
-        var addedRoles = dto.Roles.Except(userRoles).ToArray();
-        var removedRoles = userRoles.Except(dto.Roles).ToArray();
 
         if (removedRoles.Contains(PNRoles.Admin))
         {
@@ -200,16 +231,7 @@ public class UsersController : ControllerBase
                 return removeResult;
         }
 
-        UserDto userDto = new UserDto
-        {
-            Id = id,
-            Username = dto.Username.Trim(),
-            FirstName = dto.FirstName.Trim(),
-            LastName = dto.LastName.Trim(),
-            MiddleName = dto.MiddleName?.Trim(),
-            IsBlocked = user.IsBlocked,
-            Roles = (await _userManager.GetRolesAsync(user)).ToList()
-        };
+        UserDto userDto = await ToDto(user);
 
         await transaction.CommitAsync();
 
@@ -224,15 +246,19 @@ public class UsersController : ControllerBase
         if (user is null)
             return Problem(detail: "Пользователь не найден.", statusCode: StatusCodes.Status404NotFound);
 
+        if (user.IsBlocked)
+            return NoContent();
+
         var userRoles = await _userManager.GetRolesAsync(user);
 
         if (userRoles.Contains(PNRoles.Admin))
             return Problem(detail: $"Нельзя заблокировать пользователя с ролью {PNRoles.Admin}.", statusCode: StatusCodes.Status400BadRequest);
 
-        if (user.IsBlocked)
-            return NoContent();
+        if (!int.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out int userId))
+            return Problem(detail: "Ошибка получения Id пользователя, пытавшегося заблокировать пользователя.", statusCode: StatusCodes.Status500InternalServerError);
 
         user.IsBlocked = true;
+        user.Audit = user.Audit with { EditedByUserId = userId, EditedAt = DateTime.Now };
 
         var result = EnsureSuccess(await _userManager.UpdateAsync(user), "Блокировка пользователя");
 
@@ -253,7 +279,11 @@ public class UsersController : ControllerBase
         if (!user.IsBlocked)
             return NoContent();
 
+        if (!int.TryParse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value, out int userId))
+            return Problem(detail: "Ошибка получения Id пользователя, пытавшегося разблокировать пользователя.", statusCode: StatusCodes.Status500InternalServerError);
+
         user.IsBlocked = false;
+        user.Audit = user.Audit with { EditedByUserId = userId, EditedAt = DateTime.Now };
 
         var result = EnsureSuccess(await _userManager.UpdateAsync(user), "Снятие блокировки у пользователя");
 
