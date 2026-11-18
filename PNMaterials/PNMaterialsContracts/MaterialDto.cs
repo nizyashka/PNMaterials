@@ -14,4 +14,6 @@ public class MaterialDto
 
     public int GroupId { get; set; }
     public string GroupName { get; set; } = string.Empty;
+
+    public AuditInfoDto Audit { get; set; }
 }

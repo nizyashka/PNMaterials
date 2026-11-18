@@ -43,11 +43,6 @@ public class ApiClient
         await ApiRequestExecutor.SendAsync(_http.PutAsJsonAsync($"api/materialgroups/{id}", dto));
     }
 
-    public async Task DeleteMaterialGroupAsync(int id)
-    {
-        await ApiRequestExecutor.SendAsync(_http.DeleteAsync($"api/materialgroups/{id}"));
-    }
-
     public async Task<List<UnitDto>> GetUnitsAsync()
     {
         var response = await ApiRequestExecutor.SendAsync(_http.GetAsync("api/units"));
@@ -98,11 +93,6 @@ public class ApiClient
         var response = await ApiRequestExecutor.SendAsync(_http.PostAsync($"api/materials/{id}/restore", null));
         return await ApiRequestExecutor.ReadAsync<MaterialDto>(response)
             ?? throw new ApiException(ApiErrorKind.InvalidResponse, "Сервер не вернул восстановленный материал.");
-    }
-
-    public async Task DeleteMaterialAsync(int id)
-    {
-        await ApiRequestExecutor.SendAsync(_http.DeleteAsync($"api/materials/{id}"));
     }
 
     public async Task<PurchaseRequestDto?> GetPurchaseRequestAsync(int id)
