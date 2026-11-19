@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.UI.Xaml.Input;
 using PNMaterialsClient.Services;
 using PNMaterialsContracts;
+using Windows.System;
 
 namespace PNMaterialsClient.ViewModels;
 
@@ -28,6 +30,9 @@ public partial class LoginViewModel : ViewModelBase
     {
         var onSuccessfulLogin = OnSuccessfulLogin 
             ?? throw new InvalidOperationException("Обработчик успешного входа не задан.");
+
+        if (!TextBoxesAreFilled())
+            return;
 
         await RunAsync("Попытка аутентификации.", async () =>
         {
