@@ -1,3 +1,6 @@
+using DocumentFormat.OpenXml.Office2010.Excel;
+using DocumentFormat.OpenXml.Vml.Office;
+
 namespace PNMaterialsClient.Services;
 
 public sealed class LoginInfoProvider
@@ -15,6 +18,15 @@ public sealed class LoginInfoProvider
         Username = username;
         Password = password;
         Roles = roles;
+    }
+
+    public void ClearAll()
+    {
+        Id = null;
+        AccessToken = null;
+        Username = null;
+        Password = null;
+        Roles = new List<string>();
     }
 
     public void SetAccessToken(string accessToken)

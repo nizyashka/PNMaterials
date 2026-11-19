@@ -35,6 +35,7 @@ public class JwtAuthorizationHandler : DelegatingHandler
             }
             catch (ApiException ex) when (ex.Kind is ApiErrorKind.Unauthorized)
             {
+                _loginInfoProvider.ClearAll();
                 throw new ApiException(ApiErrorKind.Unauthorized, "Повторите вход в приложение.", HttpStatusCode.Unauthorized, ex);
             }
         }
