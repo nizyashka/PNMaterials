@@ -126,9 +126,11 @@ public class ApiClient
                ?? throw new ApiException(ApiErrorKind.InvalidResponse, "Сервер не вернул созданную заявку.");
     }
 
-    public async Task UpdatePurchaseRequestAsync(int id, PurchaseRequestEditDto dto)
+    public async Task<PurchaseRequestDto> UpdatePurchaseRequestAsync(int id, PurchaseRequestEditDto dto)
     {
-        await ApiRequestExecutor.SendAsync(_http.PutAsJsonAsync($"api/purchaserequests/{id}", dto));
+        var response = await ApiRequestExecutor.SendAsync(_http.PutAsJsonAsync($"api/purchaserequests/{id}", dto));
+        return await ApiRequestExecutor.ReadAsync<PurchaseRequestDto>(response)
+               ?? throw new ApiException(ApiErrorKind.InvalidResponse, "Сервер не вернул измененную заявку.");
     }
 
     public async Task<PurchaseRequestDto> ChangeRequestStatusAsync(int id, int statusId)

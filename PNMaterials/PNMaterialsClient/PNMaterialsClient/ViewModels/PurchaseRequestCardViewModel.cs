@@ -239,11 +239,8 @@ public partial class PurchaseRequestCardViewModel : ViewModelBase
             }
             else
             {
-                await _api.UpdatePurchaseRequestAsync(Id, dto);
-
-                var reloaded = await _api.GetPurchaseRequestAsync(Id);
-                if (reloaded is not null)
-                    Apply(reloaded);
+                var edited = await _api.UpdatePurchaseRequestAsync(Id, dto);
+                Apply(edited);
 
                 MessagesService.ShowSuccess("Изменения сохранены.");
             }

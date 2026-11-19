@@ -105,7 +105,7 @@ public class PurchaseRequestsController : ControllerBase
     // Изменить заявку (дата поставки и состав позиций)
     [HttpPut("{id:int}")]
     [Authorize(Roles = PNRoles.ReadAndWrite)]
-    public async Task<IActionResult> Update(int id, PurchaseRequestEditDto dto)
+    public async Task<ActionResult<PurchaseRequestDto>> Update(int id, PurchaseRequestEditDto dto)
     {
         var request = await _db.PurchaseRequests
             .Include(r => r.Items)
@@ -131,7 +131,7 @@ public class PurchaseRequestsController : ControllerBase
         var itemsChanged = !currentItems.SequenceEqual(incomingItems);
 
         if (deliveryDate == request.DeliveryDate.Date && !itemsChanged)
-            return NoContent();
+            return await GetById(id);
 
         if (deliveryDate < DateTime.Today)
             return Problem(detail: "Дата поставки не может быть в прошлом.", statusCode: StatusCodes.Status400BadRequest);
@@ -162,7 +162,9 @@ public class PurchaseRequestsController : ControllerBase
         request.Audit = request.Audit with { EditedByUserId = userId, EditedAt = DateTime.Now };
 
         await _db.SaveChangesAsync();
-        return NoContent();
+
+        var updated = await QueryWithIncludes().FirstAsync(r => r.Id == id);
+        return Ok(ToDto(updated));
     }
 
     // Сменить статус
