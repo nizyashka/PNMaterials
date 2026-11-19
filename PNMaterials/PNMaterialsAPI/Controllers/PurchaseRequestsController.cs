@@ -35,6 +35,19 @@ public class PurchaseRequestsController : ControllerBase
         return Ok(requests.Select(ToDto).ToList());
     }
 
+    [HttpPost("by-ids")]
+    public async Task<ActionResult<IEnumerable<PurchaseRequestDto>>> GetListById(IEnumerable<int> ids)
+    {
+        var requestedIds = ids.Distinct().ToArray();
+
+        var requests = await QueryWithIncludes().Where(request => requestedIds.Contains(request.Id)).OrderBy(r => r.Number).ToListAsync();
+
+        if (requests.Count != requestedIds.Length)
+            return NotFound();
+
+        return Ok(requests.Select(ToDto).ToList());
+    }
+
     // Одна заявка
     [HttpGet("{id:int}")]
     public async Task<ActionResult<PurchaseRequestDto>> GetById(int id)

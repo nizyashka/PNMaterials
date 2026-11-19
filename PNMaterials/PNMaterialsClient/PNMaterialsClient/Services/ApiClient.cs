@@ -99,6 +99,13 @@ public class ApiClient
             ?? throw new ApiException(ApiErrorKind.InvalidResponse, "Сервер не вернул восстановленный материал.");
     }
 
+    public async Task<List<PurchaseRequestDto>> GetPurchaseRequestsListAsync(IEnumerable<int> ids)
+    {
+        var response = await ApiRequestExecutor.SendAsync(_http.PostAsJsonAsync($"api/purchaserequests/by-ids", ids));
+        return await ApiRequestExecutor.ReadAsync<List<PurchaseRequestDto>>(response)
+            ?? throw new ApiException(ApiErrorKind.InvalidResponse, "Сервер не вернул запрошенные заявки.");
+    }
+
     public async Task<PurchaseRequestDto?> GetPurchaseRequestAsync(int id)
     {
         try
