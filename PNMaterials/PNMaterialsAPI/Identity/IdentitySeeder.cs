@@ -1,13 +1,15 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using PNMaterialsContracts;
-using PNMaterialsInfrastructure.Identity;
 using PNMaterialsDomain.Entities;
+using PNMaterialsInfrastructure;
+using PNMaterialsInfrastructure.Identity;
 
 namespace PNMaterialsAPI.Identity;
 
 public class IdentitySeeder(
     RoleManager<IdentityRole<int>> roleManager,
     UserManager<PNUser> userManager,
+    AppDbContext db,
     IConfiguration configuration,
     ILogger<IdentitySeeder> logger)
 {
@@ -19,7 +21,7 @@ public class IdentitySeeder(
                 EnsureSuccess(await roleManager.CreateAsync(new IdentityRole<int>(role)), $"Создание роли {role}");
         }
 
-        if ((await userManager.GetUsersInRoleAsync(PNRoles.Admin)).Count > 0)
+        if ((await userManager.GetUsersInRoleAsync(PNRoles.Admin)).Count(u => !u.IsBlocked) > 0)
             return;
 
         var admin = configuration.GetSection("PNAdmin").Get<PNAdminOptions>();
@@ -37,8 +39,12 @@ public class IdentitySeeder(
             Audit = new AuditInfo { CreatedAt = DateTime.Now, CreatedByUserId = null }
         };
 
+        await using var transaction = await db.Database.BeginTransactionAsync();
+
         EnsureSuccess(await userManager.CreateAsync(user, admin.Password), "Создание нового администратора.");
         EnsureSuccess(await userManager.AddToRoleAsync(user, PNRoles.Admin), "Назначение роли администратора");
+
+        await transaction.CommitAsync();
 
         logger.LogInformation("Создан первый администратор {UserName}", user.UserName);
     }
