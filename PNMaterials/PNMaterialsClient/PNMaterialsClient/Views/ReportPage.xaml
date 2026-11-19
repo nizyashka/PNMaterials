@@ -137,12 +137,29 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0"
+
+            <Grid Grid.Row="0" ColumnSpacing="16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0"
                        Text="Отчет по заявкам на закупку"
                        FontSize="24"
                        FontWeight="SemiBold"
                        VerticalAlignment="Top" />
-            
+
+                <Button Grid.Column="1"
+                        Style="{StaticResource IconButtonStyle}"
+                        Command="{x:Bind ReportViewModel.ExportReportCommand}"
+                        VerticalAlignment="Center"
+                        ToolTipService.ToolTip="Экспортировать">
+                    <FontIcon Glyph="&#xE74E;"
+                              FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                              FontSize="14" />
+                </Button>
+            </Grid>
+
             <tv:TableView Grid.Row="1"
                           Style="{StaticResource EntityTableStyle}"
                           ItemsSource="{x:Bind ReportViewModel.Rows}"

@@ -1,6 +1,9 @@
 using System.Collections.ObjectModel;
+using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
 using PNMaterialsClient.Services;
 using PNMaterialsContracts;
+using Windows.Storage.Pickers;
 
 namespace PNMaterialsClient.ViewModels;
 
@@ -109,6 +112,64 @@ public partial class ReportViewModel : ViewModelBase
             status.IsSelected = false;
 
         RefreshStatusesSummary();
+    }
+
+    [RelayCommand]
+    private async Task ExportReportAsync()
+    {
+        var picker = new FileSavePicker
+        {
+            SuggestedStartLocation = PickerLocationId.DocumentsLibrary,
+            SuggestedFileName = "Заявки"
+        };
+
+        picker.FileTypeChoices.Add("Таблица Excel", new List<string> { ".xlsx" });
+
+        var file = await picker.PickSaveFileAsync();
+
+        if (file is not null)
+        {
+            var path = file.Path;
+
+            await RunAsync("Загрузка заявок для выгрузки.", async () =>
+            {
+                var requests = await _api.GetPurchaseRequestsListAsync(Rows.Select(r => r.Id));
+
+                using var workbook = new XLWorkbook();
+                var worksheet = workbook.Worksheets.Add("Заявки");
+
+                worksheet.Cell("A1").Value = "Номер";
+                worksheet.Cell("B1").Value = "Дата создания";
+                worksheet.Cell("C1").Value = "Дата поставки";
+                worksheet.Cell("D1").Value = "Статус";
+                worksheet.Cell("E1").Value = "Код материала";
+                worksheet.Cell("F1").Value = "Наименование материала";
+                worksheet.Cell("G1").Value = "Единица измерения";
+                worksheet.Cell("H1").Value = "Количество";
+                worksheet.Cell("I1").Value = "Описание";
+
+                var data = requests.SelectMany(row
+                    => row.Items.Select(i => new object[]
+                {
+                    row.Number,
+                    row.CreatedAt,
+                    row.DeliveryDate,
+                    row.Status.Title,
+                    i.MaterialCode,
+                    i.MaterialName,
+                    i.UnitName,
+                    i.Quantity,
+                    i.PositionText ?? "Описание отсутствует."
+                }));
+
+                worksheet.Cell("A2").InsertData(data);
+                worksheet.Column("B").Style.NumberFormat.Format = "dd.mm.yyyy hh:mm";
+                worksheet.Column("C").Style.NumberFormat.Format = "dd.mm.yyyy";
+                worksheet.ColumnsUsed().AdjustToContents();
+
+                workbook.SaveAs(path);
+            });
+        }
     }
 
     private static List<string> ParseValues(string text)
