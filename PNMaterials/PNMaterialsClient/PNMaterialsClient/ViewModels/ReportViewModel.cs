@@ -138,7 +138,7 @@ public partial class ReportViewModel : ViewModelBase
                 using var workbook = new XLWorkbook();
                 var worksheet = workbook.Worksheets.Add("Заявки");
 
-                worksheet.Cell("A1").Value = "Номер";
+                worksheet.Cell("A1").Value = "Код";
                 worksheet.Cell("B1").Value = "Дата создания";
                 worksheet.Cell("C1").Value = "Дата поставки";
                 worksheet.Cell("D1").Value = "Статус";

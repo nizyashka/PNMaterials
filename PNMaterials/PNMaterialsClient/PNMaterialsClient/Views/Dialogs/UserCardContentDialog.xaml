@@ -47,7 +47,7 @@
                      controls:TextBoxCounter.CharCounter="True" />
 
             <PasswordBox x:Name="PasswordTextBox"
-                         Header="{x:Bind ViewModel.PasswordBoxHeader}"
+                         Header="{x:Bind ViewModel.PasswordBoxHeader, Mode=OneWay}"
                          PasswordRevealMode="Hidden"
                          Text="{x:Bind ViewModel.Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                          IsEnabled="{x:Bind ViewModel.IsEditMode, Mode=OneWay}" />
