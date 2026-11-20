@@ -42,7 +42,7 @@
             </Grid.RowDefinitions>
 
             <StackPanel Grid.Row="0" Spacing="16">
-                <TextBox Header="Номер заявки"
+                <TextBox Header="Код заявки"
                          Text="{x:Bind ViewModel.Number, Mode=OneWay}"
                          IsEnabled="False" />
 
@@ -90,7 +90,7 @@
                     <ColumnDefinition Width="32" />
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Column="0" Text="НН материала" />
+                <TextBlock Grid.Column="0" Text="Код материала" />
                 <TextBlock Grid.Column="1" Text="Наименование" />
                 <TextBlock Grid.Column="2" Text="Ед. изм." />
                 <TextBlock Grid.Column="3" Text="Количество" />

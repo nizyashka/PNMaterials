@@ -165,7 +165,7 @@
                           ItemsSource="{x:Bind ReportViewModel.Rows}"
                           ItemClick="OnRequestClick">
                 <tv:TableView.Columns>
-                    <tv:TableViewTextColumn Header="Номер" Binding="{Binding Number}" Width="*" />
+                    <tv:TableViewTextColumn Header="Код" Binding="{Binding Number}" Width="*" />
                     <tv:TableViewTextColumn Header="Дата поставки" Binding="{Binding DeliveryDate, Converter={StaticResource DateFormat}}" Width="*" />
                     <tv:TableViewTextColumn Header="Статус" Binding="{Binding Status.Title}" Width="*" />
                 </tv:TableView.Columns>

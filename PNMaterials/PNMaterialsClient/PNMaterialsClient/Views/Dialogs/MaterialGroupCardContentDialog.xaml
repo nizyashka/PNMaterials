@@ -30,7 +30,6 @@
                      MaxLength="200"
                      AcceptsReturn="True"
                      TextWrapping="Wrap"
-                     Height="120"
                      controls:TextBoxCounter.CharCounter="True" />
         </StackPanel>
     </controls:EntityCard>
