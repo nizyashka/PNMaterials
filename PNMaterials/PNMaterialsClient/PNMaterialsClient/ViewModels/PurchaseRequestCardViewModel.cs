@@ -254,7 +254,11 @@ public partial class PurchaseRequestCardViewModel : ViewModelBase
     {
         if (Id != 0 && !IsEditMode)
         {
-            await LoadAsync(Id);
+            bool loaded = await LoadAsync(Id);
+
+            if (loaded)
+                MessagesService.ShowSuccess("Данные обновлены.");
+
             return;
         }
 

@@ -117,6 +117,9 @@ public partial class MaterialGroupCardViewModel : ViewModelBase
     [RelayCommand(CanExecute = nameof(CanRefresh))]
     private async Task RefreshAsync()
     {
-        await LoadAsync(Id);
+        bool loaded = await LoadAsync(Id);
+
+        if (loaded)
+            MessagesService.ShowSuccess("Данные обновлены.");
     }
 }
