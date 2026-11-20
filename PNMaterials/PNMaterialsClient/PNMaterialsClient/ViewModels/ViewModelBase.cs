@@ -6,8 +6,8 @@ public abstract partial class ViewModelBase : ObservableObject
 {
     private readonly LoadingService LoadingService;
 
-    protected ILogger Logger { get; }
-    protected MessagesService MessagesService { get; }
+    protected readonly ILogger Logger;
+    protected readonly MessagesService MessagesService;
     protected readonly AuthService _authService;
 
     protected ViewModelBase(ILogger logger, AuthService authService)

@@ -19,7 +19,7 @@
               CornerRadius="8"
               BorderThickness="1"
               BorderBrush="{StaticResource PanelBorderBrush}">
-            
+
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
@@ -37,7 +37,7 @@
                       ItemContainerStyle="{StaticResource RoundedListViewItemStyle}"
                       IsItemClickEnabled="True"
                       ItemClick="OnGroupClick">
-                
+
                 <ListView.ItemTemplate>
                     <DataTemplate x:DataType="contracts:MaterialGroupDto">
                         <Grid>
@@ -54,13 +54,13 @@
                                     Width="24" Height="24" Padding="0"
                                     BorderThickness="0"
                                     Background="Transparent">
-                                
+
                                 <Button.Resources>
                                     <SolidColorBrush x:Key="ButtonBackground" Color="Transparent" />
                                     <SolidColorBrush x:Key="ButtonBackgroundPointerOver" Color="Transparent" />
                                     <SolidColorBrush x:Key="ButtonBackgroundPressed" Color="Transparent" />
                                 </Button.Resources>
-                                
+
                                 <FontIcon Glyph="&#xE70F;"
                                           FontFamily="{ThemeResource SymbolThemeFontFamily}"
                                           FontWeight="Light"
@@ -78,12 +78,12 @@
                               ResizeBehavior="PreviousAndNext" />
 
         <TextBlock Grid.Column="2"
-           Text="Для просмотра материалов выберите группу."
-           FontSize="24"
-           FontWeight="SemiBold"
-           HorizontalAlignment="Center"
-           VerticalAlignment="Center"
-           Visibility="{x:Bind ShowWhenNoGroupSelected(MaterialsViewModel.IsGroupSelected), Mode=OneWay}" />
+                   Text="Для просмотра материалов выберите группу."
+                   FontSize="24"
+                   FontWeight="SemiBold"
+                   HorizontalAlignment="Center"
+                   VerticalAlignment="Center"
+                   Visibility="{x:Bind ShowWhenNoGroupSelected(MaterialsViewModel.IsGroupSelected), Mode=OneWay}" />
 
         <Grid Grid.Column="2" RowSpacing="8" Visibility="{x:Bind MaterialsViewModel.IsGroupSelected, Mode=OneWay}">
             <Grid.RowDefinitions>

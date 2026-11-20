@@ -8,11 +8,6 @@ public partial class MaterialCardViewModel : ViewModelBase
 {
     private readonly ApiClient _api;
 
-    public MaterialCardViewModel(ApiClient api, ILogger<MaterialCardViewModel> logger, AuthService authService) : base(logger, authService)
-    {
-        _api = api;
-    }
-
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Header))]
     [NotifyPropertyChangedFor(nameof(CanCreateRequest))]
@@ -57,6 +52,11 @@ public partial class MaterialCardViewModel : ViewModelBase
     public string Header => Id == 0
         ? "Новый материал"
         : $"{Code} — {Name}{(IsArchived ? " (в архиве)" : string.Empty)}";
+
+    public MaterialCardViewModel(ApiClient api, ILogger<MaterialCardViewModel> logger, AuthService authService) : base(logger, authService)
+    {
+        _api = api;
+    }
 
     public async Task<bool> LoadAsync(int id)
     {

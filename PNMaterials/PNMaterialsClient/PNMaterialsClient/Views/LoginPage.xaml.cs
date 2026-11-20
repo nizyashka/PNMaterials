@@ -9,7 +9,7 @@ namespace PNMaterialsClient.Views;
 
 public sealed partial class LoginPage : Page
 {
-    private LoginViewModel LoginViewModel;
+    private readonly LoginViewModel LoginViewModel;
 
     public LoginPage()
     {

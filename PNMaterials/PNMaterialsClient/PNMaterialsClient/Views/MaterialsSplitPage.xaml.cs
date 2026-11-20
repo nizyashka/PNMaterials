@@ -9,10 +9,10 @@ namespace PNMaterialsClient.Views;
 
 public sealed partial class MaterialsSplitPage : Page, IRefreshablePage
 {
-    public MaterialGroupsViewModel MaterialGroupsViewModel { get; }
-    public MaterialsViewModel MaterialsViewModel { get; }
+    private MaterialGroupsViewModel MaterialGroupsViewModel { get; }
+    private MaterialsViewModel MaterialsViewModel { get; }
 
-    public Predicate<TableViewConditionalCellStyleContext> IsArchivedMaterial { get; } =
+    private Predicate<TableViewConditionalCellStyleContext> IsArchivedMaterial { get; } =
         context => context.DataItem is MaterialDto { IsArchived: true };
 
     private Visibility ShowWhenNoGroupSelected(bool isGroupSelected)

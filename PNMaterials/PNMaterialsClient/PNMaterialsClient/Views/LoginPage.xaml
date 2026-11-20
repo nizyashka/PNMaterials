@@ -13,10 +13,11 @@
                  Text="{x:Bind LoginViewModel.Username, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                  KeyDown="OnLoginTextBoxKeyDown"/>
 
-        <TextBox x:Name="PasswordTextBox"
-                 PlaceholderText="Пароль"
-                 Text="{x:Bind LoginViewModel.Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                 KeyDown="OnPasswordTextBoxKeyDown"/>
+        <PasswordBox x:Name="PasswordTextBox"
+                     PlaceholderText="Пароль"
+                     PasswordRevealMode="Hidden"
+                     Text="{x:Bind LoginViewModel.Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                     KeyDown="OnPasswordTextBoxKeyDown"/>
 
         <Button x:Name="LogInButton"
                 Style="{StaticResource IconButtonStyle}"

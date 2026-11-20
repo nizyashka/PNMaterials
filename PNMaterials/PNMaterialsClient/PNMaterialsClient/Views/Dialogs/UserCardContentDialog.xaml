@@ -46,10 +46,11 @@
                      MaxLength="50"
                      controls:TextBoxCounter.CharCounter="True" />
 
-            <TextBox x:Name="PasswordTextBox"
-                     Header="Пароль *"
-                     Text="{x:Bind ViewModel.Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                     IsEnabled="{x:Bind ViewModel.IsEditMode, Mode=OneWay}" />
+            <PasswordBox x:Name="PasswordTextBox"
+                         Header="{x:Bind ViewModel.PasswordBoxHeader}"
+                         PasswordRevealMode="Hidden"
+                         Text="{x:Bind ViewModel.Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                         IsEnabled="{x:Bind ViewModel.IsEditMode, Mode=OneWay}" />
 
             <TextBlock Text="Роли" HorizontalAlignment="Left" FontSize="14" Foreground="White" />
 

@@ -1,8 +1,5 @@
-using System.Collections.Specialized;
-using System.ComponentModel;
 using Microsoft.UI;
 using PNMaterialsClient.Navigation;
-using PNMaterialsClient.Services;
 using PNMaterialsClient.ViewModels;
 using PNMaterialsClient.Views.Dialogs;
 using PNMaterialsClient.Views.Interfaces;
@@ -12,7 +9,7 @@ namespace PNMaterialsClient.Views;
 
 public sealed partial class MainPage : Page
 {
-    public List<NavItem> NavItems { get; } =
+    private readonly List<NavItem> _navItems =
     [
         new NavFolder
         {
@@ -34,7 +31,7 @@ public sealed partial class MainPage : Page
     ];
 
     private readonly Dictionary<Type, Button> _sectionByPage = [];
-    private readonly MainViewModel ViewModel;
+    private MainViewModel ViewModel { get; }
 
     public MainPage()
     {
@@ -47,7 +44,7 @@ public sealed partial class MainPage : Page
 
     private void BuildMenu()
     {
-        foreach (var rootItem in NavItems)
+        foreach (var rootItem in _navItems)
         {
             var menuButton = new Button
             {
@@ -118,88 +115,116 @@ public sealed partial class MainPage : Page
 
     private async void OnCreateRequestClick(object sender, RoutedEventArgs e)
     {
-        if (!ViewModel.IsAuthorized(PNRoles.ReadAndWrite))
-            return;
-
-        var dialog = new PurchaseRequestCardContentDialog()
+        try
         {
-            XamlRoot = XamlRoot
-        };
+            if (!ViewModel.IsAuthorized(PNRoles.ReadAndWrite))
+                return;
 
-        if (!await dialog.ViewModel.LoadAsync(0))
-            return;
-
-        await dialog.ShowAsync();
-
-        if (ContentFrame.Content is IRefreshablePage page)
-            await page.RefreshAsync();
-    }
-
-    private async void OnCreateGroupClick(object sender, RoutedEventArgs e)
-    {
-        if (!ViewModel.IsAuthorized(PNRoles.ReadAndWrite))
-            return;
-
-        var dialog = new MaterialGroupCardContentDialog()
-        {
-            XamlRoot = XamlRoot
-        };
-
-        if (!await dialog.ViewModel.LoadAsync(0))
-            return;
-
-        await dialog.ShowAsync();
-
-        if (ContentFrame.Content is IRefreshablePage page)
-            await page.RefreshAsync();
-    }
-
-    private async void OnCreateMaterialClick(object sender, RoutedEventArgs e)
-    {
-        if (!ViewModel.IsAuthorized(PNRoles.ReadAndWrite))
-            return;
-
-        var dialog = new MaterialCardContentDialog()
-        {
-            XamlRoot = XamlRoot
-        };
-
-        if (!await dialog.ViewModel.LoadAsync(0))
-            return;
-
-        await dialog.ShowAsync();
-
-        if (dialog.RequestedMaterialId is { } requestedMaterialId)
-        {
-            var requestDialog = new PurchaseRequestCardContentDialog()
+            var dialog = new PurchaseRequestCardContentDialog()
             {
                 XamlRoot = XamlRoot
             };
 
-            if (await requestDialog.ViewModel.LoadAsync(0, requestedMaterialId))
-                await requestDialog.ShowAsync();
-        }
+            if (!await dialog.ViewModel.LoadAsync(0))
+                return;
 
-        if (ContentFrame.Content is IRefreshablePage page)
-            await page.RefreshAsync();
+            await dialog.ShowAsync();
+
+            if (ContentFrame.Content is IRefreshablePage page)
+                await page.RefreshAsync();
+        }
+        catch (Exception ex)
+        {
+            ViewModel.ReportError("Открытие карточки заявки", ex);
+        }
+    }
+
+    private async void OnCreateGroupClick(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            if (!ViewModel.IsAuthorized(PNRoles.ReadAndWrite))
+                return;
+
+            var dialog = new MaterialGroupCardContentDialog()
+            {
+                XamlRoot = XamlRoot
+            };
+
+            if (!await dialog.ViewModel.LoadAsync(0))
+                return;
+
+            await dialog.ShowAsync();
+
+            if (ContentFrame.Content is IRefreshablePage page)
+                await page.RefreshAsync();
+        }
+        catch (Exception ex)
+        {
+            ViewModel.ReportError("Открытие карточки группы", ex);
+        }
+    }
+
+    private async void OnCreateMaterialClick(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            if (!ViewModel.IsAuthorized(PNRoles.ReadAndWrite))
+                return;
+
+            var dialog = new MaterialCardContentDialog()
+            {
+                XamlRoot = XamlRoot
+            };
+
+            if (!await dialog.ViewModel.LoadAsync(0))
+                return;
+
+            await dialog.ShowAsync();
+
+            if (dialog.RequestedMaterialId is { } requestedMaterialId)
+            {
+                var requestDialog = new PurchaseRequestCardContentDialog()
+                {
+                    XamlRoot = XamlRoot
+                };
+
+                if (await requestDialog.ViewModel.LoadAsync(0, requestedMaterialId))
+                    await requestDialog.ShowAsync();
+            }
+
+            if (ContentFrame.Content is IRefreshablePage page)
+                await page.RefreshAsync();
+        }
+        catch (Exception ex)
+        {
+            ViewModel.ReportError("Открытие карточки материала", ex);
+        }
     }
 
     private async void OnCreateUserClick(object sender, RoutedEventArgs e)
     {
-        if (!ViewModel.IsAuthorized(PNRoles.Admin))
-            return;
-
-        var dialog = new UserCardContentDialog()
+        try
         {
-            XamlRoot = XamlRoot
-        };
+            if (!ViewModel.IsAuthorized(PNRoles.Admin))
+                return;
 
-        if (!await dialog.ViewModel.LoadAsync(0))
-            return;
+            var dialog = new UserCardContentDialog()
+            {
+                XamlRoot = XamlRoot
+            };
 
-        await dialog.ShowAsync();
+            if (!await dialog.ViewModel.LoadAsync(0))
+                return;
 
-        if (ContentFrame.Content is IRefreshablePage page)
-            await page.RefreshAsync();
+            await dialog.ShowAsync();
+
+            if (ContentFrame.Content is IRefreshablePage page)
+                await page.RefreshAsync();
+        }
+        catch (Exception ex)
+        {
+            ViewModel.ReportError("Открытие карточки пользователя", ex);
+        }
     }
 }

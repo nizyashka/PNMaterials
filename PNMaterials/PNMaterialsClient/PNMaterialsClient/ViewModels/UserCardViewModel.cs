@@ -17,6 +17,7 @@ public partial class UserCardViewModel : ViewModelBase
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(Header))]
+    [NotifyPropertyChangedFor(nameof(PasswordBoxHeader))]
     [NotifyCanExecuteChangedFor(nameof(ArchiveCommand))]
     public int _id;
 
@@ -55,6 +56,8 @@ public partial class UserCardViewModel : ViewModelBase
         ? "Новый пользователь"
         : $"Пользователь {Username}{(IsBlocked ? " (в архиве)" : string.Empty)}";
 
+    public string PasswordBoxHeader => $"Пароль{(Id == 0 ? " *" : string.Empty)}";
+
     public ObservableCollection<RoleSelectionViewModel> Roles { get; set; } = new();
 
     public UserCardViewModel(ILogger<UserCardViewModel> logger, UsersApiClient usersApiClient, LoginInfoProvider loginInfoProvider, AuthService authService) : base(logger, authService)
@@ -75,6 +78,7 @@ public partial class UserCardViewModel : ViewModelBase
             if (id == 0)
             {
                 IsEditMode = true;
+                
                 Roles.Clear();
 
                 foreach (string role in allRoles)
@@ -140,6 +144,16 @@ public partial class UserCardViewModel : ViewModelBase
                 Roles = Roles.Where(r => r.IsSelected).Select(r => r.Name).ToList()
             };
 
+            var errors = DtoValidator.Validate(newUser);
+            if (errors.Count > 0)
+            {
+                foreach (var error in errors)
+                {
+                    MessagesService.ShowWarning(error);
+                }
+                return;
+            }
+
             await RunAsync("Создание нового пользователя.", async () => 
             { 
                 UserDto createdUser = await _usersApiClient.CreateUserAsync(newUser);
@@ -174,6 +188,16 @@ public partial class UserCardViewModel : ViewModelBase
                 Password = Password,
                 Roles = Roles.Where(r => r.IsSelected).Select(r => r.Name).ToList()
             };
+
+            var errors = DtoValidator.Validate(editedUser);
+            if (errors.Count > 0)
+            {
+                foreach (var error in errors)
+                {
+                    MessagesService.ShowWarning(error);
+                }
+                return;
+            }
 
             await RunAsync("Изменение пользователя.", async () =>
             {

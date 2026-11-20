@@ -15,7 +15,6 @@ public partial class MaterialsViewModel : ViewModelBase
     public bool IsGroupSelected => GroupId.HasValue;
     public bool IncludeArchived { get; set; }
 
-
     public ObservableCollection<MaterialDto> Materials { get; } = new();
 
     public MaterialsViewModel(ApiClient api, ILogger<MaterialsViewModel> logger, AuthService authService) : base(logger, authService)
@@ -26,9 +25,7 @@ public partial class MaterialsViewModel : ViewModelBase
     public async Task LoadAsync()
     {
         if (GroupId is not { } requestedGroupId)
-        {
             return;
-        }
 
         await RunAsync("Загрузка списка материалов", async () =>
         {

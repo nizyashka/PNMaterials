@@ -13,12 +13,12 @@
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0"
-                      ColumnSpacing="8"
-                      Padding="6"
-                      Background="{StaticResource TabBarBackgroundBrush}"
-                      BorderThickness="1"
-                      BorderBrush="{StaticResource PanelBorderBrush}"
-                      CornerRadius="8">
+                  ColumnSpacing="8"
+                  Padding="6"
+                  Background="{StaticResource TabBarBackgroundBrush}"
+                  BorderThickness="1"
+                  BorderBrush="{StaticResource PanelBorderBrush}"
+                  CornerRadius="8">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
@@ -30,10 +30,10 @@
                             VerticalAlignment="Center">
 
                     <Button x:Name="CreateButton"
-                                Style="{StaticResource IconButtonStyle}"
-                                VerticalAlignment="Center"
-                                ToolTipService.ToolTip="Создать..."
-                                Padding="8">
+                            Style="{StaticResource IconButtonStyle}"
+                            VerticalAlignment="Center"
+                            ToolTipService.ToolTip="Создать..."
+                            Padding="8">
                         <Button.Flyout>
                             <MenuFlyout>
                                 <MenuFlyoutItem Text="Создать группу" Click="OnCreateGroupClick" />
@@ -43,14 +43,14 @@
                             </MenuFlyout>
                         </Button.Flyout>
                         <FontIcon Glyph="&#xE710;"
-                                      FontFamily="{ThemeResource SymbolThemeFontFamily}"
-                                      FontSize="14" />
+                                  FontFamily="{ThemeResource SymbolThemeFontFamily}"
+                                  FontSize="14" />
                     </Button>
                 </StackPanel>
 
                 <ItemsControl x:Name="MainMenu"
-                                  Grid.Column="1"
-                                  VerticalAlignment="Center">
+                              Grid.Column="1"
+                              VerticalAlignment="Center">
                     <ItemsControl.Resources>
                         <Style TargetType="Button" BasedOn="{StaticResource TabBarButtonStyle}" />
                         <SolidColorBrush x:Key="ButtonForegroundPointerOver" Color="White" />

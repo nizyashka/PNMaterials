@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using PNMaterialsClient.ViewModels;
 using PNMaterialsContracts;
 
@@ -7,7 +6,6 @@ namespace PNMaterialsClient.Views.Dialogs;
 public sealed partial class MaterialCardContentDialog : ContentDialog
 {
     public ICommand ExitCommand { get; }
-
     public MaterialCardViewModel ViewModel { get; }
     public int? RequestedMaterialId { get; private set; }
 

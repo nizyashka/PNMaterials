@@ -1,15 +1,12 @@
-using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Text;
 using PNMaterialsClient.Services;
 
 namespace PNMaterialsClient.Views;
 
 public sealed partial class RootPage : Page
 {
-    private readonly MessagesService MessagesService;
-    private readonly LoadingService LoadingService;
+    private MessagesService MessagesService { get; }
+    private LoadingService LoadingService { get; }
 
     public RootPage()
     {
